@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+
+<body>
+
+<div class="admin">
+    <% include ../../../partials/sidebar.ejs %>
+    <% const urlParams = query && type ? `&q=${query}&type=${type}` : '' %>
+    <main class="admin_main">
+      <div class="container-fluid admin_title_area pt-4">
+        <div class="row col-md-12 mb-4 pb-4">
+            <div class="col-lg-4">
+                <h1><b>Admin</b> - Contacts</h1>
+            </div>
+            <div class="col-lg-8">
+              <form id="search-form" method="get" class="col d-flex mb-0 align-items-end justify-content-end">
+                <div class="form-group mb-0 mr-2">
+                  <label for="query">Search:</label>
+                  <input type="text" class="form-control" id="query" name="q"
+                      style="border-radius: 0; max-width: 300px;" placeholder="Search..." />
+                </div>
+                <div class="form-group mb-0 mr-2">
+                  <label for="type">Search by:</label>
+                  <select class="form-control" id="type" name="type">
+                    <option value="to_first_name">Recipient First Name</option>
+                    <option value="to_last_name">Recipient Last Name</option>
+                    <option value="email">Recipient Email</option>
+                    <option value="campaign_title">Campaign Name</option>
+                    <option value="client_name">Client Account Name</option>
+                    <option value="client_email">Client Account Email</option>
+                    <option value="short_url">Short Url</option>
+                  </select>
+                </div>
+                <input type="hidden" name="page" value="1" />
+                <button type="submit" class="btn common_btn light_dark_btn" style="padding: 9px 20px;" id="btn-search">Search</button>
+              </form>
+            </div>
+        </div>
+      </div>
+      <div class="admin_content_area">
+        <% if (query && type) { %>
+          <h2>Search for "<%= query %>"</h2>
+        <% } %>
+        <% if (contacts.length) { %>
+          <div class="users_item">
+            <table cellspacing="0" cellpadding="0" class="table-bordered table-hover table-users">
+              <thead>
+                <tr>
+                  <th class="users_item_number">First Name</th>
+                  <th class="users_item_number">Last Name</th>
+                  <th class="users_item_number">Original Email</th>
+                  <th class="users_item_number">Checkout Email</th>
+                  <th class="users_item_number">Campaign</th>
+                  <th class="users_item_number">Client name</th>
+                  <th class="users_item_number">Client Email</th>
+                  <th class="users_item_number">Status</th>
+                </tr>
+              </thead>
+              <tbody id="userList">
+                <% contacts.map(contact => { %>
+                  <tr>
+                    <td class="users_info"><%= contact.to_first_name %></td>
+                    <td class="users_info"><%= contact.to_last_name %></td>
+                    <td class="users_info"><%= contact.to_email %></td>
+                    <td class="users_info"><%= contact.shipping_email %></td>
+                    <td class="users_info">
+                      <a href="/edit-campaign?cid=<%= contact.campaign.id %>"><%= contact.campaign.title %></a>
+                    </td>
+                    <td class="users_info"><%= contact.campaign.user && contact.campaign.user.name %></td>
+                    <td class="users_info"><%= contact.campaign.user && contact.campaign.user.email %></td>
+                    <td class="users_info"><%= statusHelper(contact.step) %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <p class="mt-4">Sorry, no contacts found.</p>
+        <% } %>
+        <% if(maxPage > 1) { %>
+          <nav aria-label="Contacts pagination" class="mt-4 d-flex justify-content-center">
+            <ul class="pagination">
+              <li class="page-item <%= page === 1 && 'disabled' %>">
+                <a class="page-link text-reset" href="/admin-contacts?page=1<%= urlParams %>" aria-label="First">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">First</span>
+                </a>
+              </li>
+              <li class="page-item <%= parseInt(page) - 1 < 1 && 'disabled' %>"><a class="page-link text-reset" href="/admin-contacts?page=<%= parseInt(page) - 1 %><%= urlParams %>">Previous</a></li>
+              <li class="page-item disabled"><a class="page-link text-reset" href="/admin-contacts?page=1<%= urlParams %>">Page <%= page %> of <%= maxPage %></a></li>
+              <li class="page-item <%= parseInt(page) + 1 > maxPage && 'disabled' %>"><a class="page-link text-reset" href="/admin-contacts?page=<%= parseInt(page) + 1 %><%= urlParams %>">Next</a></li>
+              <li class="page-item <%= page === maxPage && 'disabled' %>">
+                <a class="page-link text-reset" href="/admin-contacts?page=<%= maxPage %><%= urlParams %>" aria-label="Last">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Last</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        <% } %>
+      </div>
+    </main>
+    <% include ../../../partials/footer.ejs %>
+  </div>
+  <% include ../../../partials/storage.ejs %>
+  <% include ../../../partials/foot.ejs %>
+  <% include admin-contacts_action.ejs %>
+</body>

@@ -1,0 +1,149 @@
+/* CSS for login, signup, forgot password pages */
+
+.down_banner_9 {
+	background: url(/resources/images/hero_bg_10.png) right center no-repeat fixed;
+	background-size: cover;
+	height: 239px;
+}
+.login_logo{
+	text-align: center;
+	padding: 56px 15px 24px;
+}
+.login_logo a{
+	display: inline-block;
+}
+.login_area{
+	padding-bottom: 75px;
+}
+.login_box{
+	max-width: 375px;
+	margin: 0 auto;
+}
+.login_area h3{
+	font-size: 22px;
+	line-height: 26px;
+	color: #333333;
+	padding-bottom: 17px;
+}
+.login_form_box{
+	background: #FFFFFF;
+	border: 1px solid #DBDBDB;
+	box-sizing: border-box;
+	box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.02);
+	min-height: 330px;
+	padding: 35px 25px;
+}
+.login_form_box .form-group button {
+    width: 100%;
+}
+.login_area .information_form label{
+	font-size: 12px;
+	line-height: 14px;
+}
+.login_area .step_checkbox_area {
+	padding-left: 5px;
+}
+.login_area .step_checkbox_area .custom-control-label {
+	font-size: 16px;
+	line-height: 25px;
+	letter-spacing: normal;
+	font-weight: 400;
+	color: #444;
+	padding-left: 5px;
+	padding-bottom: 0;
+	cursor: pointer;
+}
+.login_area .step_checkbox_area .custom-control-label a {
+	font-style: italic;
+	color: #333;
+	font-size: 16px;
+	line-height: 26px;
+	font-weight: 600;
+	text-decoration: underline;
+}
+.login_area .step_checkbox_area .custom-control-label a:hover {
+	color: #777;
+}
+.auth_extra_section {
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+}
+.auth_extra_section span {
+	font-size: 14px;
+	line-height: 17px;
+	color: #909090;
+	margin-right: 10px;
+}
+.auth_extra_section a, .auth_extra_section .btn {
+	font-style: italic;
+	font-size: 15px;
+	line-height: 20px;
+	color: #333;
+}
+.user_name:before, .password_input:before, .email_input:before {
+	content: "";
+	position: absolute;
+	/*bottom: 7px;*/
+	top: 45px;
+	left: 54px;
+	width: 1px;
+	height: 40px;
+	background: #DADADA;
+}
+.user_name, .password_input, .email_input{
+	position: relative;
+}
+.user_name input {
+	background: url(/resources/images/icons/user.png) left 21px center no-repeat;
+	padding: 0px 25px 0px 75px;
+}
+.password_input input {
+	background: url(/resources/images/icons/pass-lock.png) left 20px center no-repeat;
+	padding: 0px 25px 0px 75px;
+}
+.email_input input{
+	background: url(/resources/images/icons/envelop-v-gray.png) left 16px center no-repeat;
+	padding: 0px 25px 0px 75px;
+}
+.login_area input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+	color: #D9D9D9;
+}
+.login_area input::-moz-placeholder { /* Firefox 19+ */
+	color: #D9D9D9;
+}
+.login_area input:-ms-input-placeholder { /* IE 10+ */
+	color: #D9D9D9;
+}
+.login_area input:-moz-placeholder { /* Firefox 18- */
+	color: #D9D9D9;
+}
+
+.password-validation {
+	display: flex;
+	flex-direction: column;
+	padding: 10px 0 0 10px;
+}
+.password-validation span {
+	color: #909090;
+	font-size: 13px;
+	line-height: 20px;
+	display: flex;
+	align-items: center;
+}
+.password-validation span i {
+	margin-right: 3px;
+	font-size: 15px;
+}
+.password-validation span i.invalid {
+	color: #aaa;
+}
+.password-validation span i.valid {
+	color: #77dc15;
+}
+
+.login_form_box .parsley-errors-list {
+	list-style-type: none;
+	font-size: 14px;
+	padding-left: 3px;
+}

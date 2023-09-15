@@ -1,0 +1,198 @@
+<!-- Header Area Start -->
+
+<div class="alert alert-bar alert-success text-center" id="alert-bar">
+  <strong id="alert-title"></strong> <span id="alert-content"></span>
+</div>
+
+
+
+<% if (page_title === 'landing' || page_title === 'landing-preview' || page_title === 'landing-inactive') { %>
+
+<div class="sticky">
+  <header class="site_header">
+    <div class="container-fluid">
+      <nav class="navbar navbar-expand-lg landing-nav">
+        <div class="landing-logos">
+          <% const logoClass = `navbar-brand logo-main ${shouldDisplayLogo && 'logo-side'}`; %>
+          <% if (shouldDisplayLogo) { %>
+            <a class="<%= logoClass %>" href="/">
+              <img src="<%= campaign['logo_url'] %>" alt="logo" />
+            </a>
+          <% } %>
+          <a class="<%= logoClass %>" href="/">
+            <img src="/resources/images/logo.svg" alt="Giftforward" />
+          </a>
+        </div>
+        <% const isSingleProduct = typeof singleProduct !== 'undefined' && singleProduct %>
+        <% if (page_title !== 'landing-inactive' && !isSingleProduct) { %>
+          <div class="btn-group">
+            <a href="#product_area_scroll" type="button" class="btn select-gift" style="background-color: #333333">
+              Select your gift below
+            </a>
+            <% if (isInternationalCollection) { %>
+              <div id="intl-change-location">
+                <a href="#" title="Click here to change your shipping location">
+                  SHIP TO:
+                  <span class="flag">
+                    <img src="https://cdn.shopify.com/shopifycloud/shopify<%=country.flag_path%>" alt="<%=country.name%> Flag" />
+                  </span>
+                  <span class="country-name">
+                    <%=country.name%>
+                  </span>
+                </a>
+              </div>
+            <% } %>
+          </div>
+        <% } %>
+
+      </nav>
+
+    </div>
+  </header>
+</div>
+<% } else if (page_type !== 'extra-page') { %>
+<div class="sticky">
+  <% if (page_title === 'client-welcome') { %>
+  <header class="site_header">
+    <div class="container-fluid">
+      <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand logo-main" href="/"><img src="/resources/images/logo.svg" alt="Giftforward" /></a>
+      </nav>
+    </div>
+  </header>
+  <% } else { %>
+  <header class="site_header">
+    <div class="container-fluid">
+      <% if (page_type === 'gift-step-page' || (page_type ===
+      'client-dashboard-page' && page_title === 'change-campaign-products')) {
+      %>
+      <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand logo-main" href="/"><img src="/resources/images/logo.svg" alt="Giftforward" /></a>
+        <div class="navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <% if (page_title === 'confirmed-order') { %>
+            <li class="nav-item">
+              <div class="btn-group">
+                <button type="button" class="btn next-step-btn">
+                  Back to Dashboard
+                </button>
+              </div>
+            </li>
+            <% } else { %>
+            <li class="nav-item d-flex">
+              <div class="btn-group">
+                <button type="button" class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="box-shadow: none">
+                  <img src="//cdn.shopify.com/s/files/1/1826/6559/t/39/assets/bag.png?v=380757535578552547" alt="icon" />
+                  <a href="#" class="badge badge-warning" id="cart-badge" style="display: none"></a>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right get_dropdown">
+                  <div class="dropdown_gift_option">
+                    <div class="dropdown_gift_option_box">
+                      Your Gift Options
+                      <button type="button" class="btn gift_close close d-none">
+                        <img src="/resources/images/icons/close.png" alt="icon" />
+                      </button>
+                    </div>
+                  </div>
+                  <div class="dropdown_gift_list">
+                    <ul></ul>
+                  </div>
+                  <% if (page_title === 'gift-it-forward' || page_title ===
+                  'change-campaign-products') { %>
+                  <div class="dropdown_gift_btn">
+                    <button type="button" class="btn complete-collection" id="complete-collection">
+                      COMPLETE THE COLLETION
+                    </button>
+                  </div>
+                  <% } %>
+                  <div class="dropdown_gift_footer">
+                    <span id="register-collection">Free Shipping</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <div class="btn-group">
+                <button type="button" class="btn btn-step-md next-step-btn">
+                  <%= page_title === 'change-campaign-products' ? 'COMPLETE' :
+                  'NEXT' %>
+                </button>
+              </div>
+            </li>
+            <% } %>
+          </ul>
+        </div>
+      </nav>
+      <% } else if (page_title === 'gift-detail' || page_title ===
+      'gift-detail-marketing' || page_title === 'gift-shipping' || page_title === 'gift-note-thank') { %>
+      <nav id="nav" class="navbar navbar-expand-lg" style="display: flex; justify-content: center; align-items: center; padding-bottom: 48px; padding-top: 28px;">
+
+        <% if (page_title !== 'gift-detail-marketing') { %>
+          <span id="backto-gifts" style="color: black; display: flex; flex-direction: row; align-items: center;" class="backto-gifts">
+            <i class="fas fa-arrow-left" style="margin-right: 10px"></i>
+            <span>BACK TO GIFTS</span>
+          </span>
+        <% } %>
+        <a 
+          class="navbar-brand logo-main <% if (page_title !== 'gift-detail-marketing') { %>ml-auto mr-0 mr-sm-auto<% } else { %>mx-auto<% } %>"
+          style="cursor: pointer"
+          id="backto-gifts-link"
+        >
+          <img src="/resources/images/logo.svg" alt="Gifts for Good" />
+        </a>
+      </nav>
+      <% } %>
+    </div>
+  </header>
+  <% } %>
+
+  <!--Step Area -->
+  <% if (page_type === 'gift-step-page' && page_title !== 'confirmed-order') {
+  %>
+  <section class="step_area">
+    <div class="container-fluid">
+      <div class="step_label_bg">
+        <div class="step_label_over <%= page_title === 'gift-it-forward' ? 'step_label_over_1' : page_title === 'recipient-information' ? 'step_label_over_2' : page_title === 'brand-message' ? 'step_label_over_3' : 'step_label_over_4' %>"></div>
+      </div>
+      <div class="row">
+        <div class="col-3">
+          <div class="step_item step_active" id="step1_ind">
+            <div>
+              <h4>STEP 1</h4>
+              <p>Gift</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="step_item" id="step2_ind">
+            <div>
+              <h4>STEP 2</h4>
+              <p>Recipient</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="step_item" id="step3_ind">
+            <div>
+              <h4>STEP 3</h4>
+              <p>
+                Brand <br />
+                & Message
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="step_item" id="step4_ind">
+            <div>
+              <h4>STEP 4</h4>
+              <p>Confirm</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% } %>
+</div>
+<% } %>

@@ -1,0 +1,60 @@
+<div class="btn-group nav-menu campaign-filter">
+    <button type="button" class="btn dropdown_btn text-uppercase" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Filter by Campaign
+      <% if (activeCampaignIds.length) { %>
+        <span style="background: #C8B398; color: white;" class="px-2 py-1 ml-2"><%= activeCampaignIds.length %></span>
+      <% } %>
+      <img src="/resources/images/icons/arrow-down-2.png">
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-6px, 48px, 0px); overflow-y: auto;">
+        <div style="overflow-y: scroll; max-height: 174px;">
+            <% campaigns.map(campaign => { %>
+              <% const isActive = activeCampaignIds.includes(campaign.id.toString()) %>
+              <button
+                      class="dropdown-item campaign-checkbox <%= isActive ? 'active' : '' %>"
+                      campaign-id=<%= campaign.id %>
+              >
+                  <%= campaign.title %>
+              </button>
+            <% }) %>
+        </div>
+        <div class="d-flex justify-content-between px-2 pt-2">
+          <a class="btn common_btn grey_btn py-2" href="<%= link %>" style="color: #fff;">
+            Reset
+          </a>
+          <button
+              id="filter-campaigns"
+              type="button"
+              class="btn common_btn py-2"
+              style="color: #fff;"
+          >
+            Apply
+          </button>
+      </div>
+    </div>
+</div>
+<script type="text/javascript">
+    const url = '<%- link %>';
+    const activeCampaignsData = '<%- activeCampaignIds %>';
+    const activeCampaignsIds = activeCampaignsData.split(',').filter(id => id !== '') ?? [];
+    const checkboxes = document.getElementsByClassName('campaign-checkbox')
+
+    Array(...checkboxes).forEach(item => {
+        item.addEventListener('click', function(e) {
+            const campaignId = e.target.getAttribute("campaign-id");
+            if (activeCampaignsIds.includes(campaignId)) {
+              activeCampaignsIds.splice(activeCampaignsIds.indexOf(campaignId), 1);
+              item.classList.remove('active');
+            } else {
+              activeCampaignsIds.push(campaignId);
+              item.classList.add('active');
+            }
+        });
+    });
+
+    document.getElementById('filter-campaigns').addEventListener('click', function(e) {
+        e.preventDefault();
+        const newLink = `${url}${activeCampaignsIds.toString()}`;
+        window.location.href = newLink;
+    });
+</script>

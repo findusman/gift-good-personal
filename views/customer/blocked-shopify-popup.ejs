@@ -1,0 +1,38 @@
+<div class="modal fade common-modal shopify-modal" id="shopify-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="message-section">
+                    <p>
+                        There seems to be a problem loading this page. Please email Gifts for Good customer service at
+                        </a href="mailto:support@giftsforgood.com">support@giftsforgood.com</a>
+                        or call
+                        <a href="tel:+18775541550">(877) 554-1550</a>
+                    </p>
+                </div>
+                <div class="confirm-btn-group">
+                    <button type="button" class="btn common_btn" data-dismiss="modal" id="confirm-btn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const isPreview = <%- typeof isPreview !== 'undefined' && isPreview %>
+        $('document').ready(() => {
+            if (!isPreview) {
+                const shopifyElements = $('img[src*="//cdn.shopify.com"], script[src*="//cdn.shopify.com"]');
+                if (shopifyElements.length) {
+                    $.ajax({
+                        url: '//cdn.shopify.com',
+                    }).fail(() => {
+                        $('#shopify-modal').modal('show');
+                    });
+                }
+            }
+        });
+</script>

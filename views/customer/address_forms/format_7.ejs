@@ -1,0 +1,30 @@
+<div class="row">
+	<div class="col-md-6">
+		<div class="form-group">
+			<input type="text" style="background: #F5F8FA;" class="form-control" id="first-name" placeholder="First Name" value="<%= contact['shipping_first_name'] %>" data-parsley-trigger="change" data-parsley-pattern="<%= namePattern %>" required="" />
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group">
+			<input type="text" style="background: #F5F8FA;" class="form-control" id="last-name" placeholder="Last Name" value="<%= contact['shipping_last_name'] %>" data-parsley-trigger="change" data-parsley-pattern="<%= namePattern %>" required="" />
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="form-group">
+			<input type="text" style="background: #F5F8FA;" class="form-control" id="address" placeholder="<%= country.labels.address1 || "Address" %>" value="<%= contact['shipping_address'] %>" data-parsley-trigger="change" required="" data-parsley-pattern="<%= POBoxesPattern %>" data-parsley-error-message="Fill in your address (PO Boxes are not allowed).">
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="form-group">
+			<input type="text" style="background: #F5F8FA;" class="form-control" id="apartment" placeholder="<%= country.labels.address2 || "Suite/Apt" %>" value="<%= contact['shipping_apartment'] %>">
+		</div>
+	</div>
+</div>
+
+<input type="hidden" id="zip-code" value="<%= contact['shipping_zip_code'] %>">
+<input type="hidden" id="city" placeholder="<%= country.labels.city || "City" %>" value="<%= contact['shipping_city'] %>">
+<input type="hidden" id="state" value="<%= contact['shipping_state'] %>">

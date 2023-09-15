@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+
+<body>
+
+<div class="admin">
+    <% include ../../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+        <div class="admin_title_area">
+            <div class="container-fluid">
+                <div class="row">
+                    <div style="flex: 1;">
+                        <h2>Edit <i>Demo Campaign</i></h2>
+                    </div>
+                    <div>
+                        <a href='/preview/landing-page?where=demo' target="_blank">
+                            <button type="button" class="btn grey_btn">VIEW LANDING PAGE</button>
+                        </a>
+                        <a href='/preview/campaign-email?where=demo' target="_blank">
+                            <button type="button" class="btn dark_btn">VIEW EMAIL</button>
+                        </a>
+                        <button type="button" class="btn common_btn" id="add-products-btn">ADD PRODUCTS</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin_content_area">
+            <div class="container-fluid">
+                <div class="row product_area draggable-product-area" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <% for (let i = 0; i < products.length; i++) { %>
+                        <div class="item_section" draggable="true" ondragstart="dragStart(event)"
+                             ondragend="mouseUp(event)" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)"
+                             id="<%= products[i]["variant_id"] %>">
+                            <div class="product_item small_item">
+                                <div class="product_img">
+                                    <img src="<%= products[i]['image_data']['sub'][[0]]%>" style="pointer-events: none;"
+                                         onerror="onProductImgError(this)" alt="img"/>
+                                </div>
+                                <div class="product_info">
+                                    <div class="product_title">
+                                        <h4><%= products[i]["product_title"] %></h4>
+                                    </div>
+                                    <% if (products[i]['collection_title']) { %>
+                                        <div class="product_price">
+                                            <h5><%= products[i]['collection_title'] %></h5>
+                                        </div>
+                                    <% } %>
+                                    <p>
+                                        <% if (products[i]['impact_icon']) { %>
+                                            <img src="<%= products[i]['impact_icon'] %>"
+                                                 class="shopping-label-img sm" onerror="onLabelImgError(this)"
+                                                 alt="img"/>
+                                        <% } %>
+                                        <%= products[i]['impact_story_collection'] %>
+                                    </p>
+                                    <button type="button" class="btn dark_btn prod-remove-btn"
+                                            prod-id="<%= products[i]["variant_id"] %>">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="massege_box">
+                                    <textarea class="form-control" rows="3" id="message-text"
+                                              placeholder="Write the message that will appear in the demo campaign email."><%= campaign.demo_message %></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="step_buttons_area">
+                            <button type="button" class="btn common_btn" id="update-message-btn">UPDATE MESSAGE</button>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="row design_experience_area flex-column"
+                         style="padding-left: 20px; padding-right: 20px;">
+                    <div class="add_title">
+                        <h3><img src="/resources/images/icons/design.png"/> Design Your Gifting Experience</h3>
+                    </div>
+                    <div class="step_information_boxes">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="choose_file_box">
+                                    <div class="drag_area">
+                                        <div class="drag_area_content" id="email-logo-drag-content">
+                                            <img src="/resources/images/icons/uplode.png"/>
+                                            <h5><b>Upload logo</b></h5>
+                                            <p>(Please upload your logo in a PNG file format.)</p>
+                                        </div>
+                                        <div class="drag_choose_field" id="email-logo-drag">
+                                            <input type="file" class="form-control-file" id="email-logo-file"
+                                                   accept="image/png">
+                                        </div>
+                                        <div class="email-brand-section" style="display: none" id="email-logo-section">
+                                            <img src="" id="email-logo-img">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-control custom-control-lg custom-checkbox"
+                                     style="padding-top: 15px; padding-left: 45px;">
+                                    <input type="checkbox" class="custom-control-input internal-check"
+                                           id="use-default-logo"/>
+                                    <label class="custom-control-label"
+                                           style="font-style: normal; margin-right: 15px; font-size: 17px; font-weight: 600;"
+                                           for="use-default-logo">Use Default Logo</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="choose_file_box">
+                                    <div class="drag_area">
+                                        <div class="drag_area_content" id="email-banner-drag-content">
+                                            <img src="/resources/images/icons/uplode-video.png"/>
+                                            <h5>Upload photo for <b>banner image</b> and <b>preview on a collection
+                                                    page</b></h5>
+                                            <p>(We recommend banner images <br/> with dimensions 1440x325 px.)</p>
+                                        </div>
+                                        <div class="drag_choose_field" id="email-banner-drag">
+                                            <input type="file" class="form-control-file" id="email-banner-file"
+                                                   accept="image/png">
+                                        </div>
+                                        <div class="email-brand-section" style="display: none"
+                                             id="email-banner-section">
+                                            <img src="" id="email-banner-img">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="custom-control custom-control-lg custom-checkbox"
+                                     style="padding-top: 15px; padding-left: 45px;">
+                                    <input type="checkbox" class="custom-control-input internal-check"
+                                           id="use-default-banner"/>
+                                    <label class="custom-control-label"
+                                           style="font-style: normal; margin-right: 15px; font-size: 17px; font-weight: 600;"
+                                           for="use-default-banner">Use Default Banner</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="send-email">
+                    <div class="add_title">
+                        <h3 style="color: #333;">Send Email</h3>
+                    </div>
+                    <div class="information_form">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label for="to-first-name">RECEIVER FIRST NAME(*)</label>
+                                    <input type="text" class="form-control" id="to-first-name">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label for="to-last-name">RECEIVER LAST NAME(*)</label>
+                                    <input type="text" class="form-control" id="to-last-name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label for="to-company-name">RECEIVER COMPANY NAME(*)</label>
+                                    <input type="text" class="form-control" id="to-company-name">
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label for="to-email">RECEIVER EMAIL(*)</label>
+                                    <input type="text" class="form-control" id="to-email">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="form-group">
+                                    <label for="from-company-name">SENDER COMPANY NAME</label>
+                                    <input type="text" class="form-control" id="from-company-name">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-3">
+                        <button type="button" class="btn common_btn" id="send-demo-email-btn">SEND DEMO EMAIL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <% include ../../../partials/footer.ejs %>
+</div>
+
+<% include ../../../partials/modals.ejs %>
+
+<% include ../../../partials/storage.ejs %>
+<% include ../../../partials/foot.ejs %>
+<% include admin-demo-campaign_action.ejs %>
+</body>
+</html>

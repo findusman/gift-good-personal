@@ -1,0 +1,156 @@
+/************* Message modal *************/
+.contacts-modal .modal-dialog {
+	max-width: 900px;
+}
+#add-product-modal .modal-dialog {
+	max-width: 1024px;
+}
+.common-modal .modal-dialog {
+	max-width: 560px;
+}
+.contacts-modal .modal-body,
+.common-modal .modal-body {
+	padding: 18px 22px;
+}
+.contacts-modal .modal-title h3,
+.common-modal .modal-title h3 {
+	font-size: 30px;
+	color: #333;
+	padding-bottom: 20px;
+}
+.common-modal .message-section {
+	padding: 0 0 20px;
+}
+.common-modal .input {
+	font-size: 18px;
+	margin: 0 15px;
+}
+.common-modal .message-section p {
+	font-size: 16px;
+	line-height: 20px;;
+	padding-bottom: 10px;
+	color: #444;
+}
+.contacts-modal .common_btn,
+.common-modal .common_btn {
+	font-size: 12px;
+    letter-spacing: 0.02em;
+    padding: 10px 15px;
+}
+
+.message-modal .message-section {
+	display: flex;
+	padding: 15px;
+}
+
+.message-modal .message-section img {
+	width: 80px;
+	height: 80px;
+}
+
+.message-modal .message-section span {
+	font-size: 1.6rem;
+	text-align: center;
+	padding: 10px;
+}
+
+.message-modal .close {
+	position: absolute;
+	top: -35px;
+	right: 0px;
+	box-shadow: none;
+	opacity: 1;
+	color: #fff;
+	font-size: 32px;
+}
+
+.message-modal .confirm-btn-group {
+	text-align: center;
+	padding: 7px;
+}
+
+.message-modal .confirm-btn-group button {
+	width: 130px;
+	height: 45px;
+	padding: 8px;
+}
+
+.modal-content-section {
+	width: 100%;
+	max-height: 400px;
+	margin: 15px 0;
+	overflow: auto;
+}
+
+.modal-content-section table td,
+.modal-content-section table th {
+	font-size: 12px;
+}
+
+.contacts-modal .confirm-btn-group {
+	display: flex;
+    font-size: 15px;
+    color: #444;
+    align-items: center;
+}
+
+.contacts-modal .custom-control-label::before {
+	top: 3px;
+	left: -23px;
+	width: 20px;
+	height: 20px;
+}
+
+.contacts-modal .custom-checkbox .custom-control-input:checked~.custom-control-label:after {
+	width: 30px;
+    height: 30px;
+}
+
+.modal-title {
+	font-family: Lato;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 30px;
+	line-height: 36px;
+	letter-spacing: 0.02em;
+	color: #333333;
+	display: block;
+}
+.modal-title-note {
+	font-family: Lato;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 14px;
+	line-height: 17px;
+	color: #444444;
+}
+.shipping-modal, .shopify-modal, .intl-location-modal, .authentication-modal {
+	visibility: visible;
+	opacity: 1;
+	background: transparent;
+	transform: none;
+	max-height: 100%;
+	max-width: 100%;
+}
+.shipping-modal .modal-dialog {
+	max-width: 750px;
+}
+/*************end*************/
+
+@media (min-width: 1024px) {
+	#credits-history-modal .modal-dialog {
+		min-width: 800px;
+	}
+}
+
+#credits-history-modal .dynamic-content {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+#credits-history-modal .dynamic-content th, #credits-history-modal .dynamic-content td {
+	border: 1px solid #dbdbdb;
+	padding: 5px 15px;
+	font-size: 14px;
+  line-height: 1.2;
+}

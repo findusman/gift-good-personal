@@ -1,0 +1,667 @@
+<script type="text/javascript">
+  let contactList = [];
+  const campaign = <%- JSON.stringify(campaign) %>;
+  const products = <%- JSON.stringify(products) %>;
+  let SITE_LINK = <%- JSON.stringify(site_link) %>;
+  const reminderDefaultValues = <%- JSON.stringify(reminderDefaultValues) %>;
+  let offset = 0,
+    count = 0,
+    collection_id = '',
+    collection_type = '';
+
+  function confirm_helper(confirm_type) {
+    $('#confirm-modal .modal-title h3').text('Please confirm.');
+    $('#confirm-type').val(confirm_type.confirm_type);
+    $('#confirm-btn').text('YES, COMPLETE');
+    $('#confirm-content').text('Please confirm you want to make changes to this campaign. Your changes will reflect instantly on any live campaign.');
+    $('#confirm-modal').modal('show');
+  }
+
+  function already_exists(product_id) {
+    for (let i = 0; i < products.length; i++) {
+      if (products[i]['product_id'] === product_id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bind_function();
+
+  $('.reminder-edit-btn').on('click', function() {
+    const reminder_key = $(this).attr('reminder-key');
+    const reminderNumber = reminder_key.slice(-1);
+    const reminder_title = $(this).attr('reminder-title');
+    $('#reminder-key').val(reminder_key);
+    $('#reminder-title').text('Edit ' + reminder_title);
+    $('#reminder-subject').val(campaign[reminder_key + '_subject'] || reminderDefaultValues[reminderNumber].subject);
+    $('#reminder-content').val(campaign[reminder_key + '_content'] || reminderDefaultValues[reminderNumber].content);
+    $('#reminder-modal').modal('show');
+  });
+
+  $('.reminder-view-btn').on('click', function() {
+    const reminder_key = $(this).attr('reminder-key');
+    const reminder_idx = reminder_key.split('reminder')[1];
+    const expire_date = $('#expire-date').val();
+    const content = encodeURIComponent(campaign[reminder_key + '_content'] || reminderDefaultValues[reminder_idx].content);
+
+    const link = '/collection/reminder-preview?cid=' + campaign['id'] +
+      '&expdate=' + expire_date +
+      '&key=' + reminder_key.slice(-1);
+    window.open(link, '_blank');
+  });
+
+  $('#update-reminder-btn').on('click', function() {
+    const reminder_key = $('#reminder-key').val();
+    const reminder_subject = $('#reminder-subject').val();
+    const reminder_content = $('#reminder-content').val();
+
+    if (reminder_subject === '') {
+      alert('Please enter subject.');
+      return;
+    }
+
+    if (reminder_content === '') {
+      alert('Please enter content.');
+      return;
+    }
+
+    campaign[reminder_key + '_subject'] = reminder_subject;
+    campaign[reminder_key + '_content'] = reminder_content;
+    $('#reminder-modal').modal('hide');
+  });
+
+  $('#update-setting-btn').on('click', function() {
+    const rawDate = $('#expire-date').val();
+    const formDate =  new Date(rawDate);
+
+    const dateInUTC = ({ timestamp, date }) => new Date(timestamp + date.getTimezoneOffset() * 60000);
+
+    const [year, month, day] = rawDate.split('-');
+    const formDateUTCTimestamp = Date.UTC(year, month - 1, day);
+    const formDateUTC = dateInUTC({
+      timestamp: formDateUTCTimestamp,
+      date: formDate
+    });
+
+    const todayDate = new Date();
+    const todayUTCTimestamp = Date.UTC(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate());
+    const todayDateUTC = dateInUTC({
+      timestamp: todayUTCTimestamp,
+      date: todayDate
+    });
+
+    const oneDayTimeStamp = 24 * 60 * 60 * 1000;
+    const todayTimestamp = todayDateUTC.getTime();
+    const formDateTimestamp = formDateUTC.getTime();
+    const shouldExpire = (todayTimestamp - oneDayTimeStamp >= formDateTimestamp);
+
+    const message = shouldExpire ? 'New expiration date is in the past. This action will expire campaign immediately.' : 'Your changes will reflect instantly on any live campaign.'
+    $('#confirm-modal .modal-title h3').text('Please confirm.');
+    $('#confirm-type').val(shouldExpire ? 'update-expire' : 'update-setting');
+
+    $('#confirm-btn').text('YES, COMPLETE');
+    $('#confirm-content').text(`Please confirm you want to make changes to this campaign. ${message}`);
+    $('#confirm-modal').modal('show');
+  });
+
+  $('#allow-multiple-redemptions').on('change', function() {
+    if ($(this).is(':checked')) {
+      $('#multiple-redemptions-modal').modal('show');
+    }
+  });
+
+  $('#number-of-redemptions').on('input', function() {
+    const val = $(this).val();
+    if (val && val > 0) {
+      $('#save-as-multiple').prop('disabled', false);
+      const totalBudget = campaign.price * val;
+      $('#number-of-redemptions-helper').html(`Total campaign budget: ${totalBudget.toLocaleString('en-US')}`);
+    } else {
+      $('#save-as-multiple').prop('disabled', true);
+      $('#number-of-redemptions-helper').html('');
+    }
+  });
+
+  $('#save-as-multiple-form').on('submit', (e) => {
+    e.preventDefault();
+    const numberOfRedemptions = $('#number-of-redemptions').val();
+    $.ajax({
+      url: '/collection/set-multiple-redemptions-campaign',
+      method: 'POST',
+      data: {
+        numberOfRedemptions,
+        campaignId: campaign.id,
+      },
+      success: function(res) {
+        if (res.status === 'success') {
+          showInfo(res.msg);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        }
+      },
+      error: function(err) {
+        showError(err.responseJSON?.msg);
+      }
+    });
+  });
+
+  $('#confirm-btn').on('click', function() {
+    $('#confirm-modal').modal('hide');
+
+    const confirm_type = $('#confirm-type').val();
+
+    if (confirm_type === 'update-setting') {
+      let reminder_data = {
+        cid: campaign['id'],
+        reminder1_subject: campaign['reminder1_subject'],
+        reminder1_content: campaign['reminder1_content'],
+        reminder2_subject: campaign['reminder2_subject'],
+        reminder2_content: campaign['reminder2_content'],
+        reminder3_subject: campaign['reminder3_subject'],
+        reminder3_content: campaign['reminder3_content'],
+        reminder4_subject: campaign['reminder4_subject'],
+        reminder4_content: campaign['reminder4_content'],
+      };
+
+      reminder_data['reminder1_date'] = $('#reminder1-date').val();
+      reminder_data['reminder2_date'] = $('#reminder2-date').val();
+      reminder_data['reminder3_date'] = $('#reminder3-date').val();
+      reminder_data['reminder4_date'] = $('#reminder4-date').val();
+      reminder_data['expire_date'] = interpolate_date($('#expire-date').val());
+      reminder_data['title'] = $('#title').val();
+      reminder_data['ownerId'] = $('#user').val();
+      reminder_data['authenticationProviderId'] = $('#authentication_provider').val();
+      reminder_data['no_email_invite'] = $('#isUniqueUrl').is(':checked');
+      reminder_data['block_new_products'] = $('#block-new-products').is(':checked');
+      reminder_data['allow_multiple_redemptions'] = $('#allow-multiple-redemptions').is(':checked');
+      reminder_data['cc_email'] = $('#cc-email').is(':checked');
+
+      if (campaign['no_email_invite']) {
+        reminder_data['send_only_reminder_emails'] = $('#sendReminderEmails').is(':checked');
+      } else {
+        reminder_data['scheduled_tz'] = $('#scheduled-tz').find(":selected").attr('data-name');
+        reminder_data['scheduled_date'] = $('#scheduled-date').val();
+        reminder_data['is_scheduled'] = $('#is-scheduled').prop('checked');
+        reminder_data['lock_emails'] = $('#lock-emails').is(':checked');
+      }
+
+      showLoader(true);
+      $.ajax({
+        url: '/collection/update-settings',
+        method: 'POST',
+        data: reminder_data,
+        success: function(res) {
+          showLoader(false);
+          if (res.status === 'success') {
+            showInfo(res.msg);
+            setTimeout(function() {
+              window.location.reload();
+            }, 500);
+          }
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    } else if (confirm_type === 'update-expire') {
+      showLoader(true);
+      const date = new Date($('#expire-date').val());
+      $.ajax({
+        url: '/collection/expire-campaign',
+        method: 'POST',
+        data: {
+          cid: campaign.id,
+          date
+        },
+        success: function(res) {
+          if (res.status === 'success') {
+            showInfo(res.msg);
+          }
+          showLoader(false);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    } else if (confirm_type === 'remove-product') {
+      showLoader(true);
+      const product_id = $('#extra-param').val();
+      const products = $('.product_item');
+      $.ajax({
+        url: '/collection/remove-product',
+        method: 'POST',
+        data: {
+          cid: campaign['id'],
+          pid: product_id,
+          singleProduct: products.length <= 2,
+        },
+        success: function(res) {
+          if (res.status === 'success') {
+            showInfo(res.msg);
+
+            $('.prod-remove-btn').each(function() {
+              if ($(this).attr('prod-id') === product_id) {
+                $(this).parent().parent().parent().remove();
+              }
+            });
+          }
+          showLoader(false);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+  });
+
+  $('#price-select').on('change', function() {
+    collection_id = $(this).val();
+    collection_type = $('#price-select').find(':selected').attr('type');
+    showLoader(true);
+    $.ajax({
+      url: '/pull-campaigns-products',
+      method: 'POST',
+      data: {
+        cid: collection_id,
+        ctype: collection_type
+      },
+      success: function(res) {
+        showLoader(false);
+        if (res.status === 'success') {
+          // Campaign dropdown list
+          offset = 0;
+          count = res.products.length;
+
+          $('#modal-product-section').empty();
+
+          // Product list
+          for (let i = 0; i < res.products.length; i++) {
+            const product = res.products[i];
+            add_product_data_to_html(product);
+          }
+
+          if (count < 20) {
+            $('#product-show-more').hide();
+          } else {
+            $('#product-show-more').show();
+          }
+
+          bind_function();
+          $('#add-product-modal').modal('show');
+        }
+      },
+      error: function(err) {
+        console.error(err);
+        showLoader(false);
+      }
+    });
+  })
+
+  $('#product-show-more').on('click', function() {
+    $.ajax({
+      url: '/step/first/show-more',
+      method: 'post',
+      data: {
+        offset: offset,
+        count: count,
+        cid: collection_id,
+        ctype: collection_type
+      },
+      success: function(res) {
+        offset = Number(res.offset) || 0;
+        count = Number(res.count) || 20;
+        res.products.forEach(function(product) {
+          add_product_data_to_html(product);
+        });
+        if (Number(res.count) < 20) {
+          $("#product-show-more").hide();
+        } else {
+          $("#product-show-more").show();
+        }
+        bind_function();
+      }
+    });
+  })
+
+  $('#add-products-btn').on('click', function() {
+    showLoader(true);
+    $.ajax({
+      url: '/pull-campaigns-products',
+      method: 'POST',
+      data: {},
+      success: function(res) {
+        showLoader(false);
+        if (res.status === 'success') {
+          // Campaign dropdown list
+          offset = 0;
+          count = res.products.length;
+          $('#modal-product-section').empty();
+          let html = '';
+          for (let i = 0; i < res.collections.signature.length; i++) {
+            const signature_collection = res.collections.signature[i];
+            const selected = signature_collection['shopify_id'] == res.cid ? "selected" : "";
+
+            html += '<option value="' + signature_collection['shopify_id'] +
+              '" type="signature" ' + selected + '>';
+            html += signature_collection['title'];
+            html += '</option>';
+          }
+
+          for (let i = 0; i < res.collections.campaign.length; i++) {
+            const campaign = res.collections.campaign[i];
+            html += '<option value="' + campaign['id'] + '" type="campaign">';
+            html += campaign['title'];
+            html += '</option>';
+          }
+          $('#price-select').empty();
+          $('#price-select').html(html);
+
+          // Product list
+          for (let i = 0; i < res.products.length; i++) {
+            add_product_data_to_html(res.products[i]);
+          }
+
+          if (count < 20) {
+            $('#product-show-more').hide();
+          } else {
+            $('#product-show-more').show();
+          }
+          bind_function();
+          $('#add-product-modal').modal('show');
+        }
+      },
+      error: function(err) {
+        console.error(err);
+        showLoader(false);
+      }
+    });
+  });
+
+  function add_product_data_to_html(product) {
+    let productImage = product["image_data"]["sub"][0]
+    let html = '<div class="item_section">\n' +
+      '                <div class="product_item small_item">\n' +
+      '                    <div class="product_img">\n' +
+      '                        <img src="' + productImage + '" alt="img"/>\n' +
+      '                    </div>\n' +
+      '                    <div class="product_info">\n' +
+      '                        <div class="product_title">\n' +
+      '                            <h4>' + product["product_title"] + '</h4>\n' +
+      '                        </div>\n';
+    if (product["collection_title"]) {
+      html += '<div class="product_price">\n' +
+        '                        <h5>' + product["collection_title"] + '</h5>\n' +
+        '                    </div>\n';
+    }
+    html += '<p>\n';
+    if (product["impact_icon"]) {
+      html += '<img src="' + product["impact_icon"] + '" alt="img"/>';
+    }
+    if (product['impact_story_collection']) {
+      html += product['impact_story_collection'] + '\n';
+    }
+    let already_exist = already_exists(product['product_id'], product['variant_id']);
+    html += `
+      </p>
+        <button
+          ${already_exist ? 'disabled' : ''}
+          type="button"
+          class="btn product_btn"
+          prod-id="${product['product_id']}"
+          variant-id="${product['variant_id']}"
+        >
+          ${already_exist ? "ADDED TO COLLECTION" : "ADD TO COLLECTION"}
+        </button>
+      </div>
+    </div>
+    </div>
+    `;
+    $('#modal-product-section').append(html);
+  }
+
+  function bind_function() {
+    $('.product_btn').off('click');
+    $(".product_btn").on('click', function() {
+      $(this).prop('disabled', true);
+      $(this).html('ADDED TO COLLECTION');
+      const product_id = $(this).attr('prod-id');
+      const variant_id = $(this).attr('variant-id');
+      if (already_exists(product_id)) {
+        showInfo('This product was already added.');
+      } else {
+        const products = $('.product_item');
+        showLoader(true);
+        $.ajax({
+          url: '/collection/add-product',
+          method: 'POST',
+          data: {
+            cid: campaign['id'],
+            pid: product_id,
+            vid: variant_id,
+            singleProduct: products.length === 0,
+          },
+          success: function(res) {
+            if (res.status === 'success') {
+              showLoader(false);
+              showInfo(res.msg);
+              const product = res.product;
+              let productImage = product["image_data"]["sub"][0]
+              let html = '';
+              html = '<div class="item_section" draggable="true" ondragstart="dragStart(event)"\n' +
+                '           ondragend="mouseUp(event)" onmousedown="mouseDown(event)" ' +
+                '           onmouseup="mouseUp(event)" id="' + product['product_id'] + '">\n' +
+                '                <div class="product_item small_item">\n' +
+                '                    <div class="product_img">\n' +
+                '                        <img src="' + productImage + '" alt="img"/>\n' +
+                '                    </div>\n' +
+                '                    <div class="product_info">\n' +
+                '                        <div class="product_title">\n' +
+                '                            <h4>' + product["product_title"] + '</h4>\n' +
+                '                        </div>\n';
+              if (product["collection_title"]) {
+                html += '<div class="product_price">\n' +
+                  '                        <h5>' + product["collection_title"] + '</h5>\n' +
+                  '                    </div>\n';
+              }
+              html += '<p>\n';
+              if (product["impact_icon"]) {
+                html += '<img src="' + product["impact_icon"] + '" alt="img"/>';
+              }
+              if (product['impact_story_collection']) {
+                html += product['impact_story_collection'] + '\n';
+              }
+              html += '</p>\n' +
+                '                        <button type="button" class="btn dark_btn prod-remove-btn" prod-id="' + product['product_id'] + '>' +
+                '                           <i class="fas fa-trash-alt"></i></button>\n' +
+                '                    </div>\n' +
+                '                </div>\n' +
+                '            </div>';
+              $('.admin_content_area .container-fluid .row.product_area').append(html);
+              bind_function();
+            }
+          },
+          error: function(err) {
+            console.log(err);
+            showLoader(false);
+            const status = err.responseJSON.status;
+            const msg = err.responseJSON.msg;
+            if (status === 'failed') {
+              showError(msg);
+            }
+          }
+        });
+      }
+    });
+
+    $('.prod-remove-btn').off('click');
+    $('.prod-remove-btn').on('click', function() {
+      const product_id = $(this).attr('prod-id');
+      $('#confirm-modal .modal-title h3').text('Please confirm.');
+      $('#confirm-type').val('remove-product');
+      $('#extra-param').val(product_id);
+      $('#confirm-btn').text('YES, REMOVE');
+      $('#confirm-content').text('Please confirm you want to remove product from this campaign. Your changes will reflect instantly on any live campaign.');
+      $('#confirm-modal').modal('show');
+    });
+  }
+
+  $('#sendReminderEmails').on('change', (e) => {
+    const reminders = $('.reminders');
+    if (e.target.checked) {
+      reminders.show();
+    } else {
+      reminders.hide();
+    }
+  })
+
+  const hash = location.hash.replace(/^#/, '');
+  if (hash) {
+      $('.nav-tabs a[href="#' + hash + '"]').tab('show');
+  } 
+
+  $('.nav-link').on('click', function() {
+    const href = $(this).attr('href');
+    window.location.href = href;
+  });
+
+  /*
+    TODO: add an hour/minutes to the campaign expiration date
+    The solution so far: adds 15h to the UTC date to set the campaign expiration date to night in the US
+   */
+  function interpolate_date(date) {
+    if (!date) {
+      return null;
+    }
+
+    const today = new Date(date);
+    today.setHours(0, 0, 0, 0);
+
+    const expireDate = new Date(date);
+    return expireDate > today ? new Date(expireDate.getTime() + 1000 * 60 * 60 * 15) : expireDate;
+  }
+
+  function mouseUp(ev) {
+    let node = ev.target;
+    let className = node.className;
+
+    while (className !== undefined && !className.includes('item_section') && node) {
+      node = node.parentNode;
+      className = node.className;
+    }
+    if (node && className) {
+      // Remove class when drag end
+      let classArray = className.split(" ");
+      const specifiedIndex = classArray.indexOf("border-emphasised");
+      if (specifiedIndex > -1) {
+        classArray.splice(specifiedIndex, 1);
+        node.className = classArray.join(" ");
+      }
+    }
+  }
+
+  function mouseDown(ev) {
+    let node = ev.target;
+    let className = node.className;
+
+    while (className !== undefined && !className.includes('item_section') && node) {
+      node = node.parentNode;
+      className = node.className;
+    }
+    if (node && className) {
+      // Add class when drag start
+      const classArray = className.split(" ");
+      if (classArray.indexOf("border-emphasised") === -1) {
+        node.className += " " + "border-emphasised";
+      }
+    }
+  }
+
+  function dragStart(ev) {
+    let node = ev.target;
+    let className = node.className;
+
+    while (className !== undefined && !className.includes('item_section') && node) {
+      node = node.parentNode;
+      className = node.className;
+    }
+    if (node && className) {
+      ev.dataTransfer.setData('text', node.id);
+    }
+  }
+
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  function drop(ev) {
+    ev.preventDefault();
+    const moving_product_id = ev.dataTransfer.getData("text");
+    if (!moving_product_id) {
+      return;
+    }
+    let node = ev.target;
+    let className = node.className;
+
+    while (className !== undefined && !className.includes('item_section') && node) {
+      node = node.parentNode;
+      className = node.className;
+    }
+
+    let previous_product_id = '';
+
+    if (node && className) {
+      previous_product_id = node.id;
+    }
+
+    if (moving_product_id !== previous_product_id) {
+      showLoader(true);
+      $.ajax({
+        url: '/collection/change-sequence',
+        method: 'POST',
+        data: {
+          cid: campaign['id'],
+          cpid: moving_product_id,
+          ppid: previous_product_id,
+        },
+        success: function(res) {
+          showLoader(false);
+          if (node && className) {
+            node.parentNode.insertBefore(document.getElementById(moving_product_id), node);
+          } else {
+            document.getElementById(moving_product_id).parentNode
+              .appendChild(document.getElementById(moving_product_id));
+          }
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+  }
+</script>

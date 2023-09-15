@@ -1,0 +1,184 @@
+<style>
+  .contact-row:hover {
+    background-color: rgba(0,0,0,.075);
+  }
+  .contact-row i {
+    cursor: pointer;
+  }
+  .contact-list {
+    overflow-x: scroll;
+    overflow-y: hidden;
+  }
+</style>
+<div class="row mt-5">
+  <h1 class="col-12 col-md-6">Edit Contacts</h1>
+  <div class="col-12 col-md-6 d-flex flex-column align-items-end">
+    <form id="contact-search-form" class="d-flex align-items-center justify-content-end">
+      <label for="contact-search" class="sr-only">Search</label>
+      <input type="text" name="contact-search" id="contact-search" placeholder="Search" value="<%= search %>" />
+      <button type="submit" class="btn dark_btn py-2 ml-1">Search</button>
+    </form>
+    <% if (failedContacts.length) { %>
+      <button type="button" id="reactivate-all" class="btn dark_btn py-2 mt-2">Reactivate all (<%= failedContacts.length %>) failed contacts</button>
+    <% } %>
+  </div>
+</div>
+<div class="contact-list">
+  <div class="col-md-12 mt-5">
+    <div class="row" style="flex-wrap: nowrap;">
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="first-name">RECIPIENT FIRST NAME</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="last-name">RECIPIENT LAST NAME</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="company-name">RECIPIENT COMPANY NAME</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="from-first-name">SENDER FIRST NAME</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="from-last-name">SENDER LAST NAME</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="from-company-name">SENDER COMPANY NAME</label>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="email">EMAIL ADDRESS</label>
+        </div>
+      </div>
+      <% if (!campaign['no_email_invite']) { %>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="email">DELIVERY DATE</label>
+          </div>
+        </div>
+      <% } %>
+      <div class="col-md-1">
+        <div class="form-group">
+          <label for="email">SAVE</label>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <div class="form-group">
+          <label for="email">MORE ACTIONS</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 pb-2" id="contact-list">
+    <% for (let i = 0; i < contacts.length; i++) { %>
+    <div class="row contact-row d-flex flex-nowrap align-items-center" id="<%= contacts[i]['id'] %>">
+      <div class="col-md-2">
+        <div class="form-group mb-2 mt-2">
+          <input type="text" value="<%= contacts[i].first_name %>" class="form-control" id="first-name">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group mb-2 mt-2">
+          <input type="text" value="<%= contacts[i].last_name %>" class="form-control" id="last-name">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group mb-2 mt-2">
+          <input type="text" value="<%= contacts[i].company_name %>" class="form-control" id="company-name">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group mb-2 mt-2">
+          <input type="text" value="<%= contacts[i].from_first_name %>" class="form-control" id="from-first-name">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group mb-2 mt-2">
+          <input type="text" value="<%= contacts[i].from_last_name %>" class="form-control" id="from-last-name">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group mb-2 mt-2">
+          <input type="text" value="<%= contacts[i].from_company_name %>" class="form-control" id="from-company-name">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group mb-2 mt-2" style="display: flex;">
+          <input type="email" class="form-control" value="<%= contacts[i].email %>" id="email">
+        </div>
+      </div>
+      <% if (!campaign['no_email_invite']) { %>
+        <div class="col-md-2">
+          <div class="form-group mb-2 mt-2" style="display: flex;">
+            <input
+              type="datetime-local"
+              class="form-control"
+              value="<%= moment(contacts[i].delivery_date).format('YYYY-MM-DDTHH:mm') %>"
+              id="delivery-date"
+              min="<%= moment().format('YYYY-MM-DDTHH:mm') %>"
+              <% if (contacts[i].sent_at) { %>disabled<% } %>
+            />
+          </div>
+        </div>
+      <% } %>
+      <div class="col-md-1">
+        <div class="form-group mb-2 mt-2" style="display: flex;">
+          <i onclick=updateContact(<%= contacts[i]['id'] %>) id='contact-save' class="fas fa-check ml-2 mb-1" style="color: green"></i>
+        </div>
+      </div>
+      <div class="col-md-1">
+        <div class="campaign-more-action">
+          <button type="button" class="btn dark_btn dropdown-toggle" data-toggle="dropdown" style="padding: 10px 15px;">
+            <i class="fas fa-ellipsis-h"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><span class="menu-title">More actions...</span></li>
+            <li>
+              <button type="button" onclick=resend(<%= contacts[i]['id'] %>) class="btn btn-plain text-dark text-left px-0 py-2">
+                <i class="fas fa-envelope ml-2 mb-1"></i>
+                Resend Invite
+              </button>
+            </li>
+            <% if (contacts[i].canReactivate) { %>
+              <li id="reactivate-<%= contacts[i]['id'] %>">
+                <button type="button" onclick=resetToActive(<%= contacts[i]['id'] %>) class="btn btn-plain text-dark text-left px-0 py-2">
+                  <i class="fas fa-recycle ml-2 mb-1"></i>
+                  Reactivate
+                </button>
+              </li>
+            <% } %>
+            <% if (contacts[i].canExpire) { %>
+              <li>
+                <button type="button" onclick=forceExpire(<%= contacts[i]['id'] %>) class="btn btn-plain text-dark text-left px-0 py-2">
+                  <i class="fas fa-ban ml-2 mb-1"></i>
+                  Expire
+                </button>
+              </li>
+            <% } %>
+            <% if (contacts[i].status === 'expired') { %>
+              <li>
+                <button type="button" onclick=forceUnexpire(<%= contacts[i]['id'] %>) class="btn btn-plain text-dark text-left px-0 py-2">
+                  <i class="fas fa-ban ml-2 mb-1"></i>
+                  Unexpire
+                </button>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</div>
+<div id="load-more-contacts"></div>

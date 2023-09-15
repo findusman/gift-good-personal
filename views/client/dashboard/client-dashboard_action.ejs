@@ -1,0 +1,79 @@
+<script type="text/javascript">
+    $('.delete-collection').on('click', function () {
+        const campaign_id = $(this).attr('campaign-id');
+        $('#confirm-type').val('remove-campaign');
+        $('#extra-param').val(campaign_id);
+        $('#confirm-btn').text('YES, REMOVE IT');
+        $('#confirm-content').text('Are you sure you want to remove this collection?');
+        $('#confirm-modal').modal('show');
+    });
+    $('.rename-collection').on('click', function () {
+        const campaign_id = $(this).attr('campaign-id');
+        const current_campaign_title = $(this).attr('campaign-title');
+        $('#input-param').val(campaign_id);
+        $('#input-old-value').val(current_campaign_title);
+        $('#input-value').val(current_campaign_title);
+        $('#input-label').text('Please input new collection name.');
+        $('#save-btn').text('RENAME COLLECTION');
+        $('#input-modal').modal();
+    });
+
+    $('#confirm-btn').on('click', function () {
+        $('#confirm-modal').modal('hide');
+        const confirm_type = $('#confirm-type').val();
+        const campaign_id = $('#extra-param').val();
+        if (confirm_type === 'remove-campaign') {
+            $.ajax({
+                url: '/collection/update-campaign',
+                type: 'POST',
+                data: {cid: campaign_id, type: 'delete-campaign'},
+                success: function (res) {
+                    if (res.status === 'success') {
+                        showInfo(res.msg);
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                },
+                error: function (err) {
+                    const status = err.responseJSON.status;
+                    const msg = err.responseJSON.msg;
+                    if (status === 'failed') {
+                        showError(msg);
+                    }
+                }
+            });
+        }
+    });
+
+    $('#save-btn').on('click', function () {
+        $('#input-modal').modal('hide');
+        const campaign_id = $('#input-param').val();
+        const new_campaign_title = $('#input-value').val().trim();
+        const old_campaign_title = $('#input-old-value').val().trim();
+        if (!new_campaign_title) {
+            showError('Collection title should not be empty.');
+        } else if (old_campaign_title === new_campaign_title) {
+            showError('Collection title is not changed.');
+        } else {
+            $.ajax({
+                url: '/collection/rename',
+                type: 'POST',
+                data: {cid: campaign_id, title: new_campaign_title},
+                success: function (res) {
+                    if (res.status === 'success') {
+                        window.location.reload();
+                    }
+                },
+                error: function (err) {
+                    const status = err.responseJSON.status;
+                    const msg = err.responseJSON.msg;
+                    if (status === 'failed') {
+                        showError(msg);
+                    }
+                }
+            });
+        }
+    });
+
+</script>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/resources/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-4">Error</h1>
+      <% if (error) { %>
+        <p><%= error.message %></p>
+        <code><%= error.stack %></code>
+      <% } %>
+    </div>
+  </body>
+</html>

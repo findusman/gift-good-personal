@@ -1,0 +1,328 @@
+<script type="text/javascript">
+  const type = <%- JSON.stringify(type) %>;
+  const statusHelper = <%- statusHelper %>;
+  const loadMoreObserver = new IntersectionObserver(onLoadMoreContacts, { threshold: 0.9 });
+  const modalObserver = new IntersectionObserver(onModalIntersection, { threshold: 1 });
+  const tableBottom = document.getElementById('table-bottom');
+  const modal = document.querySelector('.contacts-modal');
+  const exportContactsBtn = $('#export-contacts');
+
+  let currentPage = 0;
+  let html = '';
+  let nextPage;
+  let loading = false;
+  let contactsStep = null;
+
+  function fetchContacts(campaign_id, step, campaign_title, page, viewBtn) {
+    loading = true;
+    $.ajax({
+      url: '/collection/list-contacts',
+      method: 'POST',
+      data: {
+        cid: campaign_id,
+        step: step,
+        page,
+      },
+      success: function(res) {
+        if (res.status === 'success') {
+          const { contacts, hasNextPage, activePage } = res.data;
+          if (contacts.length === 0 && step !== 'bounced' && step !== 'unredeemed') {  
+            $('#confirm-modal .modal-title h3').text('Information');
+            $('#confirm-btn').text('Yes, Got it!');
+            $('#confirm-content').text('There are no contacts in this campaign.');
+            $('#confirm-modal').modal('show');
+            viewBtn && viewBtn.attr('disabled', false);
+          } else {
+            for (let i = 0; i < contacts.length; i++) {
+              const contact = contacts[i];
+              const deliveryDate = contact['delivery_date'] || contact['campaign_schedule_date'];
+              const page = currentPage * 100 + (i + 1);
+              html += '<tr><td class="text-center">' + page + '</td>' +
+                '<td>' + contact['first_name'] + '</td>' +
+                '<td>' + contact['last_name'] + '</td>' +
+                '<td>' + contact['company_name'] + '</td>' +
+                '<td>' + contact['email'] + '</td>' +
+                '<td class="text-center">' + statusHelper(contact['status']) + '</td>' +
+                '<td class="text-center">' + (deliveryDate ? deliveryDate : '-') + '</td>' +
+                '<td class="text-center">' + (contact['sent_at'] || '-') + '</td>' +
+                '<td><a href="' + contact['link'] + '" target="_blank">' + contact['link'] + '</a></td>' +
+                '<td class="text-center"><button type="button" class="btn-plain mx-2 mb-1" onclick=removeContact(' + contact['id'] + ',' + campaign_id + ') id="contact-delete"><i class="fas fa-trash"></i></button></td>' +
+                '</tr>';
+            }
+            $('#campaign-id').val(campaign_id);
+            $('#campaign-title').val(campaign_title);
+            $('#contacts-modal .modal-content-section table tbody').html(html);
+            $('#contacts-modal').modal('show');
+            viewBtn && viewBtn.attr('disabled', false);
+            if (!hasNextPage) {
+              $(tableBottom).text('');
+            }
+
+            nextPage = hasNextPage;
+            currentPage = parseInt(activePage);
+            loading = false;
+          }
+        }
+      },
+      error: function(err) {
+        viewBtn && viewBtn.attr('disabled', false);
+        console.log(err);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+
+  $('.view-contacts').on('click', function() {
+    const viewBtn = $(this);
+    viewBtn.attr('disabled', true);
+    $(tableBottom).text('Loading...');
+    loadMoreObserver.observe(tableBottom);
+    modalObserver.observe(modal);
+
+    const campaign_id = viewBtn.attr('campaign-id');
+    const campaign_title = viewBtn.attr('campaign-title');
+
+    fetchContacts(campaign_id, null, campaign_title, null, viewBtn);
+    exportContactsBtn.attr('campaign-id', campaign_id);
+    exportContactsBtn.attr('campaign-step', null);
+  });
+
+  $("#filter-select").change(function() {
+    const campaign_id = $('#campaign-id').val();
+    const campaign_title = $('#campaign-title').val();
+    clearContacts();
+
+    fetchContacts(campaign_id, this.value, campaign_title);
+    exportContactsBtn.attr('campaign-step', this.value);
+    contactsStep = this.value;
+  });
+
+
+  $('.campaign-more-action ul li span.menu-delete-item').on('click', function() {
+    const campaign_id = $(this).attr('campaign-id');
+    $('#confirm-modal .modal-title h3').text('Please confirm Deletion');
+    $('#confirm-type').val('remove-campaign');
+    $('#extra-param').val(campaign_id);
+    $('#confirm-btn').text('YES, DELETE');
+    $('#confirm-content').text('Please confirm you want to delete this campaign. If the campaign is deleted, all redemption links will cease to work. This campaign will be cleared from your dashboard.');
+    $('#confirm-modal').modal('show');
+  });
+
+  $('.campaign-more-action ul li span.menu-duplicate-item').on('click', function() {
+    const campaign_id = $(this).attr('campaign-id');
+    $('#confirm-modal .modal-title h3').text('Please confirm Duplication');
+    $('#confirm-type').val('duplicate-campaign');
+    $('#extra-param').val(campaign_id);
+    $('#confirm-btn').text('YES, Duplicate');
+    $('#confirm-content').text('Please confirm you want to duplicate this campaign.');
+    $('#confirm-modal').modal('show');
+  });
+
+  $('.campaign-more-action ul li span.menu-archive-item').on('click', function() {
+    const campaign_id = $(this).attr('campaign-id');
+    $('#confirm-modal .modal-title h3').text('Please confirm Archive');
+    $('#confirm-type').val('archive-campaign');
+    $('#extra-param').val(campaign_id);
+    $('#confirm-btn').text('YES, ARCHIVE');
+    $('#confirm-content').text('Please confirm you want to archive this campaign. If the campaign is archived, all redemption links will cease to work.');
+    $('#confirm-modal').modal('show');
+  });
+
+  $('.campaign-more-action ul li span.menu-unarchive-item').on('click', function() {
+    const campaign_id = $(this).attr('campaign-id');
+    $('#confirm-modal .modal-title h3').text('Please confirm Unarchive');
+    $('#confirm-type').val('unarchive-campaign');
+    $('#extra-param').val(campaign_id);
+    $('#confirm-btn').text('YES, UNARCHIVE');
+    $('#confirm-content').text('Please confirm you want to unarchive this campaign.');
+    $('#confirm-modal').modal('show');
+  });
+
+  $('.campaign-more-action ul li span.menu-expire-item').on('click', function() {
+    const campaign_id = $(this).attr('campaign-id');
+    $('#confirm-modal .modal-title h3').text('Please confirm Expire');
+    $('#confirm-type').val('expire-campaign');
+    $('#extra-param').val(campaign_id);
+    $('#confirm-btn').text('YES, EXPIRE');
+    $('#confirm-content').text('Please confirm you want to expire this campaign. This will expire all recipients in the campaign, campaign account will be closed and user\'s credits will be transferred back immediately.');
+    $('#confirm-modal').modal('show');
+  });
+
+  $('#confirm-btn').on('click', function() {
+    $('#confirm-modal').modal('hide');
+    const confirm_type = $('#confirm-type').val();
+    if (confirm_type === 'remove-campaign' ||
+      confirm_type === 'archive-campaign' || confirm_type === 'unarchive-campaign') {
+      const campaign_id = $('#extra-param').val();
+
+      showLoader(true);
+      $.ajax({
+        url: '/collection/update-campaign',
+        method: 'POST',
+        data: {
+          cid: campaign_id,
+          type: confirm_type
+        },
+        success: function(res) {
+          showLoader(false);
+          if (res.status === 'success') {
+            showInfo(res.msg);
+            setTimeout(function() {
+              window.location.reload();
+            }, 500);
+          }
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+    if (confirm_type === 'duplicate-campaign') {
+      const campaign_id = $('#extra-param').val();
+      showLoader(true);
+      $.ajax({
+        url: '/collection/duplicate-campaign',
+        method: 'POST',
+        data: {
+          cid: campaign_id,
+          type: confirm_type
+        },
+        success: function(res) {
+          showLoader(false);
+          if (res.status === 'success') {
+            showInfo(res.msg);
+            setTimeout(function() {
+              window.location.reload();
+            }, 500);
+          }
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+    if (confirm_type === 'expire-campaign') {
+      const campaignId = $('#extra-param').val();
+      showLoader(true);
+      $.ajax({
+        url: '/collection/expire-campaign',
+        method: 'POST',
+        data: {
+          cid: campaignId
+        },
+        success: function(res) {
+          showLoader(false);
+          if (res.status === 'success') {
+            showInfo(res.msg);
+            setTimeout(function() {
+              window.location.reload();
+            }, 500);
+          }
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+  });
+
+  $('#campaign-search input').keypress(function(evt) {
+    if (evt.which === 13) {
+      searchCollection();
+    }
+  });
+
+  $('#campaign-search button').on('click', function() {
+    searchCollection();
+  });
+
+  function searchCollection() {
+    const key = $('#campaign-search input').val().trim();
+    if (key) {
+      location.href = '/admin-campaigns?key=' + key + "&type=" + type;
+    } else {
+      location.href = '/admin-campaigns?type=' + type;
+    }
+  }
+
+  function removeContact(id, campaign_id) {
+    showLoader(true);
+    $.ajax({
+      url: `/contacts/${id}`,
+      method: 'DELETE',
+      data: {
+        campaign_id
+      },
+      success: function(res) {
+        showInfo('Contact has been removed.');
+        showLoader(false);
+        setTimeout(function() {
+          window.location.reload();
+        }, 500);
+      },
+      error: function(err) {
+        console.error(err);
+        showLoader(false);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+
+  function clearContacts() {
+    currentPage = 0;
+    html = '';
+    nextPage = null;
+    loading = false;
+    contactsStep = null;
+    $('#contacts-modal .modal-content-section table tbody').html('');
+  }
+
+  function onLoadMoreContacts([{ isIntersecting }]) {
+    if (isIntersecting && nextPage && !loading) {
+      const campaign_id = $('#campaign-id').val();
+      const campaign_title = $('#campaign-title').val();
+      fetchContacts(campaign_id, contactsStep, campaign_title, currentPage + 1);
+    }
+  }
+
+  function onModalIntersection([{ isIntersecting }]) {
+    if (isIntersecting && currentPage === 1) {
+      $('#contacts-modal .modal-content-section').scrollTop(0);
+    }
+
+    if (!isIntersecting && (!loading || html)) {
+      clearContacts();
+
+      exportContactsBtn.attr('campaign-step', null);
+      $('#filter-select').val('');
+      loadMoreObserver.unobserve(tableBottom);
+      modalObserver.unobserve(modal);
+    }
+  }
+</script>

@@ -1,0 +1,135 @@
+<script>
+    let contactList = [];
+
+    function switch_step(next_step) {
+        if (next_step === 'step1') {
+            window.location.href = '/step/first';
+        } else if (next_step !== 'step2') {
+            if ($('.step_2_area').hasClass('information_form_open')) {
+                // When input contact information by manually typing in
+                get_manually_inputted_contact_list();
+            } else if ($('.step_2_area').hasClass('information_contact_open')) {
+                // When input contact information by file uploading
+            }
+
+            if (contactList.length || get_campaign_contacts().length) {
+                if (contactList.length) {
+                    setCampaignData('contacts', contactList);
+                }
+
+                const campaign_brands = get_campaign_brands();
+                if (next_step === 'step4' && campaign_brands['message']
+                    && campaign_brands['video'] && campaign_brands['logo'] && campaign_brands['banner']) {
+                    window.location.href = '/step/fourth';
+                } else {
+                    window.location.href = '/step/third';
+                }
+            } else {
+                showError('Please fill out required fields.');
+            }
+        }
+    }
+
+    function get_manually_inputted_contact_list() {
+        contactList = [];
+        $('.information_form_area .information_form div.row').each(function() {
+            const from_first_name = $(this).find('#from-first-name').val();
+            const from_last_name = $(this).find('#from-last-name').val();
+            const from_company_name = $(this).find('#from-company-name').val();
+            const from_email = $(this).find('#from-email').val();
+            const to_first_name = $(this).find('#to-first-name').val();
+            const to_last_name = $(this).find('#to-last-name').val();
+            const to_company_name = $(this).find('#to-company-name').val();
+            const to_email = $(this).find('#to-email').val();
+            if (from_first_name && from_last_name && from_company_name && from_email
+                && to_first_name && to_last_name && to_company_name && to_email) {
+                contactList.push({
+                    from_first_name: from_first_name, from_last_name: from_last_name,
+                    from_company_name: from_company_name, from_email: from_email, to_first_name: to_first_name,
+                    to_last_name: to_last_name, to_company_name: to_company_name, to_email: to_email
+                });
+            }
+        });
+    }
+
+    $('.nextstep_btn').on('click', function() {
+        switch_step('step3');
+    });
+    $('.GoBack_link > a').on('click', function() {
+        $('.step_2_area').removeClass('information_contact_open');
+        $('.step_2_area').removeClass('information_form_open');
+    })
+
+    $('#add-second-contact').on('click', function () {
+        let html = '<div class="form_devider"></div><div class="row">\n' +
+            ' <div class="col-md-4">\n' +
+            ' <div class="form-group">\n' +
+            ' <label for="first-name">SENDER FIRST NAME(*)</label>\n' +
+            ' <input type="text" class="form-control" id="from-first-name">\n' +
+            ' </div>\n' +
+            ' </div>\n' +
+            ' <div class="col-md-4">\n' +
+            ' <div class="form-group">\n' +
+            ' <label for="last-name">SENDER LAST NAME(*)</label>\n' +
+            ' <input type="text" class="form-control" id="from-last-name">' +
+            ' </div>\n' +
+            ' </div>\n' +
+            ' <div class="col-md-4">\n' +
+            ' <div class="form-group">\n' +
+            ' <label for="company-name">SENDER COMPANY NAME(*)</label>\n' +
+            ' <input type="text" class="form-control" id="from-company-name">\n' +
+            ' </div>\n' +
+            ' </div>\n' +
+            ' <div class="col-md-12">\n' +
+            ' <div class="form-group">\n' +
+            ' <label for="email">SENDER EMAIL ADDRESS(*)</label>\n' +
+            ' <input type="email" class="form-control" id="from-email">\n' +
+            ' </div>\n' +
+            ' </div>\n' +
+            ' <div class="col-md-4">\n' +
+            ' <div class="form-group">\n' +
+            ' <label for="first-name">RECEIVER FIRST NAME(*)</label>\n' +
+            ' <input type="text" class="form-control" id="to-first-name">\n' +
+            ' </div>\n' +
+            ' </div>\n' +
+            ' <div class="col-md-4">\n' +
+            ' <div class="form-group">\n' +
+            ' <label for="last-name">RECEIVER LAST NAME(*)</label>\n' +
+            ' <input type="text" class="form-control" id="to-last-name">' +
+            ' </div>\n' +
+            ' </div>\n' +
+            ' <div class="col-md-4">\n' +
+            ' <div class="form-group">\n' +
+            ' <label for="company-name">RECEIVER COMPANY NAME(*)</label>\n' +
+            ' <input type="text" class="form-control" id="to-company-name">\n' +
+            ' </div>\n' +
+            ' </div>\n' +
+            ' <div class="col-md-12">\n' +
+            ' <div class="form-group">\n' +
+            ' <label for="email">RECEIVER EMAIL ADDRESS(*)</label>\n' +
+            ' <input type="email" class="form-control" id="to-email">\n' +
+            ' </div>\n' +
+            ' </div>\n' +
+            ' </div>';
+        $('.information_form').append(html);
+    })
+
+    // When upload with csv file
+    $('#contact-csv-file').on('change', function(evt) {
+        if (!evt.target.files.length) {
+            return;
+        }
+        processContactsFile(evt);
+    })
+
+    function show_contacts_count() {
+        const campaign_contacts = get_campaign_contacts();
+        if (campaign_contacts.length) {
+            $('#step2-title span').text('Add Contacts (' + campaign_contacts.length + ' contacts exist)');
+        } else {
+            $('#step2-title span').text('Add Contacts (no contacts exist)');
+        }
+    }
+    show_contacts_count();
+
+</script>

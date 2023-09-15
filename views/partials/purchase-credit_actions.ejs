@@ -1,0 +1,232 @@
+<script type="text/javascript">
+    const stripePublishableKey = <%- JSON.stringify(stripePublishableKey) %>;
+    $('#show-modal-btn').on('click', function () {
+        $('#add-credit-modal').modal();
+    });
+
+    $(".stripe").click(function(){
+        if ($('input[name=prepay]:checked').val() === undefined) {
+            document.querySelector("#card-error").textContent = "Select a Credit Amount"
+            return false
+        }
+    });
+
+            var stripe = Stripe(stripePublishableKey);
+            var elementStyles = {
+                base: {
+                    color: "#32325d",
+                    fontFamily: 'Arial, sans-serif',
+                    fontSmoothing: "antialiased",
+                    fontSize: "16px",
+                    "::placeholder": {
+                    color: "#495057"
+                    }
+                },
+                invalid: {
+                    fontFamily: 'Arial, sans-serif',
+                    color: "#fa755a",
+                    iconColor: "#fa755a"
+                }
+            };
+            var elementClasses = {
+                focus: 'focus',
+                empty: 'empty',
+                invalid: 'invalid',
+            };
+
+            var elements = stripe.elements();
+    
+            var cardNumber = elements.create('cardNumber', {
+                showIcon: true,
+                style: elementStyles,
+                classes: elementClasses,
+            });
+            cardNumber.mount('#card-number');
+
+            var cardExpiry = elements.create('cardExpiry', {
+                style: elementStyles,
+                classes: elementClasses,
+            });
+            cardExpiry.mount('#card-expiry');
+
+            var cardCvc = elements.create('cardCvc', {
+                style: elementStyles,
+                classes: elementClasses,
+            });
+            cardCvc.mount('#card-cvc');
+
+   
+    // A reference to Stripe.js initialized with your real test publishable API key.
+   
+
+
+
+    $('.credit-box').on('click', function () {
+        $('.credit-box').each(function (item) {
+            $(this).removeClass('active');
+        });
+        $(this).addClass('active');
+        $('#custom-amount-edit').val('');
+        $('#selected-credit').val($(this).attr('credit'));
+        $('#selected-price').val($(this).attr('price'));
+    });
+
+    $('.purchase-credit-btn').on('click', function () {
+        const selected_credit = $('#selected-credit').val();
+        const selected_price = $('#selected-price').val();
+        handleStripe()
+        if (selected_price < 500 || selected_credit < 500) {
+            showError('Please purchase credit at least 500');
+            return;
+        }
+     
+    });
+
+    const handleStripe = (amount, card) => {
+        // The items the customer wants to buy
+
+        var purchase = {
+            price: amount,
+            credit: amount
+        };
+
+        // Disable the button until we have Stripe set up on the page
+
+
+        fetch("/credit/payment-intent", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(purchase)
+        })
+        .then(function(result) {
+            return result.json();
+        })
+        .then(function(data) {
+            cardNumber.on("change", function (event) {
+            // Disable the Pay button if there are no card details in the Element
+            //document.getElementById("submit").disabled = event.empty;
+            document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
+            });
+
+            var form = document.getElementById("payment-form");
+            form.addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                // Complete payment when the submit button is clicked
+                payWithCard(stripe, card, data.clientSecret);
+            });
+        });
+
+        // Calls stripe.confirmCardPayment
+        // If the card requires authentication Stripe shows a pop-up modal to
+        // prompt the user to enter authentication details without leaving your page.
+        var payWithCard = function(stripe, card, clientSecret) {
+        loading(true);
+        let name = $('.card-name').val();
+        stripe
+            .confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: cardNumber,
+                billing_details: {
+                  name: name
+                }
+            }
+            })
+            .then(function(result) {
+                console.log('result', result)
+            if (result.error) {
+                // Show error to your customer
+                if (result.error.message.includes('You passed an empty string')) {
+                    showError('Your card name is incomplete.')
+                } else {
+                    showError(result.error.message);
+                }
+            } else {
+                // The payment succeeded!
+                orderComplete(result.paymentIntent.id);
+            }
+            });
+        };
+
+        /* ------- UI helpers ------- */
+
+        // Shows a success message when the payment is complete
+        var handleUserCreditTransactionUpdate = (paymentIntentId) => {
+           
+            fetch("/credit/purchase", {
+              method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({credit: amount, price: amount, stripeId: paymentIntentId})
+                })
+                .then(function(result) {
+                    loading(false);
+                    showInfo(`Thank you for your payment. ${amount} credits have been added to your account balance.`)
+                    setTimeout(function(){ window.location.reload(); }, 3500);
+                })
+        }
+        var orderComplete = function(paymentIntentId) {
+            handleUserCreditTransactionUpdate(paymentIntentId)
+        };
+
+        // Show the customer the error from Stripe if their card fails to charge
+        var showError = function(errorMsgText) {
+        loading(false);
+        var errorMsg = document.querySelector("#card-error");
+        errorMsg.textContent = errorMsgText;
+        setTimeout(function() {
+            errorMsg.textContent = "";
+        }, 4000);
+        };
+
+        // Show a spinner on payment submission
+        var loading = function(isLoading) {
+        if (isLoading) {
+            document.querySelector("#spinner").classList.remove("hidden");
+            document.querySelector("#button-text").classList.add("hidden");
+        } else {
+            //document.querySelector("button").disabled = false;
+            document.querySelector("#spinner").classList.add("hidden");
+            document.querySelector("#button-text").classList.remove("hidden");
+        }
+        };
+
+
+
+    }
+    
+    $('input[type=radio][name=prepay]').change(function() {
+        const selected_credit = $('input[name=prepay]:checked').val()
+        if (selected_credit == "custom"){
+            var timeout = null;
+            var value = $('#custom-amount').val();
+            if (value !== "") {
+                handleStripe(value, cardNumber)
+            } else {
+                $("#custom-amount").keyup(function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    value = $(this).val()
+                    handleStripe(value, cardNumber)
+                }, 1000);
+              });
+            }
+
+        } else {
+            handleStripe(selected_credit, cardNumber)
+        }
+    })
+
+    $( '.close' ).click(function() {
+        $('.credits-wrapper').show()
+        $('.credits-header').show()
+        $('.stripe-form').hide()
+        $(".result-message").hide()
+        $('.failure-message').hide();
+        window.location.reload();    
+    });
+
+</script>

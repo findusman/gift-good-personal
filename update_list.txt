@@ -1,0 +1,13 @@
+******* August 12nd *******
+- Should do database migration after update.
+    Migration endpoint is: GET /extra/migrate-campaign-step
+
+    -- Update step value in the tbl_gifts
+        ordered -> redeemed
+        redeemed -> delivered
+    -- Add new step value in the tbl_gifts
+        tracked
+
+- Should add new cron job for reminder email
+    cron job is 0 1 * * * curl -X GET http://127.0.0.1:3000/cron/reminder
+

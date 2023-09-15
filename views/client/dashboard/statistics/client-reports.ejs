@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+
+<body>
+
+  <div class="admin">
+    <% include ../../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+      <div class="alert alert-dismissible fade show signed_alart d-none" role="alert">
+        <img src="/resources/images/icons/green-tic.png" alt="img" />
+        Signed in successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="admin_title_area">
+        <div class="container-fluid">
+          <div class="row col-md-12">
+            <div style="flex: 1;">
+              <h2>Activity</h2>
+            </div>
+            <div>
+              <%- include('../../../partials/campaigns-filter.ejs', { link: '/report?campaign=' }) %>
+              <button type="button" class="btn common_btn send-a-gift">SEND A GIFT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin_content_area">
+        <div class="container-fluid">
+          <div class="row" style="padding-left: 10px; padding-right: 10px;  justify-content: space-evenly !important;">
+            <div class="col-md-2-5 pt-3">
+              <div class="admin_activity_box">
+                <div class="statistics-section">
+                  <h3 class="left-value"><%= opened_count %></h3>
+                  <div class="divider"></div>
+                  <h3 class="right-value"><%= sent_count > 0 ? Math.round(opened_count * 100 / sent_count) : 0 %>%</h3>
+                </div>
+                <p> <img src="/resources/images/icons/eye.png" alt="img" /> EMAILS OPENED</p>
+              </div>
+            </div>
+            <div class="col-md-2-5 pt-3">
+              <div class="admin_activity_box">
+                <div class="statistics-section">
+                  <h3 class="left-value"><%= redeemed_count %></h3>
+                  <div class="divider"></div>
+                  <h3 class="right-value"><%= sent_count > 0 ? Math.round(redeemed_count * 100 / sent_count) : 0 %>%</h3>
+                </div>
+                <p> <img src="/resources/images/icons/gift.png" alt="img" /> GIFTS REDEEMED</p>
+              </div>
+            </div>
+            <div class="col-md-2-5 pt-3">
+              <div class="admin_activity_box">
+                <div class="statistics-section">
+                  <h3><%= sent_count %></h3>
+                </div>
+                <p> <img src="/resources/images/icons/invite.png" alt="img" /> INVITES SENT</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="container-fluid">
+            <% if (!contacts.length) { %>
+            <div class="pastorder_item text-center hidden"><span style="font-size: 25px;">No report data found.</span></div>
+            <% } %>
+            <% for (let i = 0; i < contacts.length; i++) { %>
+            <div class="pastorder_item">
+              <table border="0" cellspacing="0" cellpadding="0">
+                <% if  (contacts[i]['product'] !== undefined) { %>
+                <tr>
+                  <td class="order_info" style="width: 250px;">
+                    <%= moment(contacts[i]['createdAt']).format('h:mm a z, MMMM Do, YYYY') %>
+                  </td>
+                  <td class="order_info text-center" style="width: 200px;">
+                    <% productImage = contacts[i]['product']['image_data'] !== undefined ? contacts[i]['product']['image_data']['sub'][0] : contacts[i]['product']['variant_image'] %>
+                    <img class="order_product_img" alt="icon" src="<%= productImage %>" />
+                  </td>
+                  <td class="order_info">
+                    <%= contacts[i]['campaign']['title'] %>
+                  </td>
+                  <td class="order_info" style="width: 150px;">
+                    <img class="order_product_img" style="width: 24px;" alt="icon" src="<%= contacts[i]['product']['impact_icon'] %>" />
+                  </td>
+                  <td class="order_info" style="width: 200px;">
+                    <img class="order_product_img" src="/resources/images/icons/user.png" alt="icon" />
+                    <%= contacts[i]['to_first_name'] %> <%= contacts[i]['to_last_name'] %>
+                  </td>
+                </tr>
+                <% } %>
+              </table>
+            </div>
+            <% } %>
+          </div>
+        </div>
+
+        <%- include('../../../partials/pagination.ejs', { maxPage, page, link: '/report', urlParams: activeCampaignIds.length ? `&campaign=${activeCampaignIds.join(',')}` : '' }) %>
+      </div>
+
+      <% include ../../../partials/footer.ejs %>
+
+    </div>
+
+    <% include ../../../partials/storage.ejs %>
+    <% include ../../../partials/foot.ejs %>
+
+    <script>
+
+    </script>
+
+</body>
+
+</html>

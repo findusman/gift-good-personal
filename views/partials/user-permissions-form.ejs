@@ -1,0 +1,93 @@
+<div class="information_form user-permissions-form">
+  <% if (!isEdit) { %>
+    <p class="mt-4 text-uppercase font-weight-bold">User permissions</p>
+  <% } %>
+  <label for="user-view" class="mt-4">
+    User type
+    <select name="user-type" class="user-type-select d-block mt-3 px-3">
+      <option value="read-only">View Only</option>
+      <% if (ability.can('update', 'User')) { %>
+        <option value="client-standard">Standard User</option>
+      <% } %>
+      <% if (ability.can('manage', 'all') || ability.can('manage', 'Company')) { %>
+        <option value="client">Company Admin</option>
+      <% } %>
+      <% if (ability.can('create', 'Admin')) { %>
+        <option value="admin-standard">GFG Admin</option>
+        <option value="admin">GFG Super Admin</option>
+      <% } %>
+    </select>
+  </label>
+  <fieldset class="form-group standard-user-access pl-3 d-none">
+    <legend class="permissions-access mt-2 mb-4 font-weight-bold">How much access do you want this user to have?</p>
+    <% if (ability.can('manage', 'all') || ability.can('manage', 'Company')) { %>
+      <div class="radio">
+        <label for="user-all">
+          <input type="radio" id="user-all" name="user-access" value="all" class="d-inline-block" />
+          All
+        </label>
+      </div>
+    <% } %>
+    <div class="radio">
+      <label for="user-limited">
+        <input type="radio" id="user-limited" name="user-access" value="limited" class="d-inline-block standard-user-option" <% if (!isEdit) { %>checked<% } %> />
+        Limited (check boxes)
+      </label>
+      <div class="limited-options pl-3">
+        <% if (ability.can('create', 'Campaign')) { %>
+          <label for="create-campaigns" class="d-block">
+            <input type="checkbox" id="create-campaigns" name="create-campaigns" class="d-inline-block standard-user-option" />
+            Create campaigns
+          </label>
+        <% } %>
+        <% if (ability.can('read', 'Report')) { %>
+          <label for="reports" class="d-block">
+            <input type="checkbox" id="reports" name="reports" class="d-inline-block standard-user-option" />
+            Dashboard, reports and analytics
+          </label>
+        <% } %>
+        <fieldset class="mt-4">
+          <legend>Do you want this user to add, edit, and remove users?</legend>
+          <label for="users-yes" class="d-block">
+            <input type="radio" id="users-yes" name="users" class="d-inline-block" value="7" />
+            Yes
+          </label>
+          <label for="users-no" class="d-block">
+            <input type="radio" id="users-no" name="users" class="d-inline-block" value="0" />
+            No
+          </label>
+          <label for="users-no" class="d-block">
+            <input type="radio" id="users-view" name="users" class="d-inline-block" value="1" />
+            View only
+          </label>
+        </fieldset>
+        <fieldset class="mt-4">
+          <legend>Do you want this user to be able to able to view all company account campaigns or just their own campaigns?</legend>
+          <% if (ability.can('read', 'CompanyCampaign')) { %>
+            <label for="view-campaigns-all" class="d-block">
+              <input type="radio" id="view-campaigns-all" name="view-campaigns" class="d-inline-block" value="2" />
+              View all campaigns in the account
+            </label>
+          <% } %>
+          <label for="view-campaigns-own" class="d-block">
+            <input type="radio" id="view-campaigns-own" name="view-campaigns" class="d-inline-block" value="1" />
+            View campaigns they create
+          </label>
+        </fieldset>
+        <fieldset class="mt-4">
+          <legend>Do you want this user to be able to able to edit all company account campaigns or just their own campaigns?</legend>
+          <% if (ability.can('update', 'CompanyCampaign')) { %>
+            <label for="edit-campaigns-all" class="d-block">
+              <input type="radio" id="edit-campaigns-all" name="edit-campaigns" class="d-inline-block" value="2" />
+              Edit all campaigns in the account
+            </label>
+          <% } %>
+          <label for="edit-campaigns-own" class="d-block">
+            <input type="radio" id="edit-campaigns-own" name="edit-campaigns" class="d-inline-block" value="1" />
+            Edit campaigns they create
+          </label>
+        </fieldset>
+      </div>
+    </div>
+  </fieldset>
+</div>

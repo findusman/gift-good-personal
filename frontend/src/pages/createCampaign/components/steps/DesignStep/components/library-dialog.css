@@ -1,0 +1,3 @@
+.dialog-content p:empty {
+    margin-bottom: 16px;
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+<body>
+<div class="admin">
+    <% include ../../../partials/loader.ejs %>
+    <% include ../../../partials/sidebar.ejs %>
+    <main class="admin_main">
+      <div class="container-fluid admin_title_area pt-4">
+        <div class="row mb-4 pb-4">
+            <div class="col-lg-4">
+                <h1><b>Admin</b> - Settings</h1>
+            </div>
+        </div>
+        <div class="mb-4">
+          <h3 class="mb-4">Send a Gift Redesign</h3>
+          <form class="settings-form">
+            <div class="custom-control custom-control-lg custom-checkbox ml-2">
+              <input type="checkbox" class="custom-control-input" name="send-gift" id="send-gift" <% if (settings.enable_new_send_gift) { %>checked<% } %> />
+              <label for="send-gift" class="custom-control-label">
+                Use new "Send Gift" flow
+              </label>
+            </div>
+            <button type="submit" class="btn common_btn text-uppercase mt-4">Submit</button>
+          </form>
+        </div>
+      </div>
+    </main>
+    <% include ../../../partials/modals.ejs %>
+    <% include ../../../partials/footer.ejs %>
+  </div>
+  <% include ../../../partials/storage.ejs %>
+  <% include ../../../partials/foot.ejs %>
+</body>
+
+<script>
+  $('.settings-form').on('submit', (e) => {
+    e.preventDefault();
+    $('#confirm-modal .modal-title h3').text('Please confirm.');
+    $('#confirm-type').val('update-app-settings');
+    $('#confirm-btn').text('YES, COMPLETE');
+    $('#confirm-content').text(`Please confirm you want to update app settings.`);
+    $('#confirm-modal').modal('show');
+  });
+
+  $('#confirm-btn').on('click', (e) => {
+    $('#confirm-modal').modal('hide');
+    if ($('#confirm-type').val() === 'update-app-settings') {
+      const enableNewSendGift = $('#send-gift').is(':checked');
+      showLoader(true);
+      $.ajax({
+        url: '/admin-settings',
+        method: 'POST',
+        data: { enableNewSendGift },
+        success: function(res) {
+          showLoader(false);
+          if (res.status === 'success') {
+            showInfo(res.msg);
+          }
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+  });
+</script>

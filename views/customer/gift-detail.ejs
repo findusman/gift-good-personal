@@ -1,0 +1,752 @@
+<style>
+  .product_slide_2 {
+    height: 118px;
+  }
+
+  .ProductSection p {
+    line-height: 1.65;
+    font-size: .875rem;
+    margin-bottom: 15px;
+  }
+
+
+
+
+  :root {
+    --heading-font-family: "Crimson Text", serif;
+    --heading-font-weight: 400;
+    --heading-font-style: normal;
+
+    --text-font-family: Lato, sans-serif;
+    --text-font-weight: 400;
+    --text-font-style: normal;
+
+    --base-text-font-size: 16px;
+    --default-text-font-size: 14px;
+    --background: #ffffff;
+    --background-rgb: 255, 255, 255;
+    --light-background: #ffffff;
+    --light-background-rgb: 255, 255, 255;
+    --heading-color: #333333;
+    --text-color: #333333;
+    --text-color-rgb: 51, 51, 51;
+    --text-color-light: #666666;
+    --text-color-light-rgb: 102, 102, 102;
+    --link-color: #333333;
+    --link-color-rgb: 51, 51, 51;
+    --border-color: #e0e0e0;
+    --border-color-rgb: 224, 224, 224;
+
+    --button-background: #333333;
+    --button-background-rgb: 51, 51, 51;
+    --button-text-color: #ffffff;
+
+    --header-background: #ffffff;
+    --header-heading-color: #333333;
+    --header-light-text-color: #666666;
+    --header-border-color: #e0e0e0;
+
+    --footer-background: #ffffff;
+    --footer-text-color: #666666;
+    --footer-heading-color: #333333;
+    --footer-border-color: #e8e8e8;
+
+    --navigation-background: #ffffff;
+    --navigation-background-rgb: 255, 255, 255;
+    --navigation-text-color: #333333;
+    --navigation-text-color-light: rgba(51, 51, 51, 0.5);
+    --navigation-border-color: rgba(51, 51, 51, 0.25);
+
+    --newsletter-popup-background: #ffffff;
+    --newsletter-popup-text-color: #333333;
+    --newsletter-popup-text-color-rgb: 51, 51, 51;
+
+    --secondary-elements-background: #333333;
+    --secondary-elements-background-rgb: 51, 51, 51;
+    --secondary-elements-text-color: #ffffff;
+    --secondary-elements-text-color-light: rgba(255, 255, 255, 0.5);
+    --secondary-elements-border-color: rgba(255, 255, 255, 0.25);
+
+    --product-sale-price-color: #f94c43;
+    --product-sale-price-color-rgb: 249, 76, 67;
+
+    /* Shopify related variables */
+    --payment-terms-background-color: #ffffff;
+
+    /* Products */
+
+    --horizontal-spacing-four-products-per-row: 40px;
+    --horizontal-spacing-two-products-per-row: 40px;
+
+    --vertical-spacing-four-products-per-row: 60px;
+    --vertical-spacing-two-products-per-row: 75px;
+
+    /* Animation */
+    --drawer-transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --header-base-height: 80px;
+    /* We set a default for browsers that do not support CSS variables */
+
+    /* Arrows */
+    --arrow-right: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/arrow.svg?v=17300509536057275799);
+
+    /* Cursors */
+    --cursor-zoom-in-svg: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/cursor-zoom-in.svg?v=6123313730325737771);
+    --cursor-zoom-in-2x-svg: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/cursor-zoom-in-2x.svg?v=5276726306539990872);
+  }
+
+  .swatch-radio {
+    display: none;
+  }
+
+  .swatch-radio-label {   
+    cursor: pointer;
+    padding: 4px;
+    margin: 4px;
+    border: 1px solid #f0f0f0;
+  }
+
+  .swatch-radio--color + .swatch-radio-label {
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #fff;
+    border-radius: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  .swatch-radio:checked + .swatch-radio-label {
+    outline: 1px solid #000;
+  }
+</style>
+
+
+
+
+
+<style id="shopify-dynamic-checkout-cart">
+  @media screen and (min-width: 750px) {
+    #dynamic-checkout-cart {
+      min-height: 50px;
+    }
+  }
+
+  @media screen and (max-width: 750px) {
+    #dynamic-checkout-cart {
+      min-height: 300px;
+    }
+  }
+</style>
+
+
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/theme.css?v=12927984427861795921') %>">
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/custom.css?v=17147846187842746493') %>">
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/build-a-box.css?v=3535801119237388454') %>">
+
+<script>
+  // This allows to expose several variables to the global scope, to be used in scripts
+  window.theme = {
+    pageType: "product",
+    moneyFormat: "${{amount}}",
+    moneyWithCurrencyFormat: "${{amount}} USD",
+    productImageSize: "square",
+    searchMode: "product,page",
+    showPageTransition: false,
+    showElementStaggering: true,
+    showImageZooming: true
+  };
+
+
+  document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  document.documentElement.style.setProperty('--window-height', window.innerHeight + 'px');
+
+  // We do a quick detection of some features (we could use Modernizr but for so little...)
+  (function() {
+    document.documentElement.className += ((window.CSS && window.CSS.supports('(position: sticky) or (position: -webkit-sticky)')) ? ' supports-sticky' : ' no-supports-sticky');
+    document.documentElement.className += (window.matchMedia('(-moz-touch-enabled: 1), (hover: none)')).matches ? ' no-supports-hover' : ' supports-hover';
+  }());
+</script>
+
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/lazysizes.min.js?v=17435836340443258698') %>" async></script>
+<script defer src="https://unpkg.com/alpinejs@3.3.2/dist/cdn.min.js"></script>
+
+<script src="https://cdn.polyfill.io/v3/polyfill.min.js?unknown=polyfill&features=fetch,Element.prototype.closest,Element.prototype.remove,Element.prototype.classList,Array.prototype.includes,Array.prototype.fill,Object.assign,CustomEvent,IntersectionObserver,IntersectionObserverEntry,URL" defer></script>
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/libs.min.js?v=2617854318439446974') %>" defer></script>
+
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/custom.js?v=12215157884757723718') %>" defer></script>
+
+<script>
+  (function() {
+    window.onpageshow = function() {
+      if (window.theme.showPageTransition) {
+        var pageTransition = document.querySelector('.PageTransition');
+
+        if (pageTransition) {
+          pageTransition.style.visibility = 'visible';
+          pageTransition.style.opacity = '0';
+        }
+      }
+
+      // When the page is loaded from the cache, we have to reload the cart content
+      document.documentElement.dispatchEvent(new CustomEvent('cart:refresh', {
+        bubbles: true
+      }));
+    };
+  })();
+</script>
+
+<!--begin-boost-pfs-filter-css-->
+<link rel="preload stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/boost-pfs-instant-search.css?v=15799688718595142726') %>" as="style">
+<link href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/boost-pfs-custom.css?v=1168219190099362911') %>" rel="stylesheet" type="text/css" media="all" />
+
+<link href="https://monorail-edge.shopifysvc.com" rel="dns-prefetch">
+<script>
+  (function() {
+    if ("sendBeacon" in navigator && "performance" in window) {
+      var session_token = document.cookie.match(/_shopify_s=([^;]*)/);
+
+      function handle_abandonment_event(e) {
+        var entries = performance.getEntries().filter(function(entry) {
+          return /monorail-edge.shopifysvc.com/.test(entry.name);
+        });
+        if (!window.abandonment_tracked && entries.length === 0) {
+          window.abandonment_tracked = true;
+          var currentMs = Date.now();
+          var navigation_start = performance.timing.navigationStart;
+          var payload = {
+            shop_id: 18266559,
+            url: window.location.href,
+            navigation_start,
+            duration: currentMs - navigation_start,
+            session_token: session_token && session_token.length === 2 ? session_token[1] : "",
+            page_type: "product"
+          };
+          window.navigator.sendBeacon("https://monorail-edge.shopifysvc.com/v1/produce", JSON.stringify({
+            schema_id: "online_store_buyer_site_abandonment/1.1",
+            payload: payload,
+            metadata: {
+              event_created_at_ms: currentMs,
+              event_sent_at_ms: currentMs
+            }
+          }));
+        }
+      }
+      window.addEventListener('pagehide', handle_abandonment_event);
+    }
+  }());
+</script>
+<script>
+  window.ShopifyAnalytics = window.ShopifyAnalytics || {};
+  window.ShopifyAnalytics.meta = window.ShopifyAnalytics.meta || {};
+  window.ShopifyAnalytics.meta.currency = 'USD';
+  var meta = {
+    "product": {
+      "id": 6759987740863,
+      "gid": "gid:\/\/shopify\/Product\/6759987740863",
+      "vendor": "Subarzsweets",
+      "type": "Gourmet Gifts",
+      "variants": [{
+        "id": 40080706175167,
+        "price": 5000,
+        "name": "Gifts for Good Gluten Free Sampler Box",
+        "public_title": null,
+        "sku": "2GFGGSB00024"
+      }]
+    },
+    "page": {
+      "pageType": "product",
+      "resourceType": "product",
+      "resourceId": 6759987740863
+    },
+    "evids": {
+      "pv": "Page View",
+      "vprd": "Viewed Product",
+      "ps": "Performed Search"
+    }
+  };
+  for (var attr in meta) {
+    window.ShopifyAnalytics.meta[attr] = meta[attr];
+  }
+</script>
+<script>
+  window.ShopifyAnalytics.merchantGoogleAnalytics = function() {
+    setTimeout("ga('send','event','adjusted bounce rate','page visit 45 seconds or more')", 45000);
+  };
+</script>
+<script class="analytics">
+  (window.gaDevIds = window.gaDevIds || []).push('BwiEti');
+
+
+  (function() {
+    var customDocumentWrite = function(content) {
+      var jquery = null;
+
+      if (window.jQuery) {
+        jquery = window.jQuery;
+      } else if (window.Checkout && window.Checkout.$) {
+        jquery = window.Checkout.$;
+      }
+
+      if (jquery) {
+        jquery('body').append(content);
+      }
+    };
+
+
+
+
+  })();
+</script>
+</head>
+
+
+
+
+
+<% include ../partials/head.ejs %>
+
+<body class="prestige--v4 features--heading-large features--show-button-transition features--show-image-zooming features--show-element-staggering  template-product template-suffix-buy-and-customize">
+  <% include ../partials/header.ejs %>
+
+  <% var first_product = products[0]; %>
+
+  <a class="PageSkipLink u-visually-hidden" href="#main">Skip to content</a>
+  <span class="LoadingBar"></span>
+  <div class="PageOverlay"></div>
+  <div id="shopify-section-popup" class="shopify-section"></div>
+  <div id="shopify-section-sidebar-menu" class="shopify-section">
+
+
+  </div>
+  <div id="sidebar-cart" class="Drawer Drawer--fromRight" aria-hidden="true" data-section-id="cart" data-section-type="cart" data-section-settings='{
+  "type": "drawer",
+  "itemCount": 0,
+  "drawer": true,
+  "hasShippingEstimator": false
+}'>
+    <div class="Drawer__Header Drawer__Header--bordered Drawer__Container">
+      <span class="Drawer__Title Heading u-h4">Cart</span>
+
+      <button class="Drawer__Close Icon-Wrapper--clickable" data-action="close-drawer" data-drawer-id="sidebar-cart" aria-label="Close cart"><svg class="Icon Icon--close" role="presentation" viewBox="0 0 16 14">
+          <path d="M15 0L1 14m14 0L1 0" stroke="currentColor" fill="none" fill-rule="evenodd"></path>
+        </svg></button>
+    </div>
+
+
+  </div>
+  <div class="PageContainer">
+    <% let tags = first_product['tags'].map((x) => x.replace(/ /g,'')) %>
+
+
+    <main id="main" role="main">
+      <div class="product-container">
+        <div class="container-l">
+          <div class="product_slide product_slide_1">
+            <% for (let i = 0; i < first_product['image_data']['sub'].length; i++) { %>
+            <div>
+              <div class="product_slide_item">
+                <div class="image-wrapper">
+                  <img id='firstImage' src="<%= first_product['image_data']['sub'][i] %>" alt="logo" />
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+          <% if (!first_product['is_donation']) { %>
+          <div class="product_slide product_slide_2">
+            <% for (let i = 0; i < first_product['image_data']['sub'].length; i++) { %>
+            <div>
+              <img src="<%= first_product['image_data']['sub'][i] %>" alt="logo" />
+            </div>
+            <% } %>
+          </div>
+          <% } %>
+        </div>
+        <div class="container-r">
+          <div class="Product__Info ">
+            <div class="Container">
+              <div class="ProductMeta text-center">
+                <h1 class="ProductMeta__Title Heading u-h2"><%= first_product['product_title'] %></h1>
+
+                <div class="ProductMeta__UnitPriceMeasurement" style="display:none">
+                  <div class="UnitPriceMeasurement Heading u-h6 Text--subdued">
+                    <span class="UnitPriceMeasurement__Price"></span>
+                    <span class="UnitPriceMeasurement__Separator">/ </span>
+                    <span class="UnitPriceMeasurement__ReferenceValue" style="display: inline"></span>
+                    <span class="UnitPriceMeasurement__ReferenceUnit"></span>
+                  </div>
+                </div>
+                <% if (!first_product['is_donation']) { %>
+                <div class="ProductMeta__Impact">
+
+                  <% if (first_product['impact_icon']) { %>
+                  <img src="<%= first_product['impact_icon'] %>" alt="img" />
+                  <% } %>
+                  <%= first_product['impact_short_description'] %>
+                </div>
+                <% } %>
+
+                <% if (first_product['shopify_template'] && first_product['shopify_template'].includes('well-told')) { %>
+                  <div class="ProductForm__CustomFields">
+                    <% if (first_product['shopify_handle'] && first_product['shopify_handle'].includes('state-maps')) { %>
+                      <label for="state">State:</label>
+                      <select name="properties[State]" id="state" class="form-control">
+                        <% for (let i = 0; i < states.length; i++ ) { %>
+                          <% if (!states[i].hideForWellTold) { %>
+                            <option id="<%= states[i].name %>"><%= states[i].name %></option>
+                          <% } %>
+                        <% } %>
+                      </select>
+                    <% } else { %>
+
+                      <input type="hidden" id="city" name="properties[Hometown]" />
+                      <input type="hidden" id="cityLat" name="properties[_coords]" />
+                      <div class="gift-note-text google-searchautocomplete">
+                        <label for="searchTextField">Choose your Custom Location</label>
+                        <div class="autocomplete-container"></div>
+                        <p id="well-told-message" class="text-left"></p>
+                      </div>
+                    <% } %>
+                  </div>
+                <% } %>
+                <% {
+                var show_variants = products.length > 1;  %>
+
+                <div class="<%= show_variants ? '' : 'd-none' %> ">
+                  <div class="p-0 mt-5">
+                    <% if (colorOptions.values && colorOptions.values.length) { 
+                      const allIsColor = !colorOptions.values.find(el => !el.isColor); %>
+                      <p class="mb-2">Color: <span id="selected-variant"><%= colorOptions.values[0].title %></span></p>
+                      <% for (let i = 0; i < colorOptions.values.length; i++ ) {  
+                        const color = colorOptions.values[i];
+                      %>
+                        <input 
+                          class="swatch-radio <% if (allIsColor && color['isColor']) { %>swatch-radio--color<% } %> option-input" 
+                          type="radio" 
+                          value="<%= color.title %>" 
+                          title="<%= color.title %>" 
+                          id="<%= color.title %>" 
+                          name="<%= `option${colorOptions.position}` %>" <% if (i === 0) { %>checked<% } %>
+                        />
+                        <label 
+                          class="swatch-radio-label" 
+                          <% if (allIsColor && color['isColor']) { %>style="background-color: <%= color.title %>; background-image: url(<%= getShopifyUrl(color['image']) %>);" <% } %>
+                          for="<%= color.title %>" 
+                          title="<%= color.title %>"
+                        >
+                          <span <% if (allIsColor && color['isColor']) { %>class="sr-only"<% } %>>
+                            <%= color.title %>
+                          </span>
+                        </label>
+                      <% } %>
+                    <% } %>
+                    <% if (otherOptions && otherOptions.length) { %>
+                      <% for (let i = 0; i < otherOptions.length; i++ ) {  
+                        const optionValues = otherOptions[i].values
+                        const optionName = `option${otherOptions[i].position}` 
+                        %>
+                        <% if (optionValues.length < 2 && !otherOptions[i].shouldShow) { %>
+                          <input type="hidden" name="<%= optionName %>" value="<%= optionValues[0].title %>" class="option-input" />
+                        <% } else { %>
+                          <div class="form-group">
+                            <label for="<%= optionName %>" class="d-block text-left"><%= otherOptions[i].name %></label>
+                            <select id="<%= optionName %>" name="<%= optionName %>" class="option-input form-control">
+                              <% for (let j = 0; j < optionValues.length; j++ ) {  %>
+                                <option value="<%= optionValues[j].title %>"><%= optionValues[j].title %></option>
+                              <% } %>
+                            </select>
+                          </div>
+                        <% } %>
+                      <% } %>
+                    <% } %>
+                  </div>
+                </div>
+                <% } %>
+                <% if (!isMarketing) { %>
+                  <% const isSingleProduct = typeof singleProduct !== 'undefined' && singleProduct %>
+                  <div class="product_sec_btn_1">
+                    <button type="button" class="btn dark_btn" id="claim-gift" style="background: #333333;">
+                      <% if (first_product['is_donation']) { %>
+                      CHOOSE THIS DONATION
+                      <% } else if (isSingleProduct) { %>
+                      REDEEM NOW
+                      <% } else { %>
+                      CHOOSE THIS GIFT
+                      <% } %>
+                    </button>
+                  </div>
+                <% } %>
+              </div>
+              <div class="Product__OffScreen"></div>
+              <div class="ProductFeatures">
+                <% let bipoc = tags.includes('bipoc-owned') %>
+                <% let repurposed = tags.includes('repurposed') %>
+                <% let bcorp = tags.includes('b-corp') %>
+                <% let carbon = tags.includes('carbon-neutral') %>
+                <% let cruelty = tags.includes('cruelty-free') %>
+                <% let eco = tags.includes('eco') %>
+                <% let women = tags.includes('empowers-women') %>
+                <% let workers = tags.includes('empowers-workers') %>
+                <% let fairtrade = tags.includes('fair-trade') %>
+                <% let gives = tags.includes('gives-back') %>
+                <% let handmade = tags.includes('hand-made') %>
+                <% let indigenous = tags.includes('indigenous') %>
+                <% let usa = tags.includes('usa') %>
+                <% let organic = tags.includes('organic') %>
+                <% let rainforest = tags.includes('rain-forest') %>
+                <% let recycled = tags.includes('recycled') %>
+                <% let socially = tags.includes('socially-responsible') %>
+                <% let sustainable = tags.includes('sustainably-sourced') %>
+                <% let textile = tags.includes('organic-textile') %>
+                <% let vegan = tags.includes('vegan') %>
+                <% let womenOwned = tags.includes('women-owned') %>
+
+
+                <% if (bipoc)  { %>
+                <div>
+                  <img src="/resources/images/feature-bipoc.svg" alt="" />
+                  <p>BIPOC-Owned</p>
+                </div>
+                <% } %>
+
+                <% if (bcorp) { %>
+                <div>
+                  <img src="/resources/images/feature-bcorp.svg" alt="" />
+                  <p>B Corporation Certified</p>
+                </div>
+                <% } %>
+
+                <% if (carbon)  { %>
+                <div>
+                  <img src="/resources/images/feature-carbon.svg" alt="" />
+                  <p>Carbon Neutral</p>
+                </div>
+                <% } %>
+
+                <% if (textile)  { %>
+                <div>
+                  <img src="/resources/images/feature-textile.svg" alt="" />
+                  <p>Certified Organic Textile</p>
+                </div>
+                <% } %>
+
+                <% if (cruelty)  { %>
+                <div>
+                  <img src="/resources/images/feature-cruelty-free.svg" alt="" />
+                  <p>Cruelty-Free</p>
+                </div>
+                <% } %>
+
+
+                <% if (eco)  { %>
+                <div>
+                  <img src="/resources/images/feature-eco.svg" alt="" />
+                  <p>Eco-Friendly</p>
+                </div>
+                <% } %>
+
+                <% if (women)  { %>
+                <div>
+                  <img src="/resources/images/feature-women.svg" alt="" />
+                  <p>Empowers Women</p>
+                </div>
+                <% } %>
+
+                <% if (workers) {  %>
+                <div>
+                  <img src="/resources/images/feature-workers.svg" alt="" />
+                  <p>Empowers Workers</p>
+                </div>
+                <% } %>
+
+                <% if (fairtrade)  { %>
+                <div>
+                  <img src="/resources/images/feature-fairtrade.svg" alt="" />
+                  <p>Fair Trade Certified</p>
+                </div>
+                <% } %>
+
+                <% if (gives) {  %>
+                <div>
+                  <img src="/resources/images/feature-gives.svg" alt="" />
+                  <p>Gives Back</p>
+                </div>
+                <% } %>
+
+                <% if (handmade)  { %>
+                <div>
+                  <img src="/resources/images/feature-handmade.svg" alt="" />
+                  <p>Handmade</p>
+                </div>
+                <% } %>
+
+                <% if (indigenous) {  %>
+                <div>
+                  <img src="/resources/images/feature-indigenous.svg" alt="" />
+                  <p>Indigenous Artist Made</p>
+                </div>
+                <% } %>
+
+                <% if (usa)  { %>
+                <div>
+                  <img src="/resources/images/feature-usa.svg" alt="" />
+                  <p>Made in the USA</p>
+                </div>
+                <% } %>
+
+                <% if (organic)  { %>
+                <div>
+                  <img src="/resources/images/feature-organic.svg" alt="" />
+                  <p>Organic/GMO-Free</p>
+                </div>
+                <% } %>
+
+                <% if (rainforest)  { %>
+                <div>
+                  <img src="/resources/images/feature-rainforest.svg" alt="" />
+                  <p>Rain Forest Alliance</p>
+                </div>
+                <% } %>
+
+                <% if (recycled) {  %>
+                <div>
+                  <img src="/resources/images/feature-repurposed.svg" alt="" />
+                  <p>Recycled Materials</p>
+                </div>
+                <% } %>
+
+                <% if (socially) {  %>
+                <div>
+                  <img src="/resources/images/feature-socially.svg" alt="" />
+                  <p>Socially Responsible Manufacturing</p>
+                </div>
+                <% } %>
+
+                <% if (sustainable)  { %>
+                <div>
+                  <img src="/resources/images/feature-sustainable.svg" alt="" />
+                  <p>Sustainably Sourced</p>
+                </div>
+                <% } %>
+
+                <% if (vegan)  { %>
+                <div>
+                  <img src="/resources/images/feature-vegan.svg" alt="" />
+                  <p>Vegan</p>
+                </div>
+                <% } %>
+
+                <% if (womenOwned)  { %>
+                <div>
+                  <img src="/resources/images/feature-women-owned.svg" alt="" />
+                  <p>Women-Owned</p>
+                </div>
+                <% } %>
+
+                <% if (repurposed)  { %>
+                <div>
+                  <img src="/resources/images/feature-repurposed.svg" alt="" />
+                  <p>Repurposed Materials</p>
+                </div>
+                <% } %>
+
+              </div>
+
+
+
+
+
+              <div class="ProductSection ProductImpact" x-data="{ open: true }">
+                <button @click="open = !open">
+                  <h3>Your Impact</h3>
+                  <span x-show="open == true">-</span>
+                  <span x-show="open == false">+</span>
+                </button>
+                <div x-show="open == true" x-transition class="padding-bottom-6">
+                  <img src="<%= first_product['impact_story_image']%>" alt="" />
+
+                  <%- first_product['impact_story_description'] %>
+                </div>
+              </div>
+              <% if (!first_product['is_donation']) { %>
+              <div class="ProductSection" x-data="{ open: false }">
+                <button @click="open = !open">
+                  <h3>Product Details</h3>
+                  <span x-show="open == true">-</span>
+                  <span x-show="open == false">+</span>
+                </button>
+                <div class="padding-bottom-6" x-show="open == true" x-transition>
+                  <%- first_product['html_body'] %>
+                </div>
+              </div>
+              <% } %>
+
+
+
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+      <div id="shopify-section-product-highlight" class="shopify-section">
+        <div class="ProductHighlight">
+          <div class="container max-w">
+
+            <div class="ProductHighlight__top">
+              <div class="ProductHighlight__text">
+                <h2 class="Heading u-h1 pb-4">Your Support Matters</h2>
+                <p>When you choose any gift at Gifts for Good, you support a nonprofit or small business in need. As a woman-owned small business and Certified B Corporation, our products meet the highest standards of verified social, economic, and environmental impact.</p>
+              </div>
+              <div class="ProductHighlight__icons">
+                <div>
+                  <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/Icon_2_small.png?v=1629910628') %>" />
+                  <p>Certified Women-Owned Small Businesses</p>
+                </div>
+                <div>
+                  <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/Icon_1_small.png?v=1629910628') %>" />
+                  <p>Supporting Nonprofits & Small Businesses</p>
+                </div>
+                <div>
+                  <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/Icon_small.png?v=1629910629') %>" />
+                  <p>Every Product Helps People & the Planet</p>
+                </div>
+                <div>
+                  <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/Icon_3_small.png?v=1629910629') %>" />
+                  <p>Certified B Corporation & Verified Impact</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="ProductHighlight__bottom">
+              <div class="ProductHighlight__Image image-1">
+                <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/96E3461B-8B33-4663-9AB6-7AA0FEEAD4CD_1_4b268e29-3662-45d2-9f67-e1ae3380d271_x600.jpg?v=1630293478') %>" alt=" ">
+              </div>
+              <div class="ProductHighlight__Image image-2">
+                <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/iStock-519084074_1_x600.jpg?v=1630292702') %>" alt=" ">
+              </div>
+              <div class="ProductHighlight__Image image-3">
+                <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/Doc_LF_3549_1_1_x600.jpg?v=1630293932') %>" alt=" ">
+              </div>
+              <div class="ProductHighlight__Image image-4">
+                <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/ABLE_1_x600.jpg?v=1630293783') %>" alt=" ">
+              </div>
+              <div class="ProductHighlight__Image image-5">
+                <img src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/files/Copy_of_Ernesto_Instructor_2_1_x600.jpg?v=1630292881') %>" alt=" ">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <% include ../partials/shopify_footer.ejs %>
+    <% include ../partials/foot.ejs %>
+    <% include gift-detail_action.ejs %>
+    <% include blocked-shopify-popup.ejs %>
+    <% include redeem_actions.ejs %>
+
+</body>

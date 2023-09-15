@@ -1,0 +1,104 @@
+
+
+<% include ../partials/head.ejs %>
+<link rel="stylesheet" href="/resources/css/gift-confirmation.css">
+
+<body>
+  <% include ../partials/header.ejs %>
+  <% include ../partials/loader.ejs %>
+  <div class="heading-container">
+    <div class="prev-thanks-note-section thank-you-content active">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="sub-heading mt-1 mb-4 text-center">
+              Send a thank you note 
+              <% if (contact.from_first_name && contact.from_company_name) { %>
+                to <%= contact.from_first_name %> at <%= contact.from_company_name %>
+              <% } %>
+            </p>
+            <div class="massege_box">
+              <textarea class="form-control" rows="3" id="thank-note" placeholder="Enter optional message" maxlength="300"></textarea>
+            </div>
+            <p class="message-limit text-right mt-1"><span>0</span>/300</p>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="note_massege_btn_area">
+          <button type="button" class="btn dark_btn" id="send-thank-note" disabled>
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="post-thanks-note-section thank-you-content">
+      <p class="message">
+        <span class="check-icon">
+          <img src="/resources/images/check.svg" alt="" width="16px" />
+        </span>
+        Your note was sent.
+      </p>
+      <a href="https://www.giftsforgood.com/" class="btn dark_btn mt-3">
+        Visit Gifts for Good
+      </a>
+    </div>
+  </div>
+
+  <% include ../partials/foot.ejs %>
+  <script type="text/javascript">
+    const contact_id = <%- JSON.stringify(cid) %>;
+    const is_demo = <%- JSON.stringify(demo) %>;
+
+    $('#thank-note').on('keyup', function() {
+      const val = $(this).val();
+      const messageLength = val.length;
+      const limitInfo = $('.message-limit');
+      limitInfo.find('span').text(messageLength);
+      messageLength > 300 ? limitInfo.addClass('error') : limitInfo.removeClass('error');
+      $('#send-thank-note').attr('disabled', messageLength === 0 || messageLength > 300);
+    });
+
+    $('#send-thank-note').on('click', function() {
+      const thank_note = $('#thank-note').val();
+      if (thank_note) {
+        if (is_demo) {
+          showInfo('Gift thank you note has been sent.');
+          $('.post-thanks-note-section').show();
+          $('.prev-thanks-note-section').hide();
+        } else {
+          showLoader(true);
+          $.ajax({
+            url: '/customer/add-thank-note',
+            type: 'post',
+            data: {
+              cid: contact_id,
+              thank_note: thank_note
+            },
+            success: function(res) {
+              showInfo('Gift thank you note has been sent.');
+              showLoader(false);
+              $('.post-thanks-note-section').addClass('active');
+              $('.prev-thanks-note-section').removeClass('active');
+            },
+            error: function(err) {
+              console.log(err);
+              showLoader(false);
+              const status = err.responseJSON.status;
+              const msg = err.responseJSON.msg;
+              if (status === 'failed') {
+                showError(msg);
+              } else {
+                showError(err.responseText);
+              }
+            }
+          });
+        }
+      } else {
+        showError('Please input thank you note.');
+      }
+    });
+  </script>
+
+
+</body>

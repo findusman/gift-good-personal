@@ -1,0 +1,580 @@
+<script type="text/javascript">
+  let contact_list = [];
+  const campaign = <%- JSON.stringify(campaign) %>;
+  const products = <%- JSON.stringify(products) %>;
+  let offset = 0, count = 0, collection_id = '', collection_type = '';
+  let demo_banner = '', demo_logo = '', demo_message = '', demo_video = campaign['demo_video'];
+
+  $(document).ready(function () {
+      bind_function();
+
+      $('#update-message-btn').on('click', function () {
+          demo_message = $('#message-text').val().trim();
+          if (!demo_message) {
+              showError('Can\'t update message with empty content');
+              return;
+          }
+          $('#confirm-modal .modal-title h3').text('Please confirm.');
+          $('#confirm-type').val('update-demo-message');
+          $('#confirm-btn').text('YES, COMPLETE');
+          $('#confirm-content').text('Please confirm you want to make changes to demo campaign.');
+          $('#confirm-modal').modal('show');
+      });
+
+      $('#send-demo-email-btn').on('click', function () {
+          const to_first_name = $('#to-first-name').val().trim();
+          const to_last_name = $('#to-last-name').val().trim();
+          const to_company_name = $('#to-company-name').val().trim();
+          const to_email = $('#to-email').val().trim();
+          const from_company_name = $('#from-company-name').val().trim() || 'The Gifts for Good Team';
+
+          demo_message = $('#message-text').val().trim();
+          if (!demo_message) {
+              showError('Please input message for the demo campaign.');
+              return;
+          } else if (!demo_banner) {
+              showError('Please select banner image for the demo campaign.');
+              return;
+          } else if (!to_first_name || !to_last_name || !to_company_name || !to_email || !from_company_name) {
+              showError('Please input receiver information for the demo email.');
+              return;
+          }
+
+          $.ajax({
+              url: '/demo/send-email',
+              method: 'POST',
+              data: {
+                  fname: to_first_name,
+                  lname: to_last_name,
+                  cname: to_company_name,
+                  email: to_email,
+                  fcname: from_company_name,
+                  message: demo_message,
+                  banner: demo_banner,
+                  logo: demo_logo,
+                  video: demo_video
+              },
+              success: function (res) {
+                  if (res.status === 'success') {
+                      showInfo(res.msg);
+                  }
+              },
+              error: function (err) {
+                  console.log(err);
+                  const status = err.responseJSON.status;
+                  const msg = err.responseJSON.msg;
+                  if (status === 'failed') {
+                      showError(msg);
+                  }
+              }
+          });
+      });
+
+      $('#confirm-btn').on('click', function () {
+          $('#confirm-modal').modal('hide');
+          const confirm_type = $('#confirm-type').val();
+
+          if (confirm_type === 'update-demo-message') {
+              $.ajax({
+                  url: '/demo/update-message',
+                  method: 'POST',
+                  data: {message: demo_message},
+                  success: function (res) {
+                      if (res.status === 'success') {
+                          showInfo(res.msg);
+                      }
+                  },
+                  error: function (err) {
+                      console.log(err);
+                      const status = err.responseJSON.status;
+                      const msg = err.responseJSON.msg;
+                      if (status === 'failed') {
+                          showError(msg);
+                      }
+                  }
+              });
+          } else if (confirm_type === 'remove-demo-product') {
+              const product_id = $('#extra-param').val();
+              $.ajax({
+                  url: '/demo/remove-product',
+                  method: 'POST',
+                  data: {pid: product_id},
+                  success: function (res) {
+                      if (res.status === 'success') {
+                          showInfo(res.msg);
+
+                          $('.prod-remove-btn').each(function () {
+                              if ($(this).attr('prod-id') === product_id) {
+                                  $(this).parent().parent().parent().remove();
+                              }
+                          });
+                      }
+                  },
+                  error: function (err) {
+                      console.log(err);
+                      const status = err.responseJSON.status;
+                      const msg = err.responseJSON.msg;
+                      if (status === 'failed') {
+                          showError(msg);
+                      }
+                  }
+              });
+          }
+      });
+
+      $('#price-select').on('change', function () {
+          collection_id = $(this).val();
+          collection_type = $('#price-select').find(':selected').attr('type');
+          $.ajax({
+              url: '/pull-campaigns-products',
+              method: 'POST',
+              data: {cid: collection_id, ctype: collection_type},
+              success: function (res) {
+                  if (res.status === 'success') {
+                      // Campaign dropdown list
+                      offset = 0;
+                      count = res.products.length;
+
+                      $('#modal-product-section').empty();
+
+                      // Product list
+                      for (let i = 0; i < res.products.length; i++) {
+                          const product = res.products[i];
+                          add_product_data_to_html(product);
+                      }
+
+                      if (count < 20) {
+                          $('#product-show-more').hide();
+                      } else {
+                          $('#product-show-more').show();
+                      }
+
+                      bind_function();
+                      $('#add-product-modal').modal('show');
+                  }
+              },
+              error: function (err) {
+                  console.error(err);
+              }
+          });
+      })
+
+      $('#product-show-more').on('click', function () {
+          $.ajax({
+              url: '/step/first/show-more',
+              method: 'post',
+              data: {offset: offset, count: count, cid: collection_id, ctype: collection_type},
+              success: function (res) {
+                  offset = Number(res.offset) || 0;
+                  count = Number(res.count) || 20;
+                  res.products.forEach(function (product) {
+                      add_product_data_to_html(product);
+                  });
+                  if (Number(res.count) < 20) {
+                      $("#product-show-more").hide();
+                  } else {
+                      $("#product-show-more").show();
+                  }
+                  bind_function();
+              }
+          });
+      })
+
+      /**
+       * Show add products modal
+       */
+      $('#add-products-btn').on('click', function () {
+          $.ajax({
+              url: '/pull-campaigns-products',
+              method: 'POST',
+              data: {},
+              success: function (res) {
+                  if (res.status === 'success') {
+                      // Campaign dropdown list
+                      offset = 0;
+                      count = res.products.length;
+                      $('#modal-product-section').empty();
+                      let html = '';
+                      for (let i = 0; i < res.collections.signature.length; i++) {
+                          const signature_collection = res.collections.signature[i];
+                          const selected = signature_collection['shopify_id'] == res.cid ? "selected" : "";
+
+                          html += '<option value="' + signature_collection['shopify_id']
+                              + '" type="signature" ' + selected + '>';
+                          html += signature_collection['title'];
+                          html += '</option>';
+                      }
+
+                      for (let i = 0; i < res.collections.campaign.length; i++) {
+                          const campaign = res.collections.campaign[i];
+                          html += '<option value="' + campaign['id'] + '" type="campaign">';
+                          html += campaign['title'];
+                          html += '</option>';
+                      }
+                      $('#price-select').empty();
+                      $('#price-select').html(html);
+
+                      // Product list
+                      for (let i = 0; i < res.products.length; i++) {
+                          add_product_data_to_html(res.products[i]);
+                      }
+
+                      if (count < 20) {
+                          $('#product-show-more').hide();
+                      } else {
+                          $('#product-show-more').show();
+                      }
+                      bind_function();
+                      $('#add-product-modal').modal('show');
+                  }
+              },
+              error: function (err) {
+                  console.error(err);
+              }
+          });
+      });
+  });
+
+  function add_product_data_to_html(product) {
+    let productImage = product["image_data"]["sub"][0]
+      let html = '<div class="item_section">\n' +
+          '                <div class="product_item small_item">\n' +
+          '                    <div class="product_img">\n' +
+          '                        <img src="' + productImage + '" alt="img"/>\n' +
+          '                    </div>\n' +
+          '                    <div class="product_info">\n' +
+          '                        <div class="product_title">\n' +
+          '                            <h4>' + product["product_title"] + '</h4>\n' +
+          '                        </div>\n';
+      if (product["collection_title"]) {
+          html += '<div class="product_price">\n' +
+              '                        <h5>' + product["collection_title"] + '</h5>\n' +
+              '                    </div>\n';
+      }
+      html += '<p>\n';
+      if (product["impact_icon"]) {
+          html += '<img src="' + product["impact_icon"] + '" alt="img"/>';
+      }
+      if (product['impact_story_collection']) {
+          html += product['impact_story_collection'] + '\n';
+      }
+      html += '</p>\n' +
+          '                        <button type="button" class="btn product_btn" prod-id="' + product['variant_id'] + '">' +
+          '                           ADD TO COLLECTION</button>\n' +
+          '                    </div>\n' +
+          '                </div>\n' +
+          '            </div>';
+      $('#modal-product-section').append(html);
+  }
+
+  function bind_function() {
+      $('.product_btn').off('click');
+      $(".product_btn").on('click', function () {
+          const product_id = $(this).attr('prod-id');
+          let already_exist = false;
+          for (let i = 0; i < products.length; i++) {
+              if (products[i]['variant_id'] === product_id) {
+                  already_exist = true;
+                  break;
+              }
+          }
+
+          if (already_exist) {
+              showInfo('This product was already added.');
+          } else {
+              $.ajax({
+                  url: '/demo/add-product',
+                  method: 'POST',
+                  data: {pid: product_id},
+                  success: function (res) {
+                      if (res.status === 'success') {
+                          showInfo(res.msg);
+                          const product = res.product;
+                          let html = '';
+                          let productImage = product["image_data"]["sub"][0]
+                          html = '<div class="item_section" draggable="true" ondragstart="dragStart(event)"\n' +
+                              '           ondragend="mouseUp(event)" onmousedown="mouseDown(event)" ' +
+                              '           onmouseup="mouseUp(event)" id="' + product['product_id'] + '">\n' +
+                              '                <div class="product_item small_item">\n' +
+                              '                    <div class="product_img">\n' +
+                              '                        <img src="' + productImage + '" alt="img"/>\n' +
+                              '                    </div>\n' +
+                              '                    <div class="product_info">\n' +
+                              '                        <div class="product_title">\n' +
+                              '                            <h4>' + product["product_title"] + '</h4>\n' +
+                              '                        </div>\n';
+                          if (product["collection_title"]) {
+                              html += '<div class="product_price">\n' +
+                                  '                        <h5>' + product["collection_title"] + '</h5>\n' +
+                                  '                    </div>\n';
+                          }
+                          html += '<p>\n';
+                          if (product["impact_icon"]) {
+                              html += '<img src="' + product["impact_icon"] + '" alt="img"/>';
+                          }
+                          if (product['impact_story_collection']) {
+                              html += product['impact_story_collection'] + '\n';
+                          }
+                          html += '</p>\n' +
+                              '                        <button type="button" class="btn dark_btn prod-remove-btn" prod-id="' + product['variant_id'] + '">' +
+                              '                           <i class="fas fa-trash-alt"></i></button>\n' +
+                              '                    </div>\n' +
+                              '                </div>\n' +
+                              '            </div>';
+                          $('.admin_content_area .container-fluid .row.product_area').append(html);
+                          bind_function();
+                      }
+                  },
+                  error: function (err) {
+                      console.log(err);
+                      const status = err.responseJSON.status;
+                      const msg = err.responseJSON.msg;
+                      if (status === 'failed') {
+                          showError(msg);
+                      }
+                  }
+              });
+          }
+      });
+
+      $('.prod-remove-btn').off('click');
+      $('.prod-remove-btn').on('click', function () {
+          const product_id = $(this).attr('prod-id');
+          $('#confirm-modal .modal-title h3').text('Please confirm.');
+          $('#confirm-type').val('remove-demo-product');
+          $('#extra-param').val(product_id);
+          $('#confirm-btn').text('YES, REMOVE');
+          $('#confirm-content').text('Please confirm you want to remove product from demo campaign.');
+          $('#confirm-modal').modal('show');
+      });
+  }
+
+  function mouseUp(ev) {
+      let node = ev.target;
+      let className = node.className;
+
+      while (className !== undefined && !className.includes('item_section') && node) {
+          node = node.parentNode;
+          className = node.className;
+      }
+      if (node && className) {
+          // Remove class when drag end
+          let classArray = className.split(" ");
+          const specifiedIndex = classArray.indexOf("border-emphasised");
+          if (specifiedIndex > -1) {
+              classArray.splice(specifiedIndex, 1);
+              node.className = classArray.join(" ");
+          }
+      }
+  }
+
+  function mouseDown(ev) {
+      let node = ev.target;
+      let className = node.className;
+
+      while (className !== undefined && !className.includes('item_section') && node) {
+          node = node.parentNode;
+          className = node.className;
+      }
+      if (node && className) {
+          // Add class when drag start
+          const classArray = className.split(" ");
+          if (classArray.indexOf("border-emphasised") === -1) {
+              node.className += " " + "border-emphasised";
+          }
+      }
+  }
+
+  function dragStart(ev) {
+      let node = ev.target;
+      let className = node.className;
+
+      while (className !== undefined && !className.includes('item_section') && node) {
+          node = node.parentNode;
+          className = node.className;
+      }
+      if (node && className) {
+          ev.dataTransfer.setData('text', node.id);
+      }
+  }
+
+  function allowDrop(ev) {
+      ev.preventDefault();
+  }
+
+  function drop(ev) {
+      ev.preventDefault();
+      const moving_product_id = ev.dataTransfer.getData("text");
+      if (!moving_product_id) {
+          return;
+      }
+      let node = ev.target;
+      let className = node.className;
+
+      while (className !== undefined && !className.includes('item_section') && node) {
+          node = node.parentNode;
+          className = node.className;
+      }
+
+      let previous_product_id = '';
+
+      if (node && className) {
+          previous_product_id = node.id;
+      }
+
+      if (moving_product_id !== previous_product_id) {
+          $.ajax({
+              url: '/demo/change-product-sequence',
+              method: 'POST',
+              data: {cpid: moving_product_id, ppid: previous_product_id},
+              success: function (res) {
+                  if (node && className) {
+                      node.parentNode.insertBefore(document.getElementById(moving_product_id), node);
+                  } else {
+                      document.getElementById(moving_product_id).parentNode
+                          .appendChild(document.getElementById(moving_product_id));
+                  }
+              },
+              error: function (err) {
+                  console.log(err);
+                  const status = err.responseJSON.status;
+                  const msg = err.responseJSON.msg;
+                  if (status === 'failed') {
+                      showError(msg);
+                  }
+              }
+          });
+      }
+  }
+
+  // Campaign logo upload feature
+  $('#email-logo-file').on("change", function(evt) {
+      if (!evt.target.files.length) {
+          return;
+      }
+      let formData = new FormData();
+      formData.append('file', evt.target.files[0]);
+      formData.append('type', 'logo');
+
+      let thisObj = $(this);
+      $.ajax({
+          url: '/upload-demo-file',
+          type: 'post',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(res) {
+              demo_logo = res.file_link;
+              let $source = $('#email-logo-img');
+              $source[0].src = URL.createObjectURL(evt.target.files[0]);
+              thisObj.hide();
+              $('#email-logo-drag-content').hide();
+              $('#email-logo-section').show();
+          },
+          error: function (e) {
+              console.log(e);
+              showError('Logo upload failed');
+          }
+      });
+  });
+
+  $('#use-default-logo').on('click', function() {
+      if ($(this).is(':checked')) {
+          $.ajax({
+              url: '/demo/use-default-logo',
+              type: 'post',
+              data: {},
+              processData: false,
+              contentType: false,
+              success: function(res) {
+                  demo_logo = '';
+                  let $source = $('#email-logo-img');
+                  $source[0].src = res.file_link;
+                  $('#email-logo-file').hide();
+                  $('#email-logo-drag-content').hide();
+                  $('#email-logo-section').show();
+              },
+              error: function (e) {
+                  console.log(e);
+                  showError('Something went wrong.');
+              }
+          });
+      } else {
+          demo_logo = '';
+          $('#email-logo-file').show();
+          $('#email-logo-drag-content').show();
+          $('#email-logo-section').hide();
+      }
+  });
+
+  $('#use-default-banner').on('click', function() {
+      if ($(this).is(':checked')) {
+          $.ajax({
+              url: '/demo/use-default-banner',
+              type: 'post',
+              data: {},
+              processData: false,
+              contentType: false,
+              success: function(res) {
+                  demo_banner = res.file_link;
+                  let $source = $('#email-banner-img');
+                  $source[0].src = demo_banner;
+                  $('#email-banner-file').hide();
+                  $('#email-banner-drag-content').hide();
+                  $('#email-banner-section').show();
+              },
+              error: function (e) {
+                  console.log(e);
+                  showError('Something went wrong.');
+              }
+          });
+      } else {
+          demo_banner = '';
+          $('#email-banner-file').show();
+          $('#email-banner-drag-content').show();
+          $('#email-banner-section').hide();
+      }
+  });
+
+  // Campaign banner upload feature
+  $('#email-banner-file').on("change", function(evt) {
+      if (!evt.target.files.length) {
+          return;
+      }
+      let formData = new FormData();
+      formData.append('file', evt.target.files[0]);
+      formData.append('type', 'banner');
+
+      let thisObj = $(this);
+      $.ajax({
+          url: '/upload-demo-file',
+          type: 'post',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(res) {
+              demo_banner = res.file_link;
+              const filename = evt.target.files[0].name;
+              const mimetype = evt.target.files[0].type;
+              thisObj.hide();
+              $('#email-banner-drag-content').hide();
+              $('#email-banner-section').show();
+              if (mimetype.startsWith('image')) {
+                  let $source = $('#email-banner-img');
+                  $source[0].src = URL.createObjectURL(evt.target.files[0]);
+              }
+          },
+          error: function (e) {
+              console.log(e);
+              showError('Banner upload failed');
+          }
+      });
+  });
+
+  if (!String.prototype.startsWith) {
+      String.prototype.startsWith = function(searchString, position) {
+          position = position || 0;
+          return this.indexOf(searchString, position) === position;
+      };
+  }
+</script>

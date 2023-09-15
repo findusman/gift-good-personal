@@ -1,0 +1,296 @@
+<script type="text/javascript">
+  let users = <%- JSON.stringify(users) %>
+  let avatar_link = '/resources/images/users/default.png';
+  const mapUserTypes = <%- mapUserTypes %>;
+  const checkAccess = <%- checkAccess %>;
+
+  $('.information_form').parsley();
+  $('.information_form').on('submit', function(e) {
+    e.preventDefault();
+    const validated = $('.parsley-error').length === 0;
+    if (validated) {
+      const first_name = $('#first-name').val();
+      const last_name = $('#last-name').val();
+      const email = $('#email').val();
+      const password = $('#password').val();
+      const job = $('#job').val();
+      const company = $('#company').val();
+      const { userType, permissions } = getPermissionsFormData(this);
+
+      showLoader(true);
+      $.ajax({
+        url: '/users/add',
+        type: 'post',
+        data: {
+          avatar: avatar_link,
+          first_name: first_name,
+          last_name: last_name,
+          email: email,
+          password: password,
+          job: job,
+          company: company,
+          type: userType,
+          permissions
+        },
+        success: function(res) {
+          $('#add-user-modal').modal('hide');
+          $('#first-name').val('');
+          $('#last-name').val('');
+          $('#email').val('');
+          $('#password').val('');
+          $('#job').val('');
+          $('#company').val('');
+          let $source = $('#user-avatar-img');
+          $source[0].src = '/resources/images/users/default.png';
+          let html = '                    <tr>\n' +
+            '                        <td class="users_item_number">\n' + (users.length + 1) +
+            '                        </td>\n' +
+            '                        <td class="users_faceName">\n' +
+            '                            <div class="users_faceName_box">\n' +
+            '                                <img class="user_face" src="' + res.data['avatar'] + '" alt="img"/>\n' +
+            '                            </div>\n' +
+            '                        </td>\n' +
+            '                        <td class="users_info">\n' + res.data['firstname'] + '</td>' +
+            '                        <td class="users_info">\n' + res.data['lastname'] + '</td>' +
+            '                        <td class="users_info">\n' + res.data['email'] +
+            '                        </td>\n' +
+            '                        <td class="users_info">\n' +
+            '                            <img src="/resources/images/icons/user.png" alt="icon" /> ' + res.data['job'] + ' at ' + res.data['company'] +
+            '                        </td>\n' +
+            '                        <td class="users_info">\n' +
+            '                            <b>' + getUSFormatDateString(res.data['last_login_at']) + '</b>\n' +
+            '                        </td>\n' +
+            '                    </tr>\n';
+          if (users.length == 0) {
+            html = '<div class="users_item">\n' +
+              '                    <table cellspacing="0" cellpadding="0" class="fixed table-bordered table-hover table-users">\n' +
+              '                        <thead>\n' +
+              '                            <tr>\n' +
+
+              '                                <th class="users_item_number"></th>\n' +
+              '                                <th class="users_item_number">First Name</th>\n' +
+              '                                <th class="users_item_number">Last Name</th>\n' +
+              '                                <th class="users_item_number">Email</th>\n' +
+              '                                <th class="users_item_number">Job Title</th>\n' +
+              '                                <th class="users_item_number">Date of Last Sign In</th>\n' +
+              '                            </tr>\n' +
+              '                        </thead>\n' +
+              '                        <tbody>' + html +
+              '                        </tbody>' +
+              '                    </table>' +
+              '                </div>';
+
+            $('.admin_content_area').append(html);
+            $('#no-user-found').hide();
+          } else {
+            $('.admin_content_area > .users_item > table > tbody').append(html);
+          }
+
+          users.push(res.data);
+          showLoader(false);
+          showInfo('New user has been added');
+          setTimeout(function () {
+            location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+  });
+
+
+  $('#users-search').submit(function(e) {
+    e.preventDefault();
+    const newSearch = $('#search').val();
+    const currentSearch = new URLSearchParams(window.location.search);
+    currentSearch.set('search', newSearch);
+
+    window.location.search = `?${currentSearch.toString()}`;
+  });
+
+  $('#user-avatar-file').on('change', function(evt) {
+    if (!evt.target.files.length) {
+      return;
+    }
+    let formData = new FormData();
+    formData.append('file', evt.target.files[0]);
+
+    $.ajax({
+      url: '/upload-file',
+      type: 'post',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(res) {
+        avatar_link = res.file_link;
+        let $source = $('#user-avatar-img');
+        $source[0].src = URL.createObjectURL(evt.target.files[0]);
+      },
+      error: function(e) {
+        console.log(e);
+        showError('File upload failed');
+      }
+    })
+  });
+
+  $('#edit-email-form').on('submit', (e) => {
+    e.preventDefault();
+    const email = $('#edit-email').val();
+    const id = $('#edit-email-id').val();
+    showLoader(true);
+    $.ajax({
+      url: '/users/update-email',
+      type: 'post',
+      data: { email, id },
+      success: function(res) {
+        showInfo('User\'s email has been updated!');
+        showLoader(false);
+        setTimeout(function() {
+          window.location.reload();
+        }, 500);
+      },
+      error: function(e) {
+        console.error(e);
+        showLoader(false);
+        showError(e.responseJSON?.msg);
+      }
+    });
+  });
+
+  $('.user-type-select').on('change', function() {
+    const standardOptions = $(this).closest('form').find('.standard-user-access');
+    if ($(this).val() === 'client-standard') {
+      standardOptions.removeClass('d-none');
+    } else {
+      standardOptions.addClass('d-none');
+    }
+  });
+
+  $('#edit-permissions-form').on('submit', function(e) {
+    e.preventDefault();
+    const { userType, permissions } = getPermissionsFormData(this);
+    const userId = $(this).find('#edit-user-id').val();
+
+    $.ajax({
+      url: '/users/update-permissions',
+      type: 'post',
+      data: { userId, permissions, userType },
+      success: function(res) {
+        showInfo('User\'s permissions have been updated!');
+        setTimeout(function() {
+          window.location.reload();
+        }, 500);
+      },
+      error: function(e) {
+        console.error(e);
+        showError(e.responseJSON?.msg);
+      }
+    });
+  });
+
+  var impersonateEmail;
+
+  function setImpersonatingUser(email) {
+    impersonateEmail = email;
+    $('#impersonating-email').html(email);
+    $('#impersonate-user-modal').modal('show');
+
+  }
+
+  function startImpersonatingUser() {
+    window.location.href = "/impersonate?userID=" + impersonateEmail;
+  }
+
+  function getUSFormatDateString(date) {
+    if (date) {
+      return moment(date).format('MM/DD/YYYY');
+    } else {
+      return '00/00/0000';
+    }
+  }
+
+  function resetUserPassword(id) {
+    showLoader(true);
+    $.ajax({
+      url: '/users/reset-password',
+      type: 'post',
+      data: {
+        id
+      },
+      success: async function(res) {
+        showLoader(false);
+        try {
+          await navigator.clipboard.writeText(res.resetLink);
+          showInfo('User\'s reset link was created and copied to your clipboard!');
+        } catch(e) {
+          showError('Something went wrong, please, try again');
+        }
+      },
+      error: function(err) {
+        showLoader(false);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+
+  function getPermissionsFormData(form) {
+    let permissions = {};
+    const formEl = $(form);
+    const userType = formEl.find('.user-type-select').find(':selected').val();
+    if (userType === 'client-standard') {
+      const isFullAccess = formEl.find('input[name=user-access]:checked').val() === 'all';
+      const editCampaignAccessLevel = parseInt(formEl.find('input[name="edit-campaigns"]:checked').val());
+      const readCampaignAccessLevel = parseInt(formEl.find('input[name="view-campaigns"]:checked').val());
+      const usersAccessLevel = parseInt(formEl.find('input[name="users"]:checked').val());
+      const createAccess = formEl.find('#create-campaigns').is(':checked') ? 2 : 0;
+      permissions = {
+        Campaign: isFullAccess ? 7 : ((readCampaignAccessLevel >= 1 ? 1 : 0) | createAccess | (editCampaignAccessLevel >= 1 ? 4 : 0)),
+        CompanyCampaign: isFullAccess ? 7 : ((readCampaignAccessLevel >= 2 ? 1 : 0) | (editCampaignAccessLevel >= 2 ? 4 : 0)),
+        Report: isFullAccess ? 1 : (formEl.find('#reports').is(':checked') ? 1 : 0),
+        User: isFullAccess ? 7 : usersAccessLevel
+      }
+    }
+    return { userType, permissions };
+  }
+
+  function openEditEmailModal({ id, email }) {
+    const modal = $('#edit-email-modal');
+    modal.modal();
+    const emailInput = $('#edit-email');
+    const idInput = $('#edit-email-id');
+    emailInput.val(email);
+    idInput.val(id);
+  }
+
+  function openEditPermissionsModal(userId) {
+    const user = users.find(el => el.id === userId);
+    const hasCustomPermissions = !!user.userPermission;
+    const userAccessInput = hasCustomPermissions ? '#user-limited' : '#user-all';
+    const modal = $('#edit-permissions-modal');
+    $('#edit-user-id').val(userId);
+    modal.find('select').val(user.type).change();
+    modal.find(userAccessInput).prop('checked', true);
+    if (hasCustomPermissions) {
+      const viewInputToCheck = checkAccess(user.userPermission.CompanyCampaign, 'read') ? '#view-campaigns-all' : '#view-campaigns-own';
+      const editInputToCheck = checkAccess(user.userPermission.CompanyCampaign, 'update') ? '#edit-campaigns-all' : '#edit-campaigns-own';
+
+      modal.find('#create-campaigns').prop('checked', checkAccess(user.userPermission.Campaign, 'create'));
+      modal.find('#reports').prop('checked', checkAccess(user.userPermission.Report, 'read'));
+      modal.find(`input[name="users"][value=${user.userPermission.User}]`).prop('checked', true);
+      modal.find(viewInputToCheck).prop('checked', true);
+      modal.find(editInputToCheck).prop('checked', true);
+    }
+    modal.modal();
+  }
+</script>

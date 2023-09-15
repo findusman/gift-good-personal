@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+
+<body>
+
+  <div class="admin">
+    <% include ../../../partials/loader.ejs %>
+    <% include ../../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+      <div class="admin_title_area">
+        <div class="container-fluid">
+          <div class="row col-md-12">
+            <div class="col-md-4">
+              <% if (type === 'live') { %>
+              <h2><b>Admin</b> - Live Campaigns</h2>
+              <% } else if (type === 'archived') { %>
+              <h2><b>Admin</b> - Archived Campaigns</h2>
+              <% } else { %>
+              <h2><b>Admin</b> - All Campaigns</h2>
+              <% } %>
+            </div>
+            <div class="col-md-8 admin_search_nav">
+              <ul>
+                <li>
+                  <div class="form-group d-flex mb-0 justify-content-end" id="campaign-search">
+                    <input type="text" class="form-control" style="border-radius: 0; max-width: 300px;" placeholder="Search..." value="<%= key %>" />
+                    <button type="button" class="btn common_btn light_dark_btn" style="padding: 9px 20px;">GO
+                    </button>
+                  </div>
+                </li>
+                <li>
+                  <div class="btn-group">
+                    <button type="button" class="btn dropdown_btn text-uppercase" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 14px;">
+                      <%= type ? `${type} Campaigns` : 'All Campaigns' %>
+                      <img src="/resources/images/icons/arrow-down-2.png">
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-6px, 48px, 0px);">
+                      <a class="dropdown-item <%= type ? '' : 'active' %>" href="/admin-campaigns">All Campaigns</a>
+                      <a class="dropdown-item <%= type === 'live' ? 'active' : '' %>" href="/admin-campaigns?type=live">Live Campaigns</a>
+                      <a class="dropdown-item <%= type === 'archived' ? 'active' : '' %>" href="/admin-campaigns?type=archived">Archived Campaigns</a>
+                      <a class="dropdown-item <%= type === 'starred' ? 'active' : '' %>" href="/admin-campaigns?type=starred">Starred Campaigns</a>
+                      <a class="dropdown-item <%= type === 'unique-url' ? 'active' : '' %>" href="/admin-campaigns?type=unique-url">Unique URL Campaigns</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin_content_area">
+        <% if (!campaigns.length) { %>
+        <div class="pastorder_item text-center" id="no-user-found"><span style="font-size: 25px;">No campaign found.</span>
+        </div>
+        <% } else { %>
+        <% for (let i = 0; i < campaigns.length; i++) {
+                    const campaign_id = campaigns[i]['id'];
+                    const campaign_title = campaigns[i]['title'];
+                    const contacts_count = campaigns[i]['contacts'] ? campaigns[i]['contacts'].length : 0;
+                    const send_date = campaigns[i]['is_sent'] ? moment(campaigns[i]['sent_at']).format('MM/DD/YYYY') : '---';
+                    const archived = campaigns[i]['archived'];
+                    const noEmailInvite = campaigns[i]['no_email_invite'];
+                    const isStarred = campaigns[i]['is_starred'];
+                    const canBeStarred = !archived && !campaigns[i]['is_sent'];
+                %>
+        <div class="queue_item <%= isStarred && 'queue_item--starred' %>">
+          <table border="0" cellspacing="0" cellpadding="0" class="fixed">
+            <col width="100px" />
+            <col />
+            <col />
+            <col />
+            <col />
+
+            <tr>
+              <td class="users_item_number">
+                <%= i + 1 %>
+              </td>
+              <td class="users_faceName"> <%= campaign_title %> </td>
+              <td class="users_info">Addressed to <%= contacts_count > 1 ? contacts_count
+                                        + ' recipients' : contacts_count == 1 ? '1 recipient' : ' no recipient' %></td>
+              <td class="users_info">Send Date: <b><%= send_date %></b></td>
+              <td class="users_info" title="Emails are not sent for URL only campaigns">
+                Is URL only: <b><%= noEmailInvite ? 'Yes' : 'No' %></b>
+              </td>
+              <td class="users_info" style="width: 450px; text-align: center">
+                <div class="d-flex align-items-center justify-content-end" style="padding-right: <%= !canBeStarred ? '35px' : '0' %>;">
+                  <div class="campaign-more-action">
+                    <button type="button" class="btn dark_btn dropdown-toggle" data-toggle="dropdown" style="padding: 10px 15px;">
+                      <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><span class="menu-title">More actions...</span>
+                      <% if (ability.can('delete', 'Campaign')) { %>
+                        <% if (archived) { %>
+                          <li><span class="menu-unarchive-item" campaign-id="<%= campaign_id %>">UNARCHIVE CAMPAIGN</span>
+                        <% } else { %>
+                          <li><span class="menu-archive-item" campaign-id="<%= campaign_id %>">ARCHIVE CAMPAIGN</span>
+                        <% } %>
+                        <li><span class="menu-delete-item" campaign-id="<%= campaign_id %>">DELETE CAMPAIGN</span>
+                      <% } %>
+                      <li><span class="menu-duplicate-item" campaign-id="<%= campaign_id %>">DUPLICATE CAMPAIGN</span></li>
+                      <li><span class="menu-expire-item" campaign-id="<%= campaign_id %>">EXPIRE CAMPAIGN</span></li>
+                    </ul>
+                  </div>
+                  <button type="button" class="btn common_btn light_dark_btn ml-2 view-contacts" campaign-id="<%= campaign_id %>" campaign-title="<%= campaign_title %>">VIEW CONTACTS
+                  </button>
+                  <a href="/edit-campaign?cid=<%= campaign_id %>" style="color: white;">
+                    <button type="button" class="btn common_btn ml-2">EDIT CAMPAIGN</button>
+                  </a>
+                  <% if(canBeStarred) {%>
+                    <button type="button" class="btn-plain btn-star" data-is-starred="<%= isStarred %>" data-id="<%= campaign_id %>">
+                        <i class="<%= isStarred ? 'fas' : 'far' %> fa-star"></i>
+                        <span class="sr-only">Toggle star</span>
+                    </button>
+                  <% } %>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <% } %>
+        <% } %>
+      </div>
+
+    </div>
+
+    <% include ../../../partials/footer.ejs %>
+  </div>
+
+  <% include ../../../partials/modals.ejs %>
+
+  <% include ../../../partials/storage.ejs %>
+  <% include ../../../partials/foot.ejs %>
+  <% include ../../../partials/campaign-actions.ejs %>
+  <% include admin-campaigns_action.ejs %>
+  <% include ../../../partials/modal-csv-export_actions.ejs %>
+
+</body>
+
+</html>

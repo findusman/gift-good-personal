@@ -1,0 +1,233 @@
+<div class="row product_area draggable-product-area" ondrop="drop(event)" ondragover="allowDrop(event)">
+  <% for (let i = 0; i < products.length; i++) { %>
+  <div class="item_section" draggable="true" ondragstart="dragStart(event)" ondragend="mouseUp(event)" onmousedown="mouseDown(event)" onmouseup="mouseUp(event)" id="<%= products[i]["product_id"] %>">
+    <div class="product_item small_item">
+      <div class="product_img">
+        <img src="<%= products[i]['image_data']['sub'][[0]] %>" style="pointer-events: none;" onerror="onProductImgError(this)" alt="img" />
+      </div>
+      <div class="product_info">
+        <div class="product_title">
+          <h4><%= products[i]["product_title"] %></h4>
+        </div>
+        <% if (products[i]['collection_title']) { %>
+        <div class="product_price">
+          <h5><%= products[i]['collection_title'] %></h5>
+        </div>
+        <% } %>
+        <p>
+          <% if (products[i]['impact_icon']) { %>
+          <img src="<%= products[i]['impact_icon'] %>" class="shopping-label-img sm" onerror="onLabelImgError(this)" alt="img" />
+          <% } %>
+          <%= products[i]['impact_story_collection'] %>
+        </p>
+        <button type="button" class="btn dark_btn prod-remove-btn" prod-id="<%= products[i]["variant_id"] %>">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <% } %>
+</div>
+<div class="row">
+  <div class="col-2-1600-1">
+    <div class="add_title">
+      <div class="container">
+        <h3 style="font-weight: normal;"><img src="/resources/images/icons/setting.png" />
+          Campaign & Email Settings</h3>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 campaign_email_setting">
+            <div class="row">
+              <div class="col-md-6">
+                <h4 class="mb-2"><i>Reminder</i> Settings</h4>
+                <% if(campaign['no_email_invite']) { %>
+                  <div class="mb-4">
+                    <h5>Send reminder emails</h5>
+                    <div class="custom-control custom-control-lg custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" value="" id="sendReminderEmails" <% if (campaign['send_only_reminder_emails']) { %>checked<% } %>>
+                      <label class="custom-control-label" for="sendReminderEmails">Send reminder emails</label>
+                    </div>
+                  </div>
+                <% } %>
+                <div class="reminders <%= (campaign['no_email_invite'] && !campaign['send_only_reminder_emails']) && 'reminders-hidden' %>">
+                  <% for (let i = 1; i <= 4; i++) { %>
+                    
+                    <% const timezone = campaign['scheduled_tz'] || 'America/Los_Angeles'; 
+                      const date = moment(campaign[`reminder${i}_date`]).tz(timezone) !== undefined ? moment(campaign[`reminder${i}_date`]).tz(timezone).format('YYYY-MM-DDTHH:mm')  : '' %>
+                    <div class="d-flex align-items-end mb-4">
+                      <button type="button" class="btn common_btn btn_sm mr-1 reminder-edit-btn" reminder-key="reminder<%= i %>" reminder-title="Reminder #<%= i %>">
+                        <i class="fas fa-pencil-alt"></i>
+                      </button>
+                      <button type="button" class="btn common_btn btn_sm mr-1 reminder-view-btn" reminder-key="reminder<%= i %>"><i class="fas fa-eye"></i></button>
+                      <div class="ml-4 flex-fill">
+                        <h5>Reminder #<%= i %> Date</h5>
+                        <input type="datetime-local" value="<%= date %>" id="reminder<%= i %>-date" min="<%= moment().format('YYYY-MM-DDTHH:mm') %>" lang="en-US" />
+                      </div>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <h4 class="mb-2"><i>Schedule</i> Settings</h4>
+                <div class="mb-4">
+                  <h5>Expiration Date</h5>
+                  <input type="date" value="<%= moment(campaign['expire_date']).format('YYYY-MM-DD') %>" id="expire-date" />
+                </div>
+                <% if(!campaign['no_email_invite']) { %>
+                  <div class="mb-4">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="is-scheduled" <% if (campaign['is_scheduled']) { %>checked<% } %>>
+                      <label class="custom-control-label" for="is-scheduled">Scheduled Date/Time</label>
+                    </div>
+                    <% const timezone = campaign['scheduled_tz'] || 'America/Los_Angeles';  
+                      const sendDate = moment(campaign['scheduled_date']).tz(timezone) !== undefined ? moment(campaign['scheduled_date']).tz(timezone).format('YYYY-MM-DDTHH:mm')  : '' %>
+                    <input type="datetime-local" value="<%= sendDate %>" id="scheduled-date" />
+                  </div>
+                  <div class="mb-4" id="scheduled-tz-section">
+                    <h5>Scheduled Timezone</h5>
+                    <select class="form-control" id="scheduled-tz">
+                      <% for(var tz of moment.tz.zonesForCountry('US', true)){ %>
+                        <% const isSelected = campaign['scheduled_tz'] ? campaign['scheduled_tz'] == tz.name : tz.name === 'America/Los_Angeles' %>
+                        <option value="<%= moment.tz(tz.name).format('Z') %>" data-name="<%= tz.name %>" <%= isSelected ? 'selected' : '' %>>(GMT<%= moment.tz(tz.name).format('Z') %>) <%= tz.name %></option>
+                      <% }; %>
+                    </select>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+            <% if (is_admin) { %>
+              <h4 style="text-align: center;" class="mb-3">General</h4>
+              <div class="row">
+                <div class="d-flex">
+                  <div class="col-md-6">
+                    <h5>Title</h5>
+                    <input type="text" value="<%= campaign['title'] %>" id="title" />
+                  </div>
+                  <div class="col-md-6">
+                    <h5>Price (one contact)</h5>
+                    <p><%= campaign['price'] %></p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="d-flex">
+                  <div class="col-md-6">
+                    <h5>Owner</h5>
+                    <select class="form-control" style="width: 250px" name="sel_user_id" id="user">
+
+                      <% for (let i = 0; i < users.length; i++) {
+                            let selected = campaign['userId'] === users[i].id ? 'selected' : '';
+                        %>
+                      <option value="<%= users[i].id %>" <%= selected %> style="color: black"><%= users[i].firstname + " " + users[i].lastname %></option>
+                      <% } %>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <h5>Unique URL</h5>
+                    <div class="custom-control custom-control-lg custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" value="" id="isUniqueUrl" <% if (campaign['no_email_invite']) { %>checked<% } %>>
+                      <label class="custom-control-label" for="isUniqueUrl">Unique URL</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="d-flex">
+                  <div class="col-md-6">
+                    <h5>Authentication Provider</h5>
+                    <select class="form-control" style="width: 250px" name="authentiation_provider_id" id="authentication_provider">
+                      <option value="none">None</option>
+                      <% authenticationProviders.forEach((provider) => {
+                          let selected = authenticationProvider && authenticationProvider.id == provider.id ? 'selected' : ''; %>
+                        <option value="<%=provider.id%>" <%=selected%>><%=provider.name%></option>
+                      <% }) %>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <h5>New products</h5>
+                    <div class="custom-control custom-control-lg custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="block-new-products" id="block-new-products" <% if (campaign['block_new_products']) { %>checked<% } %>>
+                      <label class="custom-control-label" for="block-new-products">Do not automatically add new products to this campaign</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% if (!campaign['no_email_invite']) { %>
+                <div class="row">
+                  <div class="col-md-6 offset-md-6">
+                    <h5>Lock emails</h5>
+                    <div class="custom-control custom-control-lg custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" name="lock-emails" id="lock-emails" <% if (campaign['lock_emails']) { %>checked<% } %>>
+                      <label class="custom-control-label" for="lock-emails">Don't allow email change during checkout</label>
+                    </div>
+                  </div>
+                </div>
+              <% } %>
+              <div class="row">
+                <div class="col-md-6 offset-md-6">
+                  <h5>CC emails</h5>
+                  <div class="custom-control custom-control-lg custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="cc-email" id="cc-email" <% if (campaign['cc_email']) { %>checked<% } %>>
+                    <label class="custom-control-label" for="cc-email">Add sender email to CC gift emails</label>
+                  </div>
+                </div>
+              </div>
+              <% if ((campaign['allow_multiple_redemptions'] || !redeemedCount) && is_admin) { %>
+                <div class="row">
+                  <div class="col-md-6">
+                    <h5>Allow multiple redemptions</h5>
+                    <div class="custom-control custom-control-lg custom-checkbox mb-4">
+                      <input type="checkbox" class="custom-control-input" name="allow-multiple-redemptions" id="allow-multiple-redemptions" <% if (campaign['allow_multiple_redemptions']) { %>checked disabled<% } %>>
+                      <label class="custom-control-label" for="allow-multiple-redemptions">Allow multiple redemptions</label>
+                    </div>
+                    <% if(campaign['allow_multiple_redemptions'] && multipleRedemptionsUrl) { %>
+                      <p>Multiple redemptions URL: <a href="<%= multipleRedemptionsUrl %>"><%= multipleRedemptionsUrl %></a></p>
+                      <% if (qr) { %>
+                        <img src="<%= qr %>" alt="Campaign QR code" />
+                      <% } %>
+                    <% } %>
+                  </div>
+                </div>
+              <% } %>
+            <% } %>
+        </div>
+        <div class="col-12">
+          <div class="step_buttons_area">
+            <button type="button" class="btn common_btn" id="update-setting-btn">
+              UPDATE SETTINGS
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="multiple-redemptions-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Multiple redemptions settings</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="save-as-multiple-form">
+        <div class="modal-body">
+          <p class="mb-3">You are about to set this campaign as "QR code" one. This action cannot be reverted. It will remove any existing contacts and allow to redeem multiple gifts from one URL.</p>
+          <label for="number-of-redemptions">Number of possible redemptions</label>
+          <input type="number" class="form-control mb-2" name="number-of-redemptions" id="number-of-redemptions" min="1" step="1" />
+          <p id="number-of-redemptions-helper"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" id="save-as-multiple" disabled>Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="root" data-is-admin="<%= session.user && session.user.type === 'admin' %>"></div>

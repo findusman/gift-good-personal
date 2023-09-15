@@ -1,0 +1,57 @@
+<section>
+    <h3>
+        <%=authenticationProvider.config.prompt%>
+    </h3>
+    <p>
+        <%=authenticationProvider.config.instruction%>
+    </p>
+    <p class="error hidden">
+        <%=authenticationProvider.config.error || "Unable to validate.  Please try again or contact support."%>
+    </p>
+    <form action="#">
+        <div class="form-input-group">
+            <input name="token" placeholder="<%=authenticationProvider.config.input_placeholder%>">
+        </div>
+        <div class="form-input-group">
+            <button type="submit" class="btn common_btn">
+                <%=authenticationProvider.config.submit_label%>
+            </button>
+        </div>
+    </form>
+</section>
+
+<script>
+    const handleAuthentication = function() {
+        const $spinner = $('#modal_authentication .spinner');
+        const $content = $('#modal_authentication .dynamic-content');
+        const $error = $('#modal_authentication .error');
+        const $submitButton = $('#modal_authentication button[type=submit]');
+        const token = $('#modal_authentication [name=token]').val();
+
+        $error.addClass('hidden');
+        $submitButton.prop('disabled', true);
+
+        $.ajax({
+            url: `/customer/authenticate_campaign`,
+            method: 'POST',
+            data: {
+                contactId: <%=contact.id%>,
+                campaignId: <%=contact.campaign.id%>,
+                providerId: <%=authenticationProvider.id%>,
+                token,
+            },
+            success: function (res) {
+                if (res.status === 'success') {
+                    window.location.reload();
+                } else {
+                    $error.removeClass('hidden');
+                    $submitButton.prop('disabled', false);
+                }
+            },
+            error: function(res) {
+                $error.removeClass('hidden');
+                $submitButton.prop('disabled', false);
+            }
+        })
+    }
+</script>

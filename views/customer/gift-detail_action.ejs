@@ -1,0 +1,172 @@
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfY1HKmCIDpoS2RsrPJWkqtPqjAB5o75c&libraries=places"></script>
+<script src="https://welltold.s3.amazonaws.com/scripts/partner-hometown-autocomplete/v1/index.umd.js"></script>
+
+<script type="text/javascript">
+  const products = <%- JSON.stringify(products) %>;
+  const contact_id = <%- JSON.stringify(cid || '') %>;
+  const campaign = <%- JSON.stringify(campaign) %>;
+  const is_demo = <%- JSON.stringify(demo) %>;
+  const landingUrl = <%- JSON.stringify(landingUrl) %>;
+  const mainSlider = $('.product_slide_1');
+  const optionInputs = $('.option-input');
+  const productType = products[0].product_type;
+  const citiesImages = <%- JSON.stringify(wellToldImages) %>;
+  let activeVariant = products[0];
+  let autocomplete = null;
+  const message = $('#well-told-message');
+  const options = {
+    componentRestrictions: {
+      'country': 'us'
+    },
+    types: ['(regions)'] // (cities)
+  };
+
+  const $autocomplete = new WellToldAutocomplete({
+    apiKey: 'AIzaSyDfY1HKmCIDpoS2RsrPJWkqtPqjAB5o75c',
+    onPlaceSelected: async (place, getProductImageURLs) => {
+      const { coordinates: { lat, lng }, name: placeName } = place;
+
+      $('#city').val(placeName);
+      $('#cityLat').val(`${lat},${lng}`);
+
+      let typeWithColor = citiesImages[productType];
+      const colorVal = $(`input.swatch-radio:checked`).val();
+      if (colorVal) {
+        const colorString = colorVal && colorVal.replace(' ', '-') || '';
+        typeWithColor = typeWithColor.replace('{color}', colorString);
+      }
+      const productImages = await getProductImageURLs(typeWithColor);
+      if (productImages && productImages.length) {
+        message.text('');
+        $('#firstImage').attr('src', productImages[0]);
+      }
+      else {
+        message.text('Sorry, no preview available.');
+      }
+    }
+  });
+
+  const autocompleteContainer = document.querySelector('.autocomplete-container');
+  if (autocompleteContainer) {
+    autocompleteContainer.appendChild($autocomplete);
+  }
+
+  function showActiveVariantImage() {
+    if (products.length > 1) {
+      const selectedImageIdx = activeVariant && (activeVariant.image_idx || activeVariant.image_data?.sub?.indexOf(activeVariant.variant_image));
+      if (selectedImageIdx >= 0) {
+        mainSlider.slick('slickGoTo', selectedImageIdx);
+      }
+    }
+  }
+
+  function setActiveVariant() {
+    const submitBtn = $('#claim-gift');
+    if (products.length > 1) {
+      selectedOptions = selectedOptions.map((el, idx) => {
+        const name = `option${idx + 1}`;
+        const input = $(`[name=${name}]`);
+        if (input.is('select')) {
+          return $(input).find('option:selected').val();
+        } else if (input.is('input[type="radio"]')) {
+          return $(`input[name=${name}]:checked`).val();
+        } else {
+          return input.val();
+        }
+      });
+      const selectedVariant = products.find(product => 
+        selectedOptions.every(option => JSON.parse(product.variant_options).includes(option) || !option)
+      );
+      if (!selectedVariant) {
+        activeVariant = null;
+        showError('Selected variant is not available');
+        submitBtn.prop('disabled', true);
+      } else {
+        activeVariant = selectedVariant;
+        showActiveVariantImage();
+        submitBtn.prop('disabled', false);
+      }
+    }
+  }
+
+  mainSlider.slick({
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+    fade: true,
+    asNavFor: '.product_slide_2'
+  });
+  $('.product_slide_2').slick({
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    asNavFor: '.product_slide_1',
+    arrows: false,
+    dots: true,
+    centerMode: true,
+    focusOnSelect: true
+  });
+  let selectedOptions = ['','',''];
+  setActiveVariant();
+
+  $('#claim-gift').on('click', function() {
+    const variant_id = activeVariant && activeVariant.variant_id;
+    const hometown = $('#city').val();
+    const coords = $('#cityLat').val();
+    const state = $('#state option:selected').val();
+
+    if (!variant_id) {
+      showError('Please select all options.');
+    } else if (coords == '') {
+      showError('Please select a location.')
+    } else {
+      const mainParam = contact_id ?  { cid: contact_id } : { campaign: campaign.id };
+      const urlParams = new URLSearchParams({
+        ...mainParam,
+        vid: variant_id,
+        hometown,
+        coords,
+        state 
+      });
+      window.location.href = `${is_demo ? '/demo/gift-shipping' : '/customer/gift-shipping'}?${urlParams.toString()}`;
+    }
+  });
+  optionInputs.on('change', function() {
+    setActiveVariant();
+    $('#selected-variant').html($(this).attr('title'));
+  });
+  $('#backto-gifts').add('#backto-gifts-link').on('click', function() {
+    window.location.href = landingUrl;
+  });
+  $('#submit-question').on('click', function() {
+    let question = $('#question-text').val();
+    const name = $('#name-text').val();
+    const email = $('#email-text').val();
+
+    if (products.length === 0) {
+
+    } else if (!question || !email || !name) {
+      showError('Please input all fields.');
+    } else {
+      question = products[0]['product_title'] + '<br><br>' + question;
+      $.ajax({
+        url: '/question',
+        type: 'post',
+        data: {
+          question: question,
+          name: name,
+          email: email
+        },
+        success: function(res) {
+          showInfo('Question submitted successfully.');
+        },
+        error: function(err) {
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      })
+    }
+  })
+</script>

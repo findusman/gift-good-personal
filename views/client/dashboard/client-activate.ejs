@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+
+<div class="admin">
+    <% include ../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+        <div class="alert alert-dismissible fade show signed_alart d-none" role="alert">
+            <img src="/resources/images/icons/green-tic.png" alt="img"/>
+            Signed in successfully.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="admin_title_area">
+            <div class="container-fluid">
+                <div class="row col-md-12">
+                    <div style="flex: 1;">
+                        <h2>Inactive Users</h2>
+                    </div>
+                    <div>
+                        <button type="button" class="btn common_btn send-a-gift">SEND A GIFT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin_content_area">
+            <% if (!users.length) { %>
+                <div class="pastorder_item text-center" id="no-user-found"><span style="font-size: 25px;">No user to activate.</span></div>
+            <% } else { %>
+                <div class="users_item">
+                    <table cellspacing="0" cellpadding="0" class="fixed table-bordered table-hover table-activation">
+                        <thead>
+                            <tr>
+                                <th width="100px">No</th>
+                                <th width="80px" >Avatar</th>
+                                <th width="120px">First Name</th>
+                                <th width="120px">Last Name</th>
+                                <th width="200px">Email</th>
+                                <th width="300px">Job Title</th>
+                                <th width="120px">Activate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <% for (let i = 0; i < users.length; i++) { %>
+                            <tr>
+                                <td class="users_item_number">
+                                    <%= i + 1 %>
+                                </td>
+                                <td class="users_faceName">
+                                    <div class="users_faceName_box">
+                                        <img class="user_face" src="<%= users[i]['avatar'] %>" alt="img"/>
+                                    </div>
+                                </td>
+                                <td class="users_info"><%= users[i]['first_name'] %></td>
+                                <td class="users_info"><%= users[i]['last_name'] %></td>
+                                <td class="users_info">
+                                    <%= users[i]['email'] %>
+                                </td>
+                                <td class="users_info">
+                                    <%
+                                        const job = users[i]['job'] || '-';
+                                        const company = users[i]['company'] || '-';
+                                    %>
+                                    <%= job %> at <%= company %>
+                                </td>
+                                <td class="users_info">
+                                    <button type="button" class="btn common_btn activate-btn"
+                                            id="<%= users[i]['id'] %>">Activate</button>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+
+    </div>
+
+    <% include ../../partials/footer.ejs %>
+
+</div>
+
+<% include ../../partials/storage.ejs %>
+<% include ../../partials/foot.ejs %>
+<% include client-activate_action.ejs %>
+</body>
+</html>

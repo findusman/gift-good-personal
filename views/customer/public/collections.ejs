@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+  <% include ../../partials/public_header.ejs %>
+
+  <div class="admin_content_area">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="admin_subtitle">
+          <h4><i>signature</i> COLLECTIONS</h4>
+        </div>
+      </div>
+      <div class="row">
+        <% for (let i = 0; i < signature_collections.length; i++) { %>
+        <div class="col-md-6 col-sm-12 col-xl-3" style="padding-bottom: 30px;">
+          <div class="admin_collection_item">
+            <!--                            <img src="/resources/images/collection.png" alt="img"/>-->
+            <div class="collection-image-area">
+              <%
+                                var products = signature_collections[i]['products'];
+                            for (let ii = 0; ii < 12; ii++) {
+                            %>
+              <div class="admin_collection_piece">
+                <% if (ii < products.length) { %>
+                <img src="<%= products[ii]['image_data']['sub'][[0]] %>" alt="img" />
+                <% } %>
+              </div>
+              <% } %>
+            </div>
+            <h5><%= signature_collections[i]['title'] %></h5>
+            <a href='/collection/marketing/<%= signature_collections[i]['shopify_id'] %>'>
+              <button type="button" class="btn common_btn view-collection">VIEW COLLECTION
+              </button>
+            </a>
+
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <% include ../../partials/public_footer.ejs %>
+
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+{
+  "no_poverty": { "title": "No poverty", "image": "un-poverty.svg" },
+  "zero_hunger": { "title": "Zero Hunger", "image": "un-hunger.svg" },
+  "health": { "title": "Good Health and Well-being", "image": "un-health.svg" },
+  "education": { "title": "Quality Education", "image": "un-education.svg" },
+  "gender_equality": { "title": "Gender Equality", "image": "un-gender.svg" },
+  "life_water": { "title": "Clean Water and Sanitation", "image": "un-water.svg" },
+  "energy": { "title": "Affordable and Clean Energy", "image": "un-energy.svg" },
+  "work": { "title": "Decent Work and Economic Growth", "image": "un-work.svg" },
+  "industry": { "title": "Industry, Innovation and Infrastructure", "image": "un-industry.svg" },
+  "reduced_inequalities": { "title": "Reduced Inequalities", "image": "un-inequalities.svg" },
+  "sustainable_cities": { "title": "Sustainable Cities and Communities", "image": "un-sustainable.svg" },
+  "consumption": { "title": "Responsible Consumption and Production", "image": "un-consumption.svg" },
+  "climate_action": { "title": "Climate Action", "image": "un-climate.svg" },
+  "aquatic": { "title": "Life Below Water", "image": "un-aquatic.svg" },
+  "life_land": { "title": "Life on Land", "image": "un-land.svg" },
+  "peace": { "title": "Peace, Justice and Strong Institutions", "image": "un-peace.svg" },
+  "partnerships": { "title": "Partnerships for the Goals", "image": "un-partnerships.svg" }
+}

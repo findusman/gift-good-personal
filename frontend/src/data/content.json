@@ -1,0 +1,389 @@
+{
+  "learnMore": {
+    "gifts": {
+      "heading": "Introduction to Collections",
+      "body": {
+        "sections": [
+          {
+            "key": "1",
+            "title": "Gift Collection",
+            "content": "Our standard gift collections include a wide range of both physical gifts (i.e. a blanket or brownies) and charity impact options (i.e. plant 200 trees or give 50 meals to a child in need). Your recipients will have the option to redeem a physical gift or to give to a charitable cause that resonates with them. Prices are inclusive of shipping and taxes. Available only to recipients in the United States."
+          },
+          {
+            "key": "2",
+            "title": "Charity Giving Collection",
+            "content": "Our charity giving program is designed for those who would prefer to make a charity impact in honor of their gift recipients; and is available to send to gift recipients anywhere in the world. Gifts for Good regularly reviews its portfolio of nonprofit partners to ensure that a variety of social impact outcomes can be supported through the charity giving collection."
+          },
+          {
+            "key": "3",
+            "title": "",
+            "content": "The list of nonprofit partners may change; some of our current charity partners include: American Cancer Society, Best Friends Animal Society, Eden Reforestation Projects, Giving Children Hope, Kids In Need Foundation, Project HOPE, Vitamin Angels, and Water for Good."
+          },
+          {
+            "key": "4",
+            "title": "International Collection (outside the U.S.)",
+            "content": "Our international collection is only available to gift recipients who live outside the United States. Physical gifts can only be shipped to eligible countries. Upon receiving their gift link, recipients will be prompted to enter their desired country to ship to and available gifts that can ship to that country will appear. If your recipient lives in a country where Gifts for Good cannot ship physical products, they will be presented with our charity giving collection. Prices are inclusive of taxes and shipping."
+          }
+        ]
+      }
+    },
+    "recipients": {
+      "heading": "Introduction to Recipients",
+      "body": {
+        "sections": [
+          {
+            "key": "1",
+            "title": "Download Template",
+            "content": "Please upload your recipient list using our file template.",
+            "device": "desktop"
+          },
+          {
+            "key": "2",
+            "content": "Download the template.",
+            "type": "download",
+            "downloadSrc": "/resources/csv/GIFTforward_gift_recipient_template.csv",
+            "device": "desktop"
+          },
+          {
+            "key": "3",
+            "title": "Smart Tags",
+            "content": "Our system uses smart tags to personalize your email and landing page for your recipients. It is important to use the recipient template in order to address your recipients correctly.",
+            "device": "desktop"
+          },
+          {
+            "key": "4",
+            "title": "Smart Tags",
+            "content": "Our system uses smart tags to personalize your email and landing page for your recipients. It is important to enter the correct information for your recipient and sender in order to address your recipients correctly.",
+            "device": "mobile"
+          },
+          {
+            "key": "5",
+            "title": "Bulk Upload",
+            "content": "Note: If you are looking to do a bulk upload of your gift recipients, please login to GIFTforward on your desktop. Bulk upload via Excel/CSV file is not available on mobile.",
+            "device": "mobile"
+          }
+        ]
+      }
+    },
+    "design": {
+      "heading": "Introduction to Design",
+      "body": {
+        "sections": [
+          {
+            "key": "1",
+            "title": "",
+            "content": "Here is where you will be able to customize both the email to your recipients and the landing page for the selected gift collection."
+          },
+          {
+            "key": "2",
+            "title": "",
+            "content": "This will be the email that arrives in your recipient's inbox with the unique link that leads to their curated gift collection landing page. You will be able to preview your email and landing page and can make adjustments before you send."
+          }
+        ]
+      },
+      "messages": {
+        "designDescription": "Design a customizable email for your recipients and the gift collection landing page."
+      }
+    },
+    "payment": {
+      "heading": "Introduction to Payments",
+      "body": {
+        "sections": [
+          {
+            "key": "1",
+            "title": "",
+            "content": "All purchases on GIFTforward are the purchase of Credits. Credits are gifting currency; 1 Credit = $1 USD (US Dollar). For example, if you have 100 credits in your account you can send one gift from the $100 collection. If your credit balance is lower than your cost at checkout you will be able to apply your credits first, and pay the remaining balance with a credit card."
+          },
+          {
+            "key": "2",
+            "title": "",
+            "content": "If the gifts you send aren't redeemed by the recipient— either because their gift link expired or an email address bounced— the gift value automatically gets returned to your account in the form of credits. You can use those credits to do more good in the world—either by sending more gifts, or donating any remaining credits to charity."
+          },
+          {
+            "key": "3",
+            "title": "",
+            "content": "Once your payment is completed, you will receive a receipt via email. Note: if you would prefer to pay via ACH, check, or wire transfer, please call (877) 554-1550 or email support@giftsforgood.com."
+          }
+        ]
+      },
+      "messages": {
+        "paymentDescription": "Enter your payment details and your gifts will be on their way to do good in the world."
+      }
+    }
+  },
+  "giftsStep": {
+    "collectionAmountModal": {
+      "title": "Select Collection and Amount",
+      "description": "Please choose the type of gift you'd like to send, and the amount you'd like to spend. Note: prices are inclusive of shipping and taxes."
+    },
+    "mainPage": {
+      "headingFirstPart" : "Gift the",
+      "headingSecondPart": "collection to help people and the planet.",
+      "description": "Your recipient makes an impact by choosing a gift from the collection you select."
+    }
+  },
+  "recipientsStep": {
+    "description": "Add and manage your gift recipients.",
+    "recipients": "Recipients",
+    "confirmation": {
+      "title": "Please confirm.",
+      "content": "All updated recipient data will be reset.",
+      "confirmText": "Continue",
+      "cancelText": "Cancel"
+    },
+    "distribution": {
+      "title": "Step 1: Select Distribution Method",
+      "subtitle": "Select how your gift recipients will receive their gift collection.",
+      "gfg": {
+        "title": "Gifts for Good Emails Recipients",
+        "description": "Gifts for Good will email your recipients. Added perks include open/click rates and automated reminder emails for unredeemed gifts."
+      },
+      "self": {
+        "title": "Receive Unique Links",
+        "description": "Receive a spreadsheet with unique gift links for each person that you then need to send on your own.",
+        "note": "Note: This option will not have access to email analytics or automated reminder emails"
+      },
+      "confirmationDialog": {
+        "title": "Are you sure?",
+        "content": "If you select 'YES' then all added recipients will be deleted"
+      }
+    },
+    "entryMethodMessage": {
+      "fileMethod": "Upload Recipients File",
+      "manualMethod": "Enter Recipients Manually"
+    },
+    "addRecipients": {
+      "addRecipientsSectionHeading": "Step {{counter}}: Add Recipients",
+      "uploadOption": {
+        "title": "Bulk Upload Option",
+        "descriptionPartOne": "Upload recipients in bulk using our file template (",
+        "descriptionPartTwo": ") or enter recipients manually.",
+        "uploadHeader": "Upload a CSV or Excel file to begin the import process",
+        "uploadSubheader": "The next step will allow you to match your spreadsheet columns to the right data points. You'll be able to clean up or remove any data before finalizing your gift recipients.",
+        "infoBannerText": "Make sure your file includes the following required columns:"
+      },
+      "manualOption": {
+        "title": "Enter Manually Option",
+        "description": "Add recipients individually using manual data entry."
+      }
+    },
+    "addRecipientsModal": {
+      "description": "Enter your recipients manually and your gift send date. All times are relative to PST.",
+      "noDateDescription": "If no date and time are provided, gift emails will be sent out immediately after review by the Gifts for Good team.",
+      "addRecipient": "Add a Recipient"
+    },
+    "dateTimeModal": {
+      "title": "Campaign Send Time",
+      "description": "Please select a send date and time for your gift recipients. Send times are in Pacific Standard Time (PST). Skip this if you’d like to customize send dates per recipient."
+    },
+    "manageRecipients": {
+      "manageRecipientsSectionHeading": "Step {{counter}}: Manage Recipients",
+      "description": "Review and edit your recipient list.",
+      "recipientsAddedSingular": "recipient added",
+      "recipientsAdded": "recipients added",
+      "editRecipients": "Edit recipients",
+      "campaignExpirationTitle": "Campaign Expiration",
+      "campaignExpirationDescription": "Select the gift link expiration period. Any unclaimed gifts will become a gift credit in your account.",
+      "campaignExpirationMonths": "Months until gift expiration"
+    }
+  },
+  "designStep": {
+    "learnAboutSmartTags": "learn about smart tags",
+    "smartTagDialog": {
+      "heading": "Introduction to Smart Tags",
+      "sections": [
+        {
+          "key": 1,
+          "content": "Use smart tags to personalize sections that are specific to each gift recipient, like Recipient First Name or Recipient Company. Smart tag fields will fill in later when you send your gifts. You can use smart tags to personalize both your email and landing page messages."
+        }, {
+          "key": 2,
+          "content": "I.e. 'Recipient First Name' will be replaced with each recipient's first name during the sending process."
+        }
+      ]
+    },
+    "uploadDialogs": {
+      "logo": {
+        "title": "Upload Logo",
+        "text": "Upload your company's logo. Supported file types: JPG, PNG, GIF. Recommended resolution: 550px by 550px (1:1 aspect ratio); or 560px by 315px (16:9 aspect ratio). File size limit: 3 MB."
+      },
+      "banner": {
+        "title": "Upload Banner Image",
+        "text": "Upload a banner image to use in your email and/or landing page. Supported formats: JPG, PNG, GIF. Recommended resolution: 1400px by 316px. File size limit: 8 MB."
+      },
+      "video": {
+        "title": "Upload Video",
+        "text": "Upload a video file to be used on your landing page. Supported formats: .mov, mp4. Size limit: 500 MB."
+      }
+    },
+    "sectionMessages": {
+      "emailSubject": {
+        "title": "Email Subject",
+        "subject": "Subject:",
+        "recipientHeadingTo": "To: [recipient's email address]",
+        "recipientHeadingFrom": "From: Gifts for Good <giftforward@giftsforgood.com>"
+      },
+      "emailMessage": {
+        "title": "Email Message",
+        "selectFromLibrary": "Select Email Message From Template Library"
+      },
+      "signature": {
+        "title": "Signature"
+      },
+      "landingPage": {
+        "title": "Landing Page Message",
+        "selectMessage": "Select Landing Page Message From Template Library",
+        "description": "Your custom Landing Page will show the collection of gifts that your recipients can choose from."
+      },
+      "logo": {
+        "title": "Logo",
+        "uploadImage": "Upload Logo",
+        "includeLandingPage": "Include This Custom Logo On The Landing Page",
+        "includeCustomLogo": "Include This Custom Logo In The Email",
+        "includeLogo": "Include The Gifts for Good Logo In The Email",
+        "description": "Upload an optional custom logo.",
+        "customLogo": "Your Custom Logo Here"
+      },
+      "bannerImage": {
+        "title": "Banner Image",
+        "uploadBannerImage": "Upload Banner Image",
+        "selectFromLibrary": "Select Banner Image From Library",
+        "includeLandingPage": "Include This Banner Image On The Landing Page",
+        "includeEmail": "Include This Banner Image In The Email",
+        "description": "Upload an optional custom banner image, or select a banner image from our library."
+      },
+      "video": {
+        "title": "Video",
+        "uploadVideo": "Upload Video",
+        "selectFromLibrary": "Select Video From Library",
+        "includeLandingPage": "Include This Video On The Landing Page",
+        "description": "Add an optional video message to your gift redemption landing page. You may use our Gifts for Good impact video, or upload your own custom one."
+      }
+    },
+    "preview": {
+      "title": "Preview",
+      "infoText": "Preview your customized email and landing page.",
+      "desktopLanding": "Desktop landing page",
+      "mobileLanding": "Mobile landing page",
+      "desktopEmail": "Desktop email",
+      "mobileEmail": "Mobile email",
+      "emailPreview": "Email Preview",
+      "landingPreview": "Landing Page Preview"
+    },
+    "charactersRecommendation": "{{count}} characters recommended"
+  },
+  "paymentStep": {
+    "paymentMethods": {
+        "addPaymentMethod": "Add a Payment Method",
+        "editButton": "Edit Payment Details",
+        "addButton": "Add Payment Method",
+        "credits": "Credits",
+        "useCredits": "Use Credits",
+        "includeShipping": "includes shipping and taxes",
+        "creditsModalContent": [
+          { "id": 1, "text": "All purchases on GIFTforward are the purchase of Credits. The credits are used to send your gifts. 1 Credit = $1 USD. Credits can only be purchased in USD (US Dollars), "},
+          { "id": 2, "text": "Unused credits may be used for future gifting on the GIFTforward platform. Any unredeemed credits will be refunded to your account once the campaign expires, to be used at a later time."}
+        ]
+    },
+    "addPaymentMethodModal": {
+      "title": "Add Payment Method",
+      "editTitle": "Edit Payment Details",
+      "description": "Add a credit or debit card. Gifts for Good accepts all major credit and debit cards.",
+      "nameOnCard": "Name on Card",
+      "zip": "ZIP",
+      "cardInfo": "Card Information"
+    },
+    "clearPaymentDetailsConfirmation": {
+      "title" : "Please confirm.",
+      "content": "By closing this window your payment information will not be saved.",
+      "confirmText": "Confirm",
+      "cancelText": "Cancel"
+    },
+    "donation": {
+      "title": "Donate Credits",
+      "info": "By accepting to automatically donate any unclaimed credits, I agree to donate the value of any unclaimed gift credits to Gifts for Good’s global network of nonprofit partners.",
+      "label": "Automatically donate any unclaimed gifts",
+      "modalContent": [
+        { "id": 1, "text": "By accepting to donate your GIFTforward credits, you agree to donate any unclaimed gift credits once your campaign expires to Gifts for Good’s global network of nonprofit partners." },
+        { "id": 2, "text": "Gifts for Good regularly reviews its portfolio of nonprofit partners to ensure that a variety of social impact outcomes can be supported through our work. The list of nonprofit partners may change; some of our current charity partners include: American Cancer Society, Best Friends Animal Society, Eden Reforestation Projects, Giving Children Hope, Kids In Need Foundation, Project HOPE, Vitamin Angels, and Water for Good." }
+      ]
+    }
+  },
+  "productPreview": {
+    "support": {
+      "title": "Your Support Matters",
+      "text": "When you choose any gift at Gifts for Good, you support a nonprofit or small business in need. As a woman-owned small business and Certified B Corporation, our products meet the highest standards of verified social, economic, and environmental impact.",
+      "images": [
+        {
+          "src": "https://cdn.shopify.com/s/files/1/1826/6559/files/96E3461B-8B33-4663-9AB6-7AA0FEEAD4CD_1_4b268e29-3662-45d2-9f67-e1ae3380d271_x600.jpg?v=1630293478",
+          "isBigger": true
+        },
+        {
+          "src": "https://cdn.shopify.com/s/files/1/1826/6559/files/iStock-519084074_1_x600.jpg?v=1630292702",
+          "isSmaller": true
+        },
+        {
+          "src": "https://cdn.shopify.com/s/files/1/1826/6559/files/ABLE_1_x600.jpg?v=1630293783"
+        },
+        {
+          "src": "https://cdn.shopify.com/s/files/1/1826/6559/files/Copy_of_Ernesto_Instructor_2_1_x600.jpg?v=1630292881"
+        }
+      ]
+    },
+    "details": { "title": "Product Details" },
+    "impact": { "title": "Your Impact" },
+    "goals": { "title": "United Nations Goals" },
+    "story": { "title": "Story Card", "text": "Your gift will come with the following social impact story card explaining the charitable cause behind the product." }
+  },
+  "confirmation": {
+    "thankYou": "Thank you for using your gifts to do good in the world.",
+    "willReviewCampaign": "We will review your campaign before sending.",
+    "goToDashboard": "Go to Dashboard"
+  },
+  "editor": {
+    "addSmartTag": "Add Smart Tag"
+  },
+  "bottomNavigation": {
+    "next": "Next step",
+    "finish": "Send Gifts"
+  },
+  "header": {
+    "campaignTitleLabel": "Campaign name:",
+    "backToDashboard": "Back to dashboard"
+  },
+  "common": {
+    "viewMore": "View More",
+    "viewDetails": "View Details",
+    "done": "Done",
+    "learnMore": "Learn More",
+    "change": "Change",
+    "downloadTemplate": "download the template",
+    "preview": "Preview",
+    "previewLandingPage": "Preview Landing Page",
+    "previewDesign": "Preview Design",
+    "defaultVideo": "/resources/videos/default.mp4",
+    "remove": "Remove",
+    "campaignName": "Campaign name",
+    "skip": "Skip",
+    "next": "Next",
+    "optional": "(optional)",
+    "required": "(required)",
+    "showMore": "Show More",
+    "recipient": "Recipient",
+    "sender": "Sender",
+    "datetime": "Time/Date",
+    "prev": "Prev",
+    "or": "OR",
+    "created": "created",
+    "back": "Back"
+  },
+  "errors": {
+    "subjectRequired": "Please enter email subject",
+    "emailMessageRequired": "Please enter email message",
+    "signatureRequired": "Please enter signature",
+    "recipientsValidationTitle": "Oops! Looks like you forgot something.",
+    "recipientsValidationContent": "Every recipient must have a first name and a valid email address.",
+    "paymentError": "Payment Error",
+    "videoError": "Your browser does not support the video tag.",
+    "productsError": "No products found"
+  }
+}

@@ -1,0 +1,21 @@
+<% if (maxPage > 1) { %>
+  <nav aria-label="Contacts pagination" class="mt-4 d-flex justify-content-center">
+    <ul class="pagination">
+      <li class="page-item <%= page === 1 && 'disabled' %>">
+        <a class="page-link text-reset" href="<%= link %>?page=1<%= urlParams %>" aria-label="First">
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">First</span>
+        </a>
+      </li>
+      <li class="page-item <%= parseInt(page) - 1 < 1 && 'disabled' %>"><a class="page-link text-reset" href="<%= link %>?page=<%= parseInt(page) - 1 %><%= urlParams %>">Previous</a></li>
+      <li class="page-item disabled"><a class="page-link text-reset" href="<%= link %>page=1<%= urlParams %>">Page <%= page %> of <%= maxPage %></a></li>
+      <li class="page-item <%= parseInt(page) + 1 > maxPage && 'disabled' %>"><a class="page-link text-reset" href="<%= link %>?page=<%= parseInt(page) + 1 %><%= urlParams %>">Next</a></li>
+      <li class="page-item <%= page === maxPage && 'disabled' %>">
+        <a class="page-link text-reset" href="<%= link %>?page=<%= maxPage %><%= urlParams %>" aria-label="Last">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Last</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+<% } %>

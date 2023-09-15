@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+
+<div class="admin">
+    <% include ../../partials/loader.ejs %>
+    <% include ../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+        <div class="alert alert-dismissible fade show signed_alart d-none" role="alert">
+            <img src="/resources/images/icons/green-tic.png" alt="img"/>
+            Signed in successfully.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="admin_title_area">
+            <div class="container-fluid">
+                <div class="row col-md-12">
+                    <div style="flex: 1;">
+                        <h2>Gifts</h2>
+                    </div>
+                    <% if (ability.can('create', 'Campaign')) { %>
+                        <div>
+                            <button type="button" class="btn common_btn send-a-gift">SEND A GIFT</button>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin_search_area">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form class="information_form admin_search_input">
+                            <div class="form-group search_input">
+                                <input type="text" class="form-control" id="gift-search" placeholder="Search gifts by typing name or email" value="<%= search %>">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="admin_search_nav">
+                            <ul>
+                                <li style="display: none;">
+                                    <div class="step_checkbox_area">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="customCheck3">
+                                            <label class="custom-control-label" for="customCheck3">ONLY SHOW MY GIFTS</label>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="export-row">
+                                        <button type="button" class="btn yellow_border_btn" id="export_csv_btn">Export to CSV</button>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn dropdown_btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            SORT BY <img src="/resources/images/icons/arrow-down-2.png">
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-6px, 48px, 0px);">
+                                            <% sortOptions.map(option => { %>
+                                                <a class="dropdown-item <%= sm === option.code ? 'active' : '' %>" href="/gifts?sm=<%= option.code %>&vm=<%= vm %>&search=<%= search %>&campaign=<%= activeCampaignIds.join(',') %>">
+                                                    <%= option.title %>
+                                                </a>
+                                            <% }) %>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn dropdown_btn text-uppercase" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <%= `${activeStatusFilter.title} gifts` %> <img src="/resources/images/icons/arrow-down-2.png">
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-6px, 48px, 0px);">
+                                            <% statusFilterOptions.map(option => { %>
+                                                <a class="dropdown-item <%= vm === option.code ? 'active' : '' %>" href="/gifts?vm=<%= option.code %>&sm=<%= sm %>&search=<%= search %>&campaign=<%= activeCampaignIds.join(',') %>">
+                                                    <%= option.title %>
+                                                </a>
+                                            <% }) %>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <%- include('../../partials/campaigns-filter.ejs', { link: `/gifts/?vm=${vm || ''}&sm=${sm || ''}&search=${search || ''}&campaign=` }) %>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <% if (!contacts.length) { %>
+            <div class="pastorder_item text-center"><span style="font-size: 25px;">No gifts found.</span></div>
+        <% } %>
+
+        <% for (let i = 0; i < contacts.length; i++) { %>
+
+        <div class="admin_content_area">
+            <div class="gifts_activity_area">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="gifts_activity_info">
+                                <% if (contacts[i]['step'] === 'sent' || contacts[i]['step'] === 'confirmed'
+                                        || contacts[i]['step'] === 'redeemed' || contacts[i]['step'] === 'shipped'
+                                        || contacts[i]['step'] === 'delivered') { %>
+                                <div class="gifts_activity_status active"></div>
+                                <% } %>
+                                <ul>
+                                    <% if (contacts[i]['step'] !== 'sending' && contacts[i]['step'] !== 'bounced'
+                                            && contacts[i]['sent_at']) { %>
+                                        <li><strong>SENT: </strong> <%= moment(contacts[i]['sent_at']).format('h:mm A z, MM/D/YYYY') %></li>
+                                    <% } %>
+                                    <% if ((contacts[i]['step'] === 'redeemed' || contacts[i]['step'] === 'shipped'
+                                            || contacts[i]['step'] === 'delivered') && contacts[i]['redeemed_at']) { %>
+                                        <li><strong>REDEEMED: </strong> <%= moment(contacts[i]['redeemed_at']).format('h:mm A z, MM/D/YYYY') %></li>
+                                    <% } %>
+<!--                                    <li><%= moment(contacts[i]['createdAt']).format('h:mm A Z, MMMM Do, YYYY') %></li>-->
+                                    <% if (contacts[i]['step'] === 'declined') { %>
+                                        <li><strong>DECLINED </strong></li>
+                                    <% } %>
+                                    <% if (contacts[i]['tracking_number']) { %>
+                                    <li>TRACKING #: &nbsp; <a href="<%= contacts[i]['tracking_url'] %>" target="_blank">
+                                            <b class="has_border"><%= contacts[i]['tracking_number'] %></b>
+                                        </a></li>
+                                    <% } %>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="gifts_activity_btns">
+                                <% if (contacts[i]['step'] === 'delivered') { %>
+                                    <button type="button" class="btn delivered_btn">DELIVERED</button>
+                                <% } %>
+                                <% if (checkIfRedeemed(contacts[i]['step'])) { %>
+                                    <button type="button" class="btn redeemed_btn">REDEEMED</button>
+                                <% } %>
+                                <% if (contacts[i]['step'] !== 'sending' && contacts[i]['step'] !== 'bounced') { %>
+                                <button type="button" class="btn messaged_btn">EMAIL_SENT</button>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="gifts_client_area">
+                <div class="client_gifts_img">
+                    <% productImage = contacts[i]['product']['image_data'] ? contacts[i]['product']['image_data']['sub'][0] : contacts[i]['product']['variant_image'] %>
+                    <% if (contacts[i]['order_id']) { %>
+                        <img src="<%= productImage %>" alt="img">
+                    <% } else { %>
+                        <p>*Gift not yet selected</p>
+                    <% } %> 
+                </div>
+                <div class="gifts_client_info">
+                    <div class="gifts_client_img">
+                        <img class="user_face" src="/resources/images/users/default.png" alt="img">
+                    </div>
+                    <div class="gifts_client_info_txt">
+                        <h4 id="rec-name"><%= contacts[i]['to_first_name'] %> <%= contacts[i]['to_last_name'] %></h4>
+                        <h5 id="rec-email"><%= contacts[i]['to_email'] %></h5>
+                        <% if (contacts[i]['shipping_address']) { %>
+                            <p>
+                                <img src="/resources/images/icons/map-marker.png" alt="icon">
+                                <%= contacts[i]['shipping_address'] %>
+                                <br/>
+                                <%= contacts[i]['shipping_city'] %>, <%= contacts[i]['shipping_state'] %>
+                            </p>
+                        <% } else if (contacts[i]['decline_reason']) { %>
+                            <p><b>Decline reason: </b><%= contacts[i]['decline_reason'] %></p>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="gifts_client_txt">
+                    <p>
+                        <%- contacts[i]['thank_note'] %>
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <% } %>
+
+        <% const campaignParam = activeCampaignIds.length ? `&campaign=${activeCampaignIds.join(',')}` : '' %>
+        <%- include('../../partials/pagination.ejs', { maxPage, page, link: '/gifts', urlParams: `&sm=${sm}&vm=${vm}${campaignParam}` }) %>
+
+    </div>
+
+    <% include ../../partials/footer.ejs %>
+
+</div>
+
+<% include ../../partials/storage.ejs %>
+<% include ../../partials/foot.ejs %>
+<% include client-gifts_action.ejs %>
+
+</body>
+</html>

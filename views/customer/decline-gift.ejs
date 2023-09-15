@@ -1,0 +1,101 @@
+<style>
+  .decline-gift-container {
+    margin: 0 auto;
+    max-width: 600px;
+    padding: 0 16px;
+  }
+
+  form div div {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  form input[type=radio] {
+    margin-top: 6px;
+  }
+</style>
+
+<% include ../partials/head.ejs %>
+<link rel="stylesheet" href="/resources/css/gift-confirmation.css">
+
+<body>
+  <% include ../partials/header.ejs %>
+  <div class="heading-container">
+    <img src="/resources/images/logo.svg" alt="Gifts For Good Logo" width="126px" class="mb-5 logo" />
+  </div>
+
+  <div class="decline-gift-container">
+    <div class="row">
+      <div class="col-md-12">
+        <% if (activeContact) { %>
+          <form id="decline-gift-form" action="#">
+            <p class="sub-heading mt-1 mb-4 text-center">Please select a reason for declining your gift:</p>
+            <div class="d-flex flex-column mx-auto">
+              <div>
+                <input
+                  type="radio"
+                  id="reason-1"
+                  name="reason"
+                  value="My company policy does not allow me to accept gifts."
+                  class="mr-2"
+                >
+                <label for="reason-1">My company policy does not allow me to accept gifts.</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="reason-2"
+                  name="reason"
+                  value="I would prefer to donate the gift value."
+                  class="mr-2"
+                >
+                <label for="reason-2">I would prefer to donate the gift value.</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="reason-3"
+                  name="reason"
+                  value="I do not need a gift at this time."
+                  class="mr-2"
+                >
+                <label for="reason-3">I do not need a gift at this time.</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="reason-4"
+                  name="reason"
+                  value="I do not know the sender or company who sent me this gift."
+                  class="mr-2"
+                >
+                <label for="reason-4">I do not know the sender or company who sent me this gift.</label>
+              </div>
+              <div>
+                <input type="radio" id="reason-other" name="reason" value="reason-other" class="mr-2">
+                <label for="reason-other">Other</label>
+                <input type="text" id="reason-text" placeholder="Please give a reason" class="ml-2 hidden" />
+              </div>
+
+              <div class="d-flex align-items-center mt-1">
+                <button type="button" class="btn dark_btn mx-auto" id="decline-gift-button" style="background: #333333;" disabled>
+                  Decline your gift
+                </button>
+              </div>
+            </div>
+          </form>
+          <div id="decline-gift-confirmation" class="hidden">
+            <p class="sub-heading mt-1 mb-4 text-center">Thank you. Your gift has been declined.</p>
+          </div>
+        <% } else { %>
+          <div>
+            <p class="sub-heading mt-1 mb-4 text-center">Thank you. Your gift has been declined.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <% include ../partials/foot.ejs %>
+  <% include decline-gift_action.ejs %>
+</body>

@@ -1,0 +1,66 @@
+{
+  "signIn": {
+    "heading": "Sign In",
+    "headingMobile":"Welcome back!",
+    "subHeading": "Welcome back! Let’s keep doing good.",
+    "subheadingMobile": "Let’s keep doing good.",
+    "button": "Sign In",
+    "resentInvitationError": "We couldn't resend your invitation.",
+    "resetInvitationTitle": "Reset Invitation Sent!",
+    "resetInvitationMessage": "We've sent you an email with an activation link.",
+    "resetInvitationConfirm": "Ok"
+  },
+  "register": {
+    "heading": "Register",
+    "subHeading": "Welcome! We’re excited to use your gifts to do good in the world. ",
+    "subTitle": "Don’t have an account? Let’s get started.",
+    "button": "Create an account"
+  },
+  "forgotPassword": {
+    "heading": "Forgot Password",
+    "subHeading": "Enter your email address and we’ll send you a link to reset your password.",
+    "button": "Send Reset Link",
+    "resetSuccessTitle": "Reset Link Sent",
+    "resetSuccess": "We’ve sent you an email with a link to reset your password.",
+    "resetSuccessConfirm": "Ok"
+  },
+  "resetPassword": {
+    "heading": "Reset Password",
+    "subHeading": "Enter your new password below.",
+    "button": "Reset",
+    "resetSuccessTitle": "Password Reset",
+    "resetSuccess": "Your password has been reset.",
+    "resetSuccessConfirm": "Ok"
+  },
+  "common": {
+    "giftForward": "Gift forward",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "job": "Job Title",
+    "company": "Company",
+    "forgotPassword": "Forgot Password?",
+    "lostInvitation": "Lost invitation?",
+    "haveAnAccount": "Have an account? Login",
+    "agreement": "I Agree to the",
+    "termsAndConditions": " Terms and Conditions",
+    "or": "or",
+    "required": "This field is required",
+    "passwordNotMatch": "Passwords do not match",
+    "errorTitle": "Authentication Error",
+    "errorMessage": "Provided email or password is incorrect",
+    "errorNoEmail": "Please enter your email address",
+    "backToLogin": "Back to Login"
+  },
+  "placeholder": {
+    "email": "sam@acme.com",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "Sam",
+    "lastName": "Wilson",
+    "job": "CEO",
+    "company": "Acme, Inc"
+  }
+}

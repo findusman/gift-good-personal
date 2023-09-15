@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" <script src="https://js.stripe.com/v3/">
+</script>
+<% include ../../partials/head.ejs %>
+
+<body>
+
+  <div class="admin">
+    <% include ../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+      <div class="credit-container pt-4">
+        <h4>You have <span style="color:#C8B398"><%= credit_balance.toLocaleString() %></span> credits</h4>
+        <p class='pt-2'><i>Any unredeemed credits will be refunded to your account once the campaign expires.</i></p>
+      </div>
+      <h3 class='pt-4'>Buy Credit</h3>
+      <h6 class='pt-2'>Select Credit Option <span style="font-size: 12px;" class="pl-2">1 credit equals $1</span></h6>
+      <div class="credit-container">
+        <div>
+          <div class='radio'>
+            <label>
+              <input type="radio" name="prepay" value="1000" data-cash="$1,000" />
+              $1,000 for 1,000 credits
+            </label>
+          </div>
+        </div>
+        <div class='prepayment'>
+          <div class='radio'>
+            <label>
+              <input type="radio" name="prepay" value="2500" data-cash="$2,500" />
+              $2,500 for 2,500 credits
+            </label>
+          </div>
+        </div>
+        <div class='prepayment'>
+          <div class='radio'>
+            <label>
+              <input type="radio" name="prepay" value="5000" data-cash="$5,000" />
+              $5,000 for 5,000 credits
+            </label>
+          </div>
+        </div>
+        <div class='prepayment'>
+          <div class='radio'>
+            <label>
+              <input type="radio" name="prepay" value="10000" data-cash="$10,000" />
+              $10,000 for 10,000 credits
+            </label>
+          </div>
+        </div>
+        <div class='prepayment'>
+          <div class='radio'>
+            <label>
+              <input type="radio" name="prepay" value="custom" data-track="Custom Amount" />
+              Custom Amount
+              <input type="text" name="prepay" id="custom-amount" class="form-control" />
+            </label>
+          </div>
+        </div>
+      </div>
+      <h3 class='pt-4'>Add New Payment Method</h3>
+      <div class='stripe-form'>
+        <form class="credit-container" id="payment-form">
+          <section style="padding-bottom: 16px;">
+            <input type="text" class="form-control card-name" placeholder="Name" />
+          </section>
+          <section style="padding-bottom: 16px;">
+            <div class="form-control" id="card-number">
+              <!--Stripe.js injects the Card Element-->
+            </div>
+          </section>
+          <section style="padding-bottom: 16px;">
+            <div class="form-control" id="card-expiry">
+              <!--Stripe.js injects the Card Element-->
+            </div>
+          </section>
+          <section style="padding-bottom: 16px;">
+            <div class="form-control" id="card-cvc">
+              <!--Stripe.js injects the Card Element-->
+            </div>
+          </section>
+          <button id="submit" class="stripe" style="width: 204px;">
+            <div class="spinner hidden" id="spinner"></div>
+            <span id="button-text">COMPLETE PAYMENT</span>
+          </button>
+          <p id="card-error" role="alert"></p>
+          <i class='pt-4'>Have additional questions about payment options? Please call (877) 554-1550 or email <a style="color: black;" href="mailto: support@giftsforgood.com">support@giftsforgood.com</a>.</i>
+        </form>
+      </div>
+      <h3 class='pt-4'>Your Open Campaigns</h3>
+      <div class="admin_content_area">
+        <div class="container-fluid">
+          <% for (let i = 0; i < credit_accounts.length; i++) { %>
+          <div class="box-content" style="margin-top: 15px; padding: 25px;">
+            <div class="d-flex color-444">
+              <span class="flex-1 pl-5">Title: <%= credit_accounts[i].campaign?.title %></span>
+              <span class="flex-1 pl-5">Unredeemed Credits: <%= credit_accounts[i].credit_amount %></span>
+              <span class="flex-1 pl-5">Expiration Date: <%= moment(credit_accounts[i].campaign?.expire_date).format('MM/DD/YYYY') %></span>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <h3 class='pt-4'>Your Orders</h3>
+      <div class="admin_content_area">
+        <div class="container-fluid">
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="admin_activity_box">
+                <h3><%= credit_balance %></h3>
+                <p>CURRENT CREDIT BALANCE</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="admin_activity_box">
+                <h3><%= redeemed_count %></h3>
+                <p>GIFTS REDEEMED</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="admin_activity_box">
+                <h3><%= transaction_history.length %></h3>
+                <p>TRANSACTIONS</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <% for (let i = 0; i < transaction_history.length; i++) { %>
+          <div class="box-content" style="margin-top: 15px; padding: 25px;">
+            <div class="d-flex color-444">
+              <span class="flex-1 pl-5">Purchase Date: <%= moment(transaction_history[i]['createdAt']).format('MM/DD/YYYY') %></span>
+              <span class="flex-1 pl-5">Credits: <%= transaction_history[i]['creditAmount']%></span>
+              <span class="flex-1 pl-5">Purchase Cost: $<%= transaction_history[i]['usd_amount']%></span>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+
+    </div>
+
+    <% include ../../partials/footer.ejs %>
+
+  </div>
+
+
+  <% include ../../partials/modals.ejs %>
+  <% include ../../partials/storage.ejs %>
+  <% include ../../partials/foot.ejs %>
+  <% include ../../partials/purchase-credit_actions.ejs %>
+
+</body>
+
+</html>

@@ -1,0 +1,157 @@
+<script type="text/javascript">
+    $('.button--edit').on('click', function(event) {
+        event.preventDefault();
+
+        const $this = $(this);
+        const collection_id = $this.attr('data-collection-id');
+
+        $(`#collection-edit-modal-${collection_id}`).modal('show');
+
+        return false;
+    });
+
+    $('.modal-edit-collection #cancel-btn').on('click', function(event) {
+        event.preventDefault();
+
+        const $this = $(this);
+        const collection_id = $this.closest('.modal-edit-collection').attr('data-collection-id');
+
+        $(`#collection-edit-modal-${collection_id}`).modal('hide');
+
+        return false;
+    });
+
+    $('.modal-edit-collection #update-btn').on('click', function(event) {
+        event.preventDefault();
+
+        const $this = $(this);
+        const $modal = $this.closest('.modal-edit-collection');
+        const collection_id = $modal.attr('data-collection-id');
+
+        const collection_type = $modal.find('[name=collection-type]').val();
+        const collection_price = $modal.find('[name=collection-price]').val();
+        const collection_title = $modal.find('[name=collection-title]').val();
+        const collection_title_short = $modal.find('[name=collection-title-short]').val();
+        const collection_title_long = $modal.find('[name=collection-title-long]').val();
+        const collection_title_dropdown = $modal.find('[name=collection-title-dropdown]').val();
+
+        showLoader(true);
+        $.ajax({
+            url: '/collection/update',
+            method: 'POST',
+            data: {
+                cid: collection_id, 
+                type: collection_type,
+                price: collection_price,
+                title: collection_title,
+                title_short: collection_title_short,
+                title_long: collection_title_long,
+                title_dropdown: collection_title_dropdown,
+            },
+            success: function (res) {
+                showLoader(false);
+                if (res.status === 'success') {
+                    showInfo(res.msg);
+                    $(`[data-collection-id=${collection_id}] .users_faceName`).text(collection_title); 
+                    $(`#collection-edit-modal-${collection_id}`).modal('hide');
+                }
+            },
+            error: function (err) {
+                console.log(err);
+                showLoader(false);
+                const status = err.responseJSON.status;
+                const msg = err.responseJSON.msg;
+                if (status === 'failed') {
+                    showError(msg);
+                }
+            }
+        });
+
+        return false;
+    });
+
+    $('.collection-remove-btn ul li span.menu-delete-item').on('click', function () {
+        const collection_id = $(this).attr('collection-id');
+        $('#confirm-modal .modal-title h3').text('Please confirm Deletion');
+        $('#confirm-type').val('remove-collection');
+        $('#extra-param').val(collection_id);
+        $('#confirm-btn').text('YES, DELETE');
+        $('#confirm-content').text('Please confirm you want to delete this collection. If the collection is deleted, all redemption links will cease to work. This collection will be cleared from your dashboard.');
+        $('#confirm-modal').modal('show');
+    });
+
+    $('#confirm-btn').on('click', function () {
+        $('#confirm-modal').modal('hide');
+        const confirm_type = $('#confirm-type').val();
+        if (confirm_type === 'remove-collection') {
+            const collection_id = $('#extra-param').val();
+            showLoader(true);
+            $.ajax({
+                url: '/collection/delete-collection',
+                method: 'POST',
+                data: {cid: collection_id},
+                success: function (res) {
+                    showLoader(false);
+                    if (res.status === 'success') {
+                        showInfo(res.msg);
+                        window.location.reload();
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                    showLoader(false);
+                    const status = err.responseJSON.status;
+                    const msg = err.responseJSON.msg;
+                    if (status === 'failed') {
+                        showError(msg);
+                    }
+                }
+            });
+        }
+    });
+
+    $('.internal-check').on('click', function() {
+        const collection_id = $(this).attr('collection-id');
+        const is_internal = $(this).is(':checked');
+        showLoader(true);
+        $.ajax({
+            url: '/collection/update-internal',
+            method: 'POST',
+            data: {cid: collection_id, internal: is_internal},
+            success: function (res) {
+                showLoader(false);
+                if (res.status === 'success') {
+                    showInfo(res.msg);
+                }
+            },
+            error: function (err) {
+                console.log(err);
+                showLoader(false);
+                const status = err.responseJSON.status;
+                const msg = err.responseJSON.msg;
+                if (status === 'failed') {
+                    showError(msg);
+                }
+            }
+        });
+    });
+
+    $('#collection-search input').keypress(function(evt) {
+        if (evt.which === 13) {
+            searchCollection();
+        }
+    });
+
+    $('#collection-search button').on('click', function() {
+        searchCollection();
+    });
+
+    function searchCollection() {
+        const key = $('#collection-search input').val().trim();
+        if (key) {
+            location.href='/admin-collections?key=' + key;
+        } else {
+            location.href='/admin-collections';
+        }
+    }
+</script>

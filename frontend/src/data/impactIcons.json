@@ -1,0 +1,86 @@
+{
+  "bipoc-owned": {
+    "image": "feature-bipoc",
+    "title": "BIPOC-Owned"
+  },
+  "bcorp": {
+    "image": "feature-bcorp",
+    "title": "B Corporation Certified"
+  },
+  "carbon-neutral": {
+    "image": "feature-carbon",
+    "title": "Carbon Neutral"
+  },
+  "certified-organic-textile": {
+    "image": "feature-textile",
+    "title": "Certified Organic Textile"
+  },
+  "cruelty-free": {
+    "image": "feature-cruelty-free",
+    "title": "Cruelty-Free"
+  },
+  "eco-friendly": {
+    "image": "feature-eco",
+    "title": "Eco-Friendly"
+  },
+  "empowers-women": {
+    "image": "feature-women",
+    "title": "Empowers Women"
+  },
+  "empowers-workers": {
+    "image": "feature-workers",
+    "title": "Empowers Workers"
+  },
+  "fair-trade-certified": {
+    "image": "feature-fairtrade",
+    "title": "Fair Trade Certified"
+  },
+  "gives-back": {
+    "image": "feature-gives",
+    "title": "Gives Back"
+  },
+  "handmade": {
+    "image": "feature-handmade",
+    "title": "Handmade"
+  },
+  "indigenous-populations": {
+    "image": "feature-indigenous",
+    "title": "Indigenous Artist Made"
+  },
+  "made-in-the-usa": {
+    "image": "feature-usa",
+    "title": "Made in the USA"
+  },
+  "organic-gmo-free": {
+    "image": "feature-organic",
+    "title": "Organic/GMO-Free"
+  },
+  "rainforest": {
+    "image": "feature-rainforest",
+    "title": "Rain Forest Alliance"
+  },
+  "recycled-material": {
+    "image": "feature-recycled",
+    "title": "Recycled Materials"
+  },
+  "socially-responsible-manufacturing": {
+    "image": "feature-socially",
+    "title": "Socially Responsible Manufacturing"
+  },
+  "sustainably-sourced": {
+    "image": "feature-sustainable",
+    "title": "Sustainably Sourced"
+  },
+  "vegan": {
+    "image": "feature-vegan",
+    "title": "Vegan"
+  },
+  "women-owned": {
+    "image": "women-owned",
+    "title": "Women-Owned"
+  },
+  "repurposed": {
+    "image": "feature-repurposed",
+    "title": "Repurposed Materials"
+  }
+}

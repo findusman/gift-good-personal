@@ -1,0 +1,135 @@
+<script type="text/javascript">
+  const statusHelper = <%- statusHelper %>;
+  const loadMoreObserver = new IntersectionObserver(onLoadMoreContacts, { threshold: 0.9 });
+  const modalObserver = new IntersectionObserver(onModalIntersection, { threshold: 1 });
+  const tableBottom = document.getElementById('table-bottom');
+  const modal = document.querySelector('.contacts-modal');
+  const exportContactsBtn = $('#export-contacts');
+  
+  let currentPage = 0;
+  let html = '';
+  let nextPage;
+  let loading = false;
+  let contactsStep = null;
+
+  function fetchContacts(campaign_id, step, campaign_title, page, viewBtn) {
+    loading = true;
+    $.ajax({
+      url: '/collection/list-contacts',
+      method: 'POST',
+      data: {
+        cid: campaign_id,
+        step,
+        page,
+      },
+      success: function(res) {
+        if (res.status === 'success') {
+          const { contacts, hasNextPage, activePage } = res.data;
+          if (contacts.length === 0 && step !== 'bounced' && step !== 'unredeemed') {
+            $('#confirm-modal .modal-title h3').text('Information');
+            $('#confirm-btn').text('Yes, Got it!');
+            $('#confirm-content').text('There are no contacts in this campaign.');
+            $('#confirm-modal').modal('show');
+            viewBtn && viewBtn.attr('disabled', false);
+          } else {
+            for (let i = 0; i < contacts.length; i++) {
+              const contact = contacts[i];
+              const deliveryDate = contact['delivery_date'] || contact['campaign_schedule_date'];
+              const page = currentPage * 100 + (i + 1);
+              html += '<tr><td class="text-center">' + page + '</td>' +
+                '<td>' + contact['first_name'] + '</td>' +
+                '<td>' + contact['last_name'] + '</td>' +
+                '<td>' + (contact['company_name'] || '') + '</td>' +
+                '<td>' + contact['email'] + '</td>' +
+                '<td class="text-center">' + statusHelper(contact['status']) + '</td>' +
+                '<td class="text-center">' + (deliveryDate ? deliveryDate : '-') + '</td>' +
+                '<td class="text-center">' + (contact['sent_at'] || '') + '</td>' +
+                '<td><a href="' + contact['link'] + '" target="_blank">' + contact['link'] + '</a></td>' +
+                '</tr>';
+            }
+            
+            $('#campaign-id').val(campaign_id);
+            $('#campaign-title').val(campaign_title);
+            $('#remove').hide()
+            $('#contacts-modal .modal-content-section table tbody').html(html);
+            $('#contacts-modal').modal('show');
+            viewBtn && viewBtn.attr('disabled', false);
+            if (!hasNextPage) {
+              $(tableBottom).text('');
+            }
+
+            nextPage = hasNextPage;
+            currentPage = parseInt(activePage);
+            loading = false;
+          }
+        }
+      },
+      error: function(err) {
+        viewBtn && viewBtn.attr('disabled', false);
+        console.log(err);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        loading = false;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+
+  $('.view-contacts').on('click', function() {
+    const viewBtn = $(this);
+    viewBtn.attr('disabled', true);
+    $(tableBottom).text('Loading...');
+    loadMoreObserver.observe(tableBottom);
+    modalObserver.observe(modal);
+
+    const campaign_id = viewBtn.attr('campaign-id');
+    const campaign_title = viewBtn.attr('campaign-title');
+
+    fetchContacts(campaign_id, null, campaign_title, null, viewBtn);
+    exportContactsBtn.attr('campaign-id', campaign_id);
+    exportContactsBtn.attr('campaign-step', null);
+  });
+
+  $("#filter-select").change(function() {
+    const campaign_id = $('#campaign-id').val();
+    const campaign_title = $('#campaign-title').val();
+    clearContacts();
+    fetchContacts(campaign_id, this.value, campaign_title);
+    exportContactsBtn.attr('campaign-step', this.value);
+    contactsStep = this.value;
+  });
+
+  function clearContacts() {
+    currentPage = 0;
+    html = '';
+    nextPage = null;
+    loading = false;
+    contactsStep = null;
+    $('#contacts-modal .modal-content-section table tbody').html('');
+  }
+
+  function onLoadMoreContacts([{ isIntersecting }]) {
+    if (isIntersecting && nextPage && !loading) {
+      const campaign_id = $('#campaign-id').val();
+      const campaign_title = $('#campaign-title').val();
+      fetchContacts(campaign_id, contactsStep, campaign_title, currentPage + 1);
+    }
+  }
+
+  function onModalIntersection([{ isIntersecting }]) {
+    if (isIntersecting && currentPage === 1) {
+      $('#contacts-modal .modal-content-section').scrollTop(0);
+    }
+
+    if (!isIntersecting && (!loading || html)) {
+      clearContacts();
+
+      exportContactsBtn.attr('campaign-step', null);
+      $('#filter-select').val('');
+      loadMoreObserver.unobserve(tableBottom);
+      modalObserver.unobserve(modal);
+    }
+  }
+</script>

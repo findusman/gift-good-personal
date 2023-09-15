@@ -1,0 +1,33 @@
+<script type="text/javascript">
+  $('#export-contacts').on('click', function() {
+    const campaignId = $(this).attr('campaign-id');
+    const step = $(this).attr('campaign-step') || '';
+    const title = $("#campaign-title").val();
+
+    $.ajax({
+      url: `/collection/export-contacts?type=all&cid=${campaignId}&step=${step}&title=${encodeURIComponent(title)}`,
+      method: 'GET',
+      success: function(res) {
+        if (res) {
+          let csvContent = "data:text/csv;charset=utf-8," + res;
+          const encodedUri = encodeURI(csvContent).replaceAll("#", "%23");
+          const link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          const title = $("#campaign-title").val();
+          link.setAttribute("download", title + " - Campaign Contacts.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      },
+      error: function(err) {
+        console.error(err);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  });
+</script>

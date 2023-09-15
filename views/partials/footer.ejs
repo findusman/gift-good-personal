@@ -1,0 +1,253 @@
+<!-- Footer type is different for the pages -->
+<% if (page_type === 'gift-step-page' || page_type === 'confirmed-order-page' ||
+page_type === 'error-page' || page_type === 'client-auth-page') { %>
+<footer class="site_footer">
+  <% if (page_type !== 'error-page' && page_type !== 'client-auth-page') { %>
+  <div class="footer_logo">
+    <a href="#"><img src="/resources/images/logo.svg" alt="logo" /></a>
+  </div>
+  <% } %>
+  <div class="footer_down">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-7">
+          <div class="footer_txt">
+            <p>
+              Powered by
+              <a href="https://www.giftsforgood.com" style="font-weight: bold; color: black" target="_blank">Gifts for Good</a>.
+            </p>
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="term_privacy">
+            <ul class="ml-auto">
+              <li>
+                <a href="/terms-and-conditions" target="_blank">Terms and Conditions.</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<% } else if (page_type === 'client-dashboard-page') { %>
+<div class="admin_footer">
+  <div class="footer_down">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-4">
+          <div class="footer_txt">
+            <p>
+              Powered by
+              <a href="https://www.giftsforgood.com" style="font-weight: bold; color: black">Gifts for Good</a>.
+            </p>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="admin_footer_logo">
+            <a href="#">
+              <img src="/resources/images/logo.svg" width="50px" alt="Giftforward" />
+            </a>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="term_privacy">
+            <ul class="ml-auto">
+              <li>
+                <% if (session.user && session.user.type === 'admin' || session.impersonate) { %>
+                <% if ( session.impersonate) { %>
+                <a href="javascript:void(0)" data-toggle="modal" data-target="#stopimpersonate-user-modal">
+                  <svg class="impersonating-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+                    <g>
+                      <path d="M63,30.1C52.9,18.2,42.2,12,32,12c-10.2,0-20.9,6.2-31,18.1c-1,1.1-1,2.8,0,3.9C11.1,45.8,21.8,52,32,52
+                                  c10.2,0,20.9-6.2,31-18.1C63.9,32.8,63.9,31.2,63,30.1z M32,48c-8.7,0-18.4-5.7-27.4-16c9-10.3,18.7-16,27.4-16
+                                  c8.7,0,18.4,5.7,27.4,16C50.4,42.3,40.7,48,32,48z" />
+                      <path d="M32,20c-6.6,0-12,5.4-12,12s5.4,12,12,12s12-5.4,12-12S38.6,20,32,20z M32,40c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8
+                                  S36.4,40,32,40z" />
+                    </g>
+                  </svg>&nbsp; Impersonating: <%= session.user.email %></a>
+                <%  }  else  { %>
+                <div>Current User: <%= session.user.email %></div>
+                <% }%>
+                <% }  else  { %>
+                <a href="/terms-and-conditions" target="_blank">Terms and Conditions.</a>
+                <% }%>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% if (session.user && session.user.type === 'admin' || session.impersonate) { %>
+  <% if ( session.impersonate) { %>
+  <div class="impersonate-banner">
+    <a href="javascript:void(0)" data-toggle="modal" data-target="#stopimpersonate-user-modal">
+      <svg class="impersonating-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+        <g>
+          <path d="M63,30.1C52.9,18.2,42.2,12,32,12c-10.2,0-20.9,6.2-31,18.1c-1,1.1-1,2.8,0,3.9C11.1,45.8,21.8,52,32,52
+                    c10.2,0,20.9-6.2,31-18.1C63.9,32.8,63.9,31.2,63,30.1z M32,48c-8.7,0-18.4-5.7-27.4-16c9-10.3,18.7-16,27.4-16
+                    c8.7,0,18.4,5.7,27.4,16C50.4,42.3,40.7,48,32,48z" />
+          <path d="M32,20c-6.6,0-12,5.4-12,12s5.4,12,12,12s12-5.4,12-12S38.6,20,32,20z M32,40c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8
+                    S36.4,40,32,40z" />
+        </g>
+      </svg>
+      &nbsp; Impersonating: <%= session.user.email %>
+      (click to stop)
+    </a>
+  </div>
+  <% }%>
+  <% }%>
+</div>
+<% } else if (page_type !== 'extra-page') { %>
+<footer class="site_details_footer">
+  <div class="container-fluid">
+    <div class="row flex-row">
+      <div class="col mobile_100">
+        <div class="details_footer_item_1">
+          <img src="/resources/images/logo.svg" width="50px" alt="Giftforward" />
+          <ul>
+            <li>
+              <a href="mailto:giftforward@giftsforgood.com">giftforward@giftsforgood.com</a>
+            </li>
+            <li class="desktop_none">
+              <span>|</span>
+            </li>
+            <li>
+              <a href="tel:(877)%20554-1550">(877) 554-1550</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col mobile_50">
+        <div class="details_footer_item">
+          <h4>ABOUT</h4>
+          <ul>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/our-impact" target="_blank">Our Impact</a>
+            </li>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/about" target="_blank">Our Story</a>
+            </li>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/our-ceo" target="_blank">Our CEO</a>
+            </li>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/press-media" target="_blank">Press & Media</a>
+            </li>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/request-a-catalog" target="_blank">Request a Catalog</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col mobile_50">
+        <div class="details_footer_item">
+          <h4>HELP</h4>
+          <ul>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/contact" target="_blank">Contact</a>
+            </li>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/contact" target="_blank">Customer Service</a>
+            </li>
+          </ul>
+          <div class="desktop_none">
+            <h4>GET INVOLVED</h4>
+            <ul>
+              <li>
+                <a href="https://www.giftsforgood.com/pages/careers" target="_blank">Careers</a>
+              </li>
+              <li>
+                <a href="https://www.giftsforgood.com/pages/partner-with-us" target="_blank">Partner With Us</a>
+              </li>
+              <li>
+                <a href="https://www.giftsforgood.com/pages/rep-program" target="_blank">Rep Program</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col mobile_none">
+        <div class="details_footer_item">
+          <h4>GET INVOLVED</h4>
+          <ul>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/careers" target="_blank">Careers</a>
+            </li>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/partner-with-us" target="_blank">Partner With Us</a>
+            </li>
+            <li>
+              <a href="https://www.giftsforgood.com/pages/rep-program" target="_blank">Rep Program</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col mobile_100">
+        <div class="details_footer_contact">
+          <h4>CONNECT WITH US</h4>
+          <div class="details_footer_form">
+            <input type="email" class="form-control" placeholder="Enter your email" />
+          </div>
+          <div class="footer_social">
+            <ul>
+              <li>
+                <a href="https://www.instagram.com/giftsforgoodhq/" target="_blank">
+                  <i class="fab fa-instagram"></i>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/giftsforgoodhq" target="_blank">
+                  <i class="fab fa-facebook-f"></i>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.pinterest.com/GiftsForGoodHQ" target="_blank">
+                  <i class="fab fa-pinterest-p"></i>
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/GiftsForGoodhq" target="_blank">
+                  <i class="fab fa-twitter"></i>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/company/17947311/" target="_blank">
+                  <i class="fab fa-linkedin-in"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<% } %>
+
+<% if (session && session.user && (session.user.type === 'admin' || session.impersonate)) { %>
+<!-- Stop Impersonating Modal -->
+<div class="modal fade addUser_modal" id="stopimpersonate-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div>
+          <div class="row">
+            <div class="col-12 text-center">Stop impersonating user '<strong><%= session.user.email %></strong>'?</div>
+          </div>
+          <div class="form_devider"></div>
+          <div class="note_confirm_btn_area">
+            <button type="button" class="btn common_btn" data-dismiss="modal">CANCEL</button>
+            <a href="/impersonate"><button type="button" class="btn common_btn">STOP</button></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% }%>

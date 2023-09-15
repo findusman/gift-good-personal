@@ -1,0 +1,250 @@
+<script type="text/javascript">
+    const stripePublishableKey = <%- JSON.stringify(stripePublishableKey) %>;
+    $('.stripe-form').hide()
+    // A reference to Stripe.js initialized with your real test publishable API key.
+    var stripe = Stripe(stripePublishableKey);
+   
+
+    $('#show-modal-btn').on('click', function () {
+        $('#custom-amount-edit').val('');
+        $('.credit-box').each(function (item) {
+            $(this).removeClass('active');
+        });
+        const default_component = $('.credit-box:first');
+        default_component.addClass('active');
+        $('#selected-credit').val(default_component.attr('credit'));
+        $('#selected-price').val(default_component.attr('price'));
+        $('#add-credit-modal').modal();
+    });
+
+    $('.credit-box').on('click', function () {
+        $('.credit-box').each(function (item) {
+            $(this).removeClass('active');
+        });
+        $(this).addClass('active');
+        $('#custom-amount-edit').val('');
+        $('#selected-credit').val($(this).attr('credit'));
+        $('#selected-price').val($(this).attr('price'));
+    });
+
+    $('.purchase-credit-btn').on('click', function () {
+        const selected_credit = $('#selected-credit').val();
+        const selected_price = $('#selected-price').val();
+        handleStripe()
+        if (selected_price < 500 || selected_credit < 500) {
+            showError('Please purchase credit at least 500');
+            return;
+        }
+     
+    });
+
+    const handleStripe = () => {
+        $('.stripe-form').show()
+        // The items the customer wants to buy
+        const selected_credit = $('#selected-credit').val();
+        const selected_price = $('#selected-price').val();
+        var purchase = {
+            price: selected_price,
+            credit: selected_credit
+        };
+
+        // Disable the button until we have Stripe set up on the page
+        document.querySelector("button").disabled = true;
+        fetch("/credit/payment-intent", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(purchase)
+        })
+        .then(function(result) {
+            return result.json();
+        })
+        .then(function(data) {
+            var elements = stripe.elements();
+
+            var style = {
+            base: {
+                color: "#32325d",
+                fontFamily: 'Arial, sans-serif',
+                fontSmoothing: "antialiased",
+                fontSize: "16px",
+                "::placeholder": {
+                color: "#32325d"
+                }
+            },
+            invalid: {
+                fontFamily: 'Arial, sans-serif',
+                color: "#fa755a",
+                iconColor: "#fa755a"
+            }
+            };
+
+            var card = elements.create("card", { style: style });
+            // Stripe injects an iframe into the DOM
+            card.mount("#card-element");
+
+            var cardNumber = elements.create('cardNumber', {
+                style: elementStyles,
+                classes: elementClasses,
+            });
+            cardNumber.mount('#card-number');
+
+            var cardExpiry = elements.create('cardExpiry', {
+                style: elementStyles,
+                classes: elementClasses,
+            });
+            cardExpiry.mount('#card-expiry');
+
+            var cardCvc = elements.create('cardCvc', {
+                style: elementStyles,
+                classes: elementClasses,
+            });
+            cardCvc.mount('#card-cvc');
+
+            card.on("change", function (event) {
+            // Disable the Pay button if there are no card details in the Element
+            document.querySelector("button").disabled = event.empty;
+            document.querySelector("#card-error").textContent = event.error ? event.error.message : "";
+            });
+
+            var form = document.getElementById("payment-form");
+            form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            // Complete payment when the submit button is clicked
+            payWithCard(stripe, card, data.clientSecret);
+            });
+        });
+
+        // Calls stripe.confirmCardPayment
+        // If the card requires authentication Stripe shows a pop-up modal to
+        // prompt the user to enter authentication details without leaving your page.
+        var payWithCard = function(stripe, card, clientSecret) {
+        loading(true);
+        stripe
+            .confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: card
+            }
+            })
+            .then(function(result) {
+                console.log('result', result)
+            if (result.error) {
+                // Show error to your customer
+                showError(result.error.message);
+            } else {
+                // The payment succeeded!
+                orderComplete(result.paymentIntent.id);
+            }
+            });
+        };
+
+        /* ------- UI helpers ------- */
+
+        // Shows a success message when the payment is complete
+        var handleUserCreditTransactionUpdate = (paymentIntentId) => {
+            fetch("/credit/purchase", {
+              method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({credit: selected_credit, price: selected_price, stripeId: paymentIntentId})
+                })
+                .then(function(result) {
+                    return result.json();
+                })
+            }
+        var orderComplete = function(paymentIntentId) {
+            loading(false);
+            document.querySelector(".result-message").classList.remove("hidden");
+            document.querySelector("button").disabled = true;
+            $('.credits-wrapper').hide()
+            handleUserCreditTransactionUpdate(paymentIntentId)
+            
+        };
+
+        // Show the customer the error from Stripe if their card fails to charge
+        var showError = function(errorMsgText) {
+        loading(false);
+        var errorMsg = document.querySelector("#card-error");
+        errorMsg.textContent = errorMsgText;
+        setTimeout(function() {
+            errorMsg.textContent = "";
+        }, 4000);
+        };
+
+        // Show a spinner on payment submission
+        var loading = function(isLoading) {
+        if (isLoading) {
+            // Disable the button and show a spinner
+            document.querySelector("button").disabled = true;
+            document.querySelector("#spinner").classList.remove("hidden");
+            document.querySelector("#button-text").classList.add("hidden");
+        } else {
+            document.querySelector("button").disabled = false;
+            document.querySelector("#spinner").classList.add("hidden");
+            document.querySelector("#button-text").classList.remove("hidden");
+        }
+        };
+
+
+
+    }
+
+    $('#confirm-btn').on('click', function () {
+        
+        $('#confirm-modal').modal('hide');
+        $('#add-credit-modal').modal('hide');
+        const selected_credit = $('#selected-credit').val();
+        const selected_price = $('#selected-price').val();
+        $.ajax({
+            url: '/credit/purchase',
+            type: 'POST',
+            data: {credit: selected_credit, price: selected_price},
+            success: function (res) {
+                window.location.reload();
+            },
+            error: function (err) {
+                const status = err.responseJSON.status;
+                const msg = err.responseJSON.msg;
+                if (status === 'failed') {
+                    showError(msg);
+                }
+            }
+        })
+    });
+
+    $( '.close' ).click(function() {
+        $('.credits-wrapper').show()
+        $('.stripe-form').hide()
+        $(".result-message").hide()
+        window.location.reload();    
+    });
+    $('#custom-price-btn').on('click', function () {
+        $('.credit-box').each(function (item) {
+            $(this).removeClass('active');
+        });
+        let custom_price = $('#custom-price-edit').val();
+        if (custom_price < 500) {
+            custom_price = 500;
+            $('#custom-price-edit').val(custom_price);
+        }
+        let custom_credit = 0;
+        if (custom_price < 1000) {
+            custom_credit = custom_price;
+        } else if (custom_price < 2500) {
+            custom_credit = (custom_price * 1.0025).toFixed(1);
+        } else if (custom_price < 5000) {
+            custom_credit = (custom_price * 1.005).toFixed(1);
+        } else if (custom_price < 10000) {
+            custom_credit = (custom_price * 1.01).toFixed(1);
+        } else if (custom_price < 20000) {
+            custom_credit = (custom_price * 1.02).toFixed(1);
+        } else if (custom_price >= 20000) {
+            custom_credit = (custom_price * 1.03).toFixed(1);
+        }
+
+        $('#selected-credit').val(custom_credit);
+        $('#selected-price').val(custom_price);
+    });
+</script>

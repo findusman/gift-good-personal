@@ -1,0 +1,273 @@
+<script type="text/javascript">
+  const campaigns = <%- JSON.stringify(campaigns) %>;
+  const statusHelper = <%- statusHelper %>;
+  const loadMoreObserver = new IntersectionObserver(onLoadMoreContacts, { threshold: 0.9 });
+  const modalObserver = new IntersectionObserver(onModalIntersection, { threshold: 1 });
+  const tableBottom = document.getElementById('table-bottom');
+  const modal = document.querySelector('.contacts-modal');
+  const exportContactsBtn = $('#export-contacts');
+
+  let currentPage = 0;
+  let html = '';
+  let nextPage;
+  let loading = false;
+  let campaignId;
+
+  function removeContact(id, campaign_id) {
+    $.ajax({
+      url: `/contacts/${id}`,
+      method: 'DELETE',
+      data: {
+        campaign_id
+      },
+      success: function(res) {
+        showInfo('Contact has been removed.');
+        setTimeout(function() {
+          window.location.reload();
+        }, 500);
+      },
+      error: function(err) {
+        console.log(err);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+
+  function sendContact(id) {
+    $('#contacts-modal').modal('hide');
+    $('#confirm-type').val('send-contact');
+    $('#extra-param').val(id);
+    $('#confirm-btn').text('SEND CONTACT');
+    $('#confirm-content').text('Are you sure you want to send this contact? This action will override its delivery date.');
+    $('#confirm-modal').modal('show');
+  }
+
+  function getUSFormatDateString(date) {
+    if (date) {
+      return moment(date).format('MM/DD/YYYY');
+    } else {
+      return '00/00/0000';
+    }
+  }
+
+  function fetchContacts(page, viewBtn) {
+    loading = true;
+    $.ajax({
+      url: '/collection/list-contacts',
+      method: 'POST',
+      data: {
+        cid: campaignId,
+        step: 'ready',
+        page,
+      },
+      success: function(res) {
+        if (res.status === 'success') {
+          const { contacts, hasNextPage, activePage } = res.data;
+
+          if (contacts.length === 0) {
+            viewBtn && viewBtn.attr('disabled', false);
+            $('#confirm-modal .modal-title h3').text('Information');
+            $('#confirm-btn').text('Yes, Got it!');
+            $('#confirm-content').text('There are no contacts in this campaign.');
+            $('#confirm-modal').modal('show');
+          } else {
+            for (let i = 0; i < contacts.length; i++) {
+              const contact = contacts[i];
+              const sendDate = contact['delivery_date'] || contact['campaign_schedule_date'];
+              const page = currentPage * 100 + (i + 1);
+              html += '<tr><td class="text-center">' + page + '</td>' +
+                '<td>' + contact['first_name'] + '</td>' +
+                '<td>' + contact['last_name'] + '</td>' +
+                '<td>' + contact['company_name'] + '</td>' +
+                '<td>' + contact['email'] + '</td>' +
+                '<td class="text-center"> - </td>' +
+                '<td class="text-center">' + (sendDate ? sendDate : '-') + '</td>' +
+                '<td class="text-center">-</td>' +
+                '<td><a href="' + contact['link'] + '" target="_blank">' + contact['link'] + '</a></td>' +
+                '<td class="text-center"><button type="button" class="btn btn-plain text-dark p-0" onclick=removeContact(' + contact['id'] + ',' + campaignId + ')><i class="fas fa-trash-alt"></i></button></td>' +
+                '<td class="text-center"><button type="button" class="btn btn-plain text-dark p-0" onClick=sendContact(' + contact['id'] + ')><i class="fas fa-envelope"></i></button></td>' +
+                '</tr>'
+            }
+            $('#contacts-modal #filter-check-section').hide();
+            $('#contacts-modal .modal-content-section table tbody').html(html);
+            $('#contacts-modal').modal('show');
+            viewBtn && viewBtn.attr('disabled', false);
+            if (!hasNextPage) {
+              $(tableBottom).text('');
+            }
+
+            nextPage = hasNextPage;
+            currentPage = parseInt(activePage);
+            loading = false;
+          }
+        }
+      },
+      error: function(err) {
+        viewBtn && viewBtn.attr('disabled', false);
+        console.log(err);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+
+
+  $('.view-contacts').on('click', function() {
+    const viewBtn = $(this);
+    viewBtn.attr('disabled', true);
+    $(tableBottom).text('Loading...');
+    loadMoreObserver.observe(tableBottom);
+    modalObserver.observe(modal);
+    campaignId = viewBtn.attr('campaign-id');
+
+    fetchContacts(null, viewBtn);
+    exportContactsBtn.attr('campaign-id', campaignId);
+    exportContactsBtn.attr('campaign-step', 'ready');
+  });
+
+  $('.send-email-in-queue').on('click', function() {
+    const campaign_id = $(this).attr('campaign-id');
+    const campaign_title = $(this).attr('title');
+    const contacts_count = $(this).attr('contacts-count');
+    const send_date = $(this).attr('send-date');
+    if (contacts_count > 0) {
+      const confirm_content = 'Please confirm that you are ready to email ' + contacts_count +
+        (contacts_count > 1 ? ' recipients' : ' recipient') + ' on ' +
+        send_date + ' with ' + campaign_title + '. All individual recipient send dates will be overridden. This cannot be undone.';
+
+      $('#confirm-type').val('send-campaign');
+      $('#extra-param').val(campaign_id);
+      $('#confirm-btn').text('SEND CAMPAIGN');
+      $('#confirm-content').text(confirm_content);
+      $('#confirm-modal').modal('show');
+    }
+  });
+
+  $('.remove-campaign-in-queue').on('click', function() {
+    const campaign_id = $(this).attr('campaign-id');
+    $('#confirm-type').val('remove-campaign');
+    $('#extra-param').val(campaign_id);
+    $('#confirm-btn').text('YES, DELETE IT');
+    $('#confirm-content').text('Are you sure you want to remove this campaign in the queue?');
+    $('#confirm-modal').modal('show');
+  });
+
+  $('#confirm-btn').on('click', function() {
+    $('#confirm-modal').modal('hide');
+    const confirm_type = $('#confirm-type').val();
+    const campaign_id = $('#extra-param').val();
+    if (confirm_type === 'send-campaign') {
+      showLoader(true);
+      $.ajax({
+        url: '/send-queue',
+        method: 'POST',
+        data: {
+          cid: campaign_id
+        },
+        success: function(res) {
+          showInfo('Email has been sent.');
+          showLoader(false);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    } else if (confirm_type === 'remove-campaign') {
+      showLoader(true);
+      $.ajax({
+        url: '/remove-campaign-queue',
+        method: 'POST',
+        data: {
+          cid: campaign_id
+        },
+        success: function(res) {
+          showInfo('Campaign has been removed.');
+          showLoader(false);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    } else if (confirm_type === 'send-contact') {
+      const contactId = $('#extra-param').val();
+      showLoader(true);
+      $.ajax({
+        url: `/send-individual-invite`,
+        method: 'POST',
+        data: {
+          cid: contactId
+        },
+        success: function(res) {
+          showInfo('Contact has been updated.');
+          showLoader(false);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+  });
+
+  function clearContacts() {
+    currentPage = 0;
+    html = '';
+    nextPage = null;
+    loading = false;
+    campaignId = null;
+    $('#contacts-modal .modal-content-section table tbody').html('');
+  }
+
+  function onLoadMoreContacts([{ isIntersecting }]) {
+    if (isIntersecting && nextPage && !loading) {
+      fetchContacts(currentPage + 1);
+    }
+  }
+
+  function onModalIntersection([{ isIntersecting }]) {
+    if (isIntersecting && currentPage === 1) {
+      $('#contacts-modal .modal-content-section').scrollTop(0);
+    }
+
+    if (!isIntersecting && (!loading || html)) {
+      clearContacts();
+
+      exportContactsBtn.attr('campaign-step', null);
+      loadMoreObserver.unobserve(tableBottom);
+      modalObserver.unobserve(modal);
+    }
+  }
+</script>

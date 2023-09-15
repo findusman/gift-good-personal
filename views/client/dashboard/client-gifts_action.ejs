@@ -1,0 +1,78 @@
+<script type="text/javascript">
+    let contacts = <%- JSON.stringify(contacts) %>;
+    const activeCampaigns = <%- JSON.stringify(activeCampaigns) %>;
+    const activeCampaignIds = <%- JSON.stringify(activeCampaignIds) %>;
+    const userCompany = <%- session.user ? JSON.stringify(session.user.company) : '' %>;
+    const sm = <%- JSON.stringify(sm) %>;
+    const vm = <%- JSON.stringify(vm) %>;
+
+    $('.admin_search_input').submit(function (e) {
+        e.preventDefault();
+        const newSearch = $('#gift-search').val();
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set('search', newSearch);
+        window.location.search = `?${searchParams.toString()}`;
+    });
+
+    $('#export_csv_btn').on('click', function () {
+        const baseFileName = `${userCompany} - Gifts`;
+        let activeCampaignsInfo = '';
+        if (activeCampaigns.length) {
+            activeCampaignsInfo = activeCampaigns.length === 1 ? `${activeCampaigns[0].title} - ` : `${activeCampaigns.length} campaigns selected - `;
+        }
+        const fileName = `${activeCampaignsInfo}${baseFileName}.csv`;
+        let csvContent = "";
+        const header = formatStringArrayIntoJsonRow([
+          "No",
+          "First Name",
+          "Last Name",
+          "Email",
+          "Company",
+          "Shipping First Name",
+          "Shipping Last Name",
+          "Shipping Email",
+          "Status",
+          "Link",
+          "Order ID",
+          "Product ID",
+          "Product Title",
+          "Product Description",
+          "Send Date"
+        ]);
+        csvContent += header + "\r\n";
+
+        showLoader(true);
+        $.ajax({
+            url: '/full-gifts-reports',
+            method: 'GET',
+            data: {
+                campaign: activeCampaignIds,
+                vm,
+                sm
+            },
+            success: function (res) {
+                showLoader(false);
+
+              if (res) {
+                let csvContent = "data:text/csv;charset=utf-8," + res;
+                const encodedUri = encodeURI(csvContent).replaceAll("#", "%23");
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", fileName);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }
+            },
+            error: function (err) {
+                console.log(err);
+                showLoader(false);
+                const status = err.responseJSON.status;
+                const msg = err.responseJSON.msg;
+                if (status === 'failed') {
+                    showError(msg);
+                }
+            }
+        });
+    });
+</script>

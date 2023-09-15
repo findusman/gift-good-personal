@@ -1,0 +1,15 @@
+{
+  "configurations": [
+    {
+      "type": "node",
+      "name": "Index",
+      "request": "launch",
+      "program": "${workspaceFolder}/server.js",
+      "cwd": "${workspaceFolder}",
+      "env": { "NODE_ENV": "development" },
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    }
+  ]
+}

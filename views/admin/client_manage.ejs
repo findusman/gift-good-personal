@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../partials/head.ejs %>
+<style>
+    #groups-table th, #groups-table td {
+        text-align: center;
+    }
+
+    input[name="groupRadio"] {
+        position: relative;
+    }
+</style>
+<body data-sa-theme="4">
+<% include ../partials/header.ejs %>
+<% include ../partials/sidebar.ejs %>
+
+<section class="content">
+    <div class="content__inner">
+        <header class="content__title">
+            <h1><%= i18n.__('Registered Users') %></h1>
+        </header>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive data-table">
+                    <table id="users-table" class="table table-bordered text-center">
+                        <thead>
+                        <tr style="color: yellow">
+                            <th>No</th>
+                            <th>ID</th>
+                            <th style="min-width: 160px;">UserName</th>
+                            <th>IP Address</th>
+                            <th style="min-width: 160px;">RegisterAt</th>
+                            <th style="min-width: 160px;">UpdateAt</th>
+                            <th style="color: yellow; width: 8%;">Control</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% for (let k = 0; k < users.length; k++) { %>
+                            <tr id="<%= users[k].id %>" style="">
+                                <td><%= k + 1 %></td>
+                                <td><%= users[k].id %></td>
+                                <td><%= users[k].username %></td>
+                                <td><%= users[k].ip_address %></td>
+                                <td><%= users[k].formattedCreatedAt %></td>
+                                <td><%= users[k].formattedUpdatedAt %></td>
+                                <td class="d-flex">
+                                    <button type="button" class="btn btn-outline-primary py-1 mr-2"
+                                            onclick="editClient('<%= users[k].id %>', '<%= users[k].username %>',
+                                                '<%= users[k].ip_address %>', '<%= users[k].formattedCreatedAt %>',
+                                                '<%= users[k].formattedUpdatedAt %>')">EDIT
+                                    </button>
+                                    <% if (users[k].status == 0) { %>
+                                        <button type="button" class="btn btn-outline-danger py-1"
+                                                onclick="updateUser('<%= users[k].id %>', 'stop')">STOP
+                                        </button>
+                                    <% } else { %>
+                                        <button type="button" class="btn btn-outline-info py-1"
+                                                onclick="updateUser('<%= users[k].id %>', 'start')">START
+                                        </button>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- change group of user -->
+<div class="modal fade" id="modal-user" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit User</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modal_user_id" value="">
+                <div class="row">
+                    <label class="col-sm-6 col-form-label">User Name : </label>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="user_name" placeholder="User Name"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-6 col-form-label">IP Address : </label>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="ip_address" placeholder="IP Address" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-6 col-form-label">Register Date : </label>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="register_at" placeholder="Update Date" readonly/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-6 col-form-label">Update Date : </label>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="update_at" placeholder="Update Date" readonly/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-link" onclick="submitChangeUser()">Save Changes</button>
+                <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- remove modal -->
+<div class="modal fade" id="modal_update_user" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header"></div>
+            <div class="modal-body">
+                <div class="form-group d-flex align-items-center">
+                    <i class="zwicon-info-circle" style="font-size: 5rem"></i>
+                    <h3 id="h3_start" style="flex: 1; text-align: center;"><%= i18n.__('Are you sure to start?') %></h3>
+                    <h3 id="h3_stop" style="flex: 1; text-align: center;"><%= i18n.__('Are you sure to stop?') %></h3>
+                </div>
+                <input type="hidden" id="modal_update_type">
+                <input type="hidden" id="modal_update_id">
+                <div style="text-align: right;">
+                    <button type="button" class="btn btn-link btn-outline-dark" onclick="onUpdateBtn()"><%= i18n.__('Yes') %></button>
+                    <button type="button" class="btn btn-link btn-outline-dark" data-dismiss="modal"><%= i18n.__('No') %></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% include ../partials/footer.ejs %>
+<% include ../partials/foot.ejs %>
+
+<script>
+    $(document).ready(function () {
+        $("#users-table").DataTable({
+            aaSorting: [],
+            autoWidth: !1,
+            responsive: !0,
+            lengthMenu: [[15, 40, 100, -1], ["15 Rows", "40 Rows", "100 Rows", "Everything"]],
+            language: {searchPlaceholder: "Search for records..."},
+            sDom: '<"dataTables__top"flB<"dataTables_actions">>rt<"dataTables__bottom"ip><"clear">',
+            buttons: [{extend: "excelHtml5", title: "Export Data"}, {
+                extend: "csvHtml5",
+                title: "Export Data"
+            }, {extend: "print", title: "Material Admin"}],
+            initComplete: function () {
+                let html = '<i class="zwicon-more-h" data-toggle="dropdown"></i>' +
+                    '<div class="dropdown-menu dropdown-menu-right">' +
+                    '<a data-table-action="print" class="dropdown-item">Print</a>' +
+                    '<a data-table-action="fullscreen" class="dropdown-item">Fullscreen</a>' +
+                    '<a data-table-action="excel" class="dropdown-item">Excel (.xlsx)</a>' +
+                    '<a data-table-action="csv" class="dropdown-item">CSV (.csv)</a>' +
+                    '</div>';
+                $(".dataTables_actions").html(html)
+            }
+        });
+        $("body").on("click", "[data-table-action]", function (e) {
+            e.preventDefault();
+            let t = $(this).data("table-action");
+            if ("excel" === t && $("#users-table_wrapper").find(".buttons-excel").click(),
+            "csv" === t && $("#users-table_wrapper").find(".buttons-csv").click(),
+            "print" === t && $("#users-table_wrapper").find(".buttons-print").click(), "fullscreen" === t) {
+                let a = $(this).closest(".card");
+                a.hasClass("card--fullscreen") ? (a.removeClass("card--fullscreen"), $('body').removeClass("data-table-toggled"))
+                  : (a.addClass("card--fullscreen"), $('body').addClass("data-table-toggled"))
+            }
+        });
+    });
+
+    let users = JSON.parse(`<%- JSON.stringify(users) %>`);
+
+    function editClient(id, username, ipaddress, createdAt, updatedAt) {
+        $('#modal_user_id').val(id);
+        $('#user_name').val(username);
+        $('#ip_address').val(ipaddress);
+        $('#register_at').val(createdAt);
+        $('#update_at').val(updatedAt);
+        $('#modal-user').modal();
+    }
+
+    function updateUser(id, type) {
+        $('#modal_update_id').val(id);
+        $('#modal_update_type').val(type);
+        $('#h3_start').css('display', type === 'stop' ? 'none' : '');
+        $('#h3_stop').css('display', type === 'start' ? 'none' : '');
+        $('#modal_update_user').modal();
+    }
+
+    function submitChangeUser() {
+        let id = $('#modal_user_id').val();
+        let username = $('#user_name').val();
+        let url = '/managee/editClient';
+
+        let data = {
+            id: id,
+            username: username,
+            type: 'edit',
+        };
+        $.ajax({
+            url: url,
+            method: 'post',
+            data: data,
+            success: function (res) {
+                if (res.status === 'success') {
+                    customAlert(res.message, true);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 500);
+                } else customAlert(res.message);
+            }
+        })
+    }
+
+    function onUpdateBtn() {
+        $('#modal_update_user').modal('hide');
+        let id = $('#modal_update_id').val();
+        let type = $('#modal_update_type').val();
+        let url = '/managee/editClient';
+        let data = {
+            id: id,
+            type: type,
+        }
+        $.ajax({
+            url: url,
+            method: 'post',
+            data: data,
+            success: function (res) {
+                if (res.status === 'success') {
+                    customAlert(res.message, true);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 500);
+                } else customAlert(res.message);
+            }
+        })
+    }
+</script>
+</body>
+</html>

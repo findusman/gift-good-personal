@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+<% include ../../partials/header.ejs %>
+
+<!--Hero Area Start -->
+
+<section class="hero_area">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="hero_content">
+                    <h3>
+                        <span class="hero_content_sp">
+                            I want to help people and the planet
+                            <br/>
+                            by giving the
+                        </span>
+                        <span class="custom-select ml-auto" style="vertical-align: middle;">
+                            <select id="price-select">
+                              <%
+                                for (let i = 0; i < collections.signature.length; i++) {
+                                const selected = collections.signature[i]['shopify_id'] == cid && ctype === 'signature'
+                                        ? "selected" : "";
+                              %>
+                              <option value="<%= collections.signature[i]['shopify_id'] %>" type="signature" <%= selected %>>
+                                  <%= collections.signature[i]['title'] %>
+                              </option>
+                              <% } %>
+                              <%
+                                for (let i = 0; i < collections.campaign.length; i++) {
+                                const selected = collections.campaign[i]['id'] == cid && ctype === 'campaign'
+                                        ? "selected" : "";
+                              %>
+                                <option value="<%= collections.campaign[i]['id'] %>" type="campaign" <%= selected %>>
+                                  <%= collections.campaign[i]['title'] %>
+                                </option>
+                            <% } %>
+                            </select>
+                        </span>
+                        .
+                    </h3>
+                    <p>
+                        <b>Please select up to 12 gifts you would like to send
+                        <br/>
+                        in your custom collection of gift choices.
+                        </b>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Product Area Start -->
+
+<section class="product_area">
+    <div class="container-fluid">
+        <div class="row products-row">
+            <% for (let i = 0; i < products.length; i++) { %>
+            <div class="col-md-3">
+                <div class="product_item">
+                    <div class="product_img">
+                        <img src="<%= products[i]['image_data']['sub'][[0]] %>" onerror="onProductImgError(this)" alt="img"/>
+                    </div>
+                    <div class="product_info">
+                        <div class="product_title">
+                            <h4><%= products[i]["product_title"] %></h4>
+                        </div>
+                        <% if (products[i]["collection_title"]) { %>
+                        <div class="product_price">
+                            <h5><%= products[i]["collection_title"] %></h5>
+                        </div>
+                        <% } %>
+                        <p>
+                            <% if (products[i]['impact_icon']) { %>
+                            <img src="<%= products[i]['impact_icon'] %>"
+                                 class="shopping-label-img" onerror="onLabelImgError(this)" alt="img"/>
+                            <% } %>
+                            <%= products[i]['impact_story_collection'] %>
+                        </p>         
+                        <button type="button" class="btn product_btn"
+                                prod-image="<%= products[i]['image_data']['sub'][[0]] %>" prod-desc-logo="<%= products[i]["impact_icon"] %>"
+                                prod-long-desc='<%= products[i]["long_desc"] %>' prod-short-desc='<%= products[i]["impact_short_description"] %>'
+                                prod-title='<%= products[i]["product_title"] %>' prod-id="<%= products[i]["variant_id"] %>">
+                            ADD TO COLLECTION
+                        </button>   
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="product_showmore" style="display: <%= count < 20 ? 'none' : '' %>">
+                    <button type="button" class="btn" id="product-show-more">SHOW MORE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Down Banner Area Start -->
+
+<div class="down_banner">
+</div>
+
+<% include ../../partials/footer.ejs %>
+<% include ../../partials/storage.ejs %>
+<% include ../../partials/foot.ejs %>
+<% include change-campaign-products_action.ejs %>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<script type="text/javascript">
+    const is_only_mine = <%- JSON.stringify(onlymine) %>;
+    const filter_mode = <%- JSON.stringify(fm) %>;
+    const email_filter = <%- JSON.stringify(email) %>;
+    const recipients_reports = <%- JSON.stringify(reports) %>;
+    const activeCampaigns = <%- JSON.stringify(activeCampaigns) %>;
+    const activeCampaignIds = <%- JSON.stringify(activeCampaignIds) %>;
+    const userCompany = <%- session.user ? JSON.stringify(session.user.company) : '' %>;
+
+    $('.admin_search_input').submit(function (e) {
+        e.preventDefault();
+        const newSearch = $('#gift-search').val();
+        const searchParams = new URLSearchParams(window.location.search);
+        searchParams.set('search', newSearch);
+        window.location.search = `?${searchParams.toString()}`;
+    });
+
+    if (is_only_mine === 'true') {
+        $('#only-mine-check').prop('checked', true);
+    }
+    $('#export_csv_btn').on('click', function () {
+        const baseFileName = `${userCompany} - Recipients`;
+        let activeCampaignsInfo = '';
+        if (activeCampaigns.length) {
+            activeCampaignsInfo = activeCampaigns.length === 1 ? `${activeCampaigns[0].title} - ` : `${activeCampaigns.length} campaigns selected - `;
+        }
+        const fileName = `${activeCampaignsInfo}${baseFileName}.csv`;
+        let csvContent = "";
+        const header = ["No", "Campaign", "Sender Company", "Sender First Name", "Sender Last Name", "Sender Name", "Sender Email", "Recipient Fist Name", "Recipient Last Name", "Recipient Name", "Recipient Email", "Recipient Company",
+            "Product", "Gift Status", "Redeemed On", "Email Sent On", "Email Opened On", "Email Clicked On", "Declined reason", "Short URL"
+        ].join(",");
+        csvContent += header + "\r\n";
+
+        showLoader(true);
+        $.ajax({
+            url: '/full-recipients-reports',
+            method: 'GET',
+            data: {
+                campaign: activeCampaignIds,
+                fm: filter_mode,
+                onlymine: is_only_mine,
+                ef: email_filter,
+            },
+            success: function (res) {
+              if (res) {
+                showLoader(false);
+
+                let csvContent = "data:text/csv;charset=utf-8," + res;
+                const encodedUri = encodeURI(csvContent).replaceAll("#", "%23");
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", fileName);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }
+            },
+            error: function (err) {
+                console.log(err);
+                showLoader(false);
+                const status = err.responseJSON.status;
+                const msg = err.responseJSON.msg;
+                if (status === 'failed') {
+                    showError(msg);
+                }
+            }
+        });
+    });
+
+    $('#only-mine-check').change(function () {
+        const params = new URLSearchParams({ fm: filter_mode, onlymine: this.checked, campaign: activeCampaignsIds.join(',') || ''});
+        window.location.href = `/recipient-report?${params.toString()}`;
+    });
+</script>

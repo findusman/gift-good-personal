@@ -1,0 +1,54 @@
+
+<script type="text/javascript">
+
+    function getExpirationTime() {
+        const expirationTime = new Date().getTime() + 15 * 60000
+        return new Date(expirationTime);
+    }
+
+    function get_campaign_data() {
+        return JSON.parse(localStorage.getItem('campaign_data'));
+    }
+
+    function clean_campaign_data() {
+        localStorage.removeItem('campaign_data');
+    }
+
+    function get_campaign_products() {
+        const campaign_data = JSON.parse(localStorage.getItem('campaign_data'));
+        return campaign_data && campaign_data['products'] ? campaign_data['products'] : [];
+    }
+
+    function get_campaign_title() {
+        const campaign_data = JSON.parse(localStorage.getItem('campaign_data'));
+        return campaign_data && campaign_data['title'] ? campaign_data['title'] : '';
+    }
+
+    function get_campaign_price() {
+        const campaign_data = JSON.parse(localStorage.getItem('campaign_data'));
+        return campaign_data && campaign_data['price'] ? campaign_data['price'] : '';
+    }
+
+    function get_campaign_contacts() {
+        const campaign_data = JSON.parse(localStorage.getItem('campaign_data'));
+        return campaign_data && campaign_data['contacts'] ? campaign_data['contacts'] : [];
+    }
+
+    function get_campaign_brands() {
+        const campaign_data = JSON.parse(localStorage.getItem('campaign_data'));
+        return campaign_data && campaign_data['brands'] ? campaign_data['brands'] : {};
+    }
+
+    function setCampaignData(key, value) {
+        let campaign_data = JSON.parse(localStorage.getItem('campaign_data'));
+        const expirationTime = getExpirationTime();
+        if (campaign_data) {
+            campaign_data[key] = value;
+            campaign_data['expirationTime'] = expirationTime;
+        } else {
+            campaign_data = { [key]: value, expirationTime };
+        }
+        localStorage.setItem('campaign_data', JSON.stringify(campaign_data));
+    }
+
+</script>

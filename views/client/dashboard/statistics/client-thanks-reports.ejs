@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+
+<body>
+
+<div class="admin">
+    <% include ../../../partials/loader.ejs %>
+    <% include ../../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+        <div class="admin_title_area">
+            <div class="container-fluid">
+                <div class="row col-md-12">
+                    <div style="flex: 1;">
+                        <h2>Thank you Report</h2>
+                    </div>
+                    <div class="d-flex">
+                        <div class="add_user">
+                            <button type="button" class="btn common_btn" id="export_csv_btn">+ EXPORT CSV</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin_header_nav combine_nav d-flex justify-content-between">
+            <div class="btn-group nav-menu">
+                <div class="custom-control custom-control-lg custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="only-mine-check">
+                    <label class="custom-control-label" for="only-mine-check">ONLY SHOW MY GIFTS</label>
+                </div>
+            </div>
+            <div>
+                <div class="btn-group nav-menu">
+                    <button type="button" class="btn dropdown_btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        FILTER BY <img src="/resources/images/icons/arrow-down-2.png">
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-6px, 48px, 0px);">
+                        <% filterOptions.map(option => { %>
+                            <a 
+                                class="dropdown-item <%= filter === option.code ? 'active' : '' %>" 
+                                href="/thanks-report?fm=<%= option.code %>&order=<%= order %>&onlymine=<%= onlymine %>&campaign=<%= activeCampaignIds.join(',') %>"
+                            >
+                                <%= option.title %>
+                            </a>
+                        <% }) %>
+                      </div>
+                </div>
+                <div class="btn-group nav-menu">
+                    <button type="button" class="btn dropdown_btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        SORT BY <img src="/resources/images/icons/arrow-down-2.png">
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
+                        <a class="dropdown-item <%= order === 'filo' ? 'active' : '' %>"
+                           href="/thanks-report?fm=<%= filter %>&order=filo&onlymine=<%= onlymine %>&campaign=<%= activeCampaignIds.join(',') %>">Newest First</a>
+                        <a class="dropdown-item <%= order === 'fifo' ? 'active' : '' %>"
+                           href="/thanks-report?fm=<%= filter %>&order=fifo&onlymine=<%= onlymine %>&campaign=<%= activeCampaignIds.join(',') %>">Oldest First</a>
+                    </div>
+                </div>
+                <%- include('../../../partials/campaigns-filter.ejs', { link: `/thanks-report/?fm=${filter || ''}&order=${order || ''}&onlymine=${onlymine || ''}&campaign=` }) %>
+            </div>
+        </div>
+
+        <div class="admin_content_area">
+            <% if (!reports.length) { %>
+                <div class="pastorder_item text-center" id="no-user-found"><span style="font-size: 25px;">No thank you note found.</span></div>
+            <% } else { %>
+                <div>
+                    <table cellspacing="0" cellpadding="0" class="table-bordered table-responsive-lg table-hover table-report">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Sender Name</th>
+                                <th>Sender Company</th>
+                                <th>Date</th>
+                                <th>Recipient</th>
+                                <th>Thank you note</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <% for (let i = 0; i < reports.length; i++) { %>
+                            <tr>
+                                <td><%= (i + 1) + ((page - 1) * limit) %></td>
+                                <td><%= `${reports[i]['from_first_name'] || ''} ${reports[i]['from_last_name'] || ''}` %></td>
+                                <td><%= reports[i]['from_company_name'] %></td>
+                                <td>
+                                    <%= reports[i]['thanks_at'] ? moment(reports[i]['thanks_at']).format('MM/DD/YYYY hh:mmA') : '-' %>
+                                </td>
+                                <td>
+                                    <div>
+                                        <span class="shipping-name"><%= reports[i]['to_first_name'] + ' ' + reports[i]['to_last_name'] %></span>
+                                        <span class="shipping-email"><%= reports[i]['to_email'] %></span>
+                                    </div>
+                                </td>
+                                <td><%= reports[i]['thank_note'] %></td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </div>
+
+        <% const campaignParam = activeCampaignIds.length ? `&campaign=${activeCampaignIds.join(',')}` : '' %>
+        <%- include('../../../partials/pagination.ejs', { maxPage, page, link: '/thanks-report', urlParams: `&fm=${filter}&order=${order}&onlymine=${onlymine}${campaignParam}` }) %>
+
+    </div>
+
+    <% include ../../../partials/footer.ejs %>
+
+</div>
+
+<% include ../../../partials/storage.ejs %>
+<% include ../../../partials/foot.ejs %>
+<% include client-thanks-reports_action.ejs %>
+
+</body>
+</html>

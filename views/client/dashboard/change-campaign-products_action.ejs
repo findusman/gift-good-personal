@@ -1,0 +1,195 @@
+<!-- Action related with step1.ejs -->
+<!-- Created by CSTAR -->
+<!-- August 13rd, 2020 -->
+
+<script>
+  let offset = <%- JSON.stringify(offset) %>;
+  let count = <%- JSON.stringify(count) %>;
+  let collection_id = <%- JSON.stringify(cid) %>;
+  let collection_type = <%- JSON.stringify(ctype) %>;
+
+  const current_campaign_id = <%- JSON.stringify(current_campaign_id) %>;
+
+  function switch_step(next_step) {
+      const campaign_products = get_campaign_products();
+      const campaign_title = get_campaign_title();
+      if (campaign_products.length > 0) {
+          const campaign_ids = campaign_products.map(product => product['variant_id']);
+          $.ajax({
+              url: '/set-campaign-products',
+              method: 'POST',
+              data: {cid: current_campaign_id, products: JSON.stringify(campaign_ids)},
+              success: function (res) {
+                  if (res.status === 'success') {
+                      window.location.href = '/edit-campaign?cid=' + current_campaign_id;
+                  }
+              },
+              error: function (err) {
+                  console.log(err);
+                  const status = err.responseJSON.status;
+                  const msg = err.responseJSON.msg;
+                  if (status === 'failed') {
+                      showError(msg);
+                  }
+              }
+          });
+      } else {
+          showError('Please add product to the cart.');
+      }
+  }
+
+  $("#price-select").next().next().children().on('click', function () {
+      const selected_index = $(this).index();
+      const selected_elem = $("#price-select").children().eq(selected_index);
+
+      const selected_collection_id = selected_elem.val();
+      const selected_collection_type = selected_elem.attr('type');
+
+      if (selected_collection_id !== collection_id || selected_collection_type !== collection_type) {
+          window.location.href = '/step/first?cid=' + selected_collection_id + '&ctype=' + selected_collection_type;
+      }
+  });
+  $(".gift_close").on('click', function () {
+      $(".getintouch_btn").dropdown('toggle');
+  });
+
+  function bind_function() {
+      $('.product_btn').off('click');
+      $('.gift_list_remove_cart').off('click');
+
+      // Event handler for "Add To Collection" button
+      $(".product_btn").on('click', function () {
+          const product_id = $(this).attr('prod-id');
+          const product_image = $(this).attr('prod-image');
+          const product_title = $(this).attr('prod-title');
+          const long_desc = $(this).attr('prod-long-desc');
+          const short_desc = $(this).attr('prod-short-desc');
+          const impact_icon = $(this).attr('prod-desc-logo');
+
+          // Read cached campaign data
+          let campaign_products = get_campaign_products();
+
+          // Not added before
+          if (!campaign_products.find(product => product['variant_id'] === product_id)) {
+              campaign_products.push({
+                  variant_id: product_id, variant_image: product_image,
+                  product_title, impact_icon, short_desc, long_desc
+              });
+
+              // Add to cart
+              const html = '<li>\n' +
+                  '                       <div class="gift_list_img">\n' +
+                  '                           <div class="gift_list_img_box">\n' +
+                  '                               <img src="' + product_image + '" alt="img"/>\n' +
+                  '                           </div>\n' +
+                  '                       </div>\n' +
+                  '                       <div class="gift_list_txt">\n' +
+                  product_title +
+                  '                       </div>\n' +
+                  '<div class="gift_list_remove_cart" prod-id="' + product_id + '"><i class="fas fa-times-circle"></i></div>' +
+                  '                   </li>';
+              $('.dropdown_gift_list > ul').append(html);
+
+              // Increase cart badge
+              $('#cart-badge').show();
+              $('#cart-badge').html(campaign_products.length);
+
+              // Update campaign data cache
+              setCampaignData('products', campaign_products);
+
+              // Add action listener
+              bind_function();
+          }
+      });
+
+      // Event handler for remove cart button
+      $('.gift_list_remove_cart').on('click', function () {
+          const product_id = $(this).attr('prod-id');
+          let products = get_campaign_products();
+          for (let i = 0; i < products.length; i++) {
+              if (products[i]['variant_id'] === product_id) {
+                  products.splice(i, 1);
+                  // Remove element from cart
+                  $(this).parent().remove();
+                  // Decrease cart badge
+                  $('#cart-badge').html(products.length);
+                  if (products.length <= 0) {
+                      $('#cart-badge').hide();
+                  }
+                  setCampaignData('products', products);
+                  break;
+              }
+          }
+      });
+  }
+
+  bind_function();
+
+  // Event handler for "Show More" button
+  $("#product-show-more").on('click', function () {
+      $.ajax({
+          url: '/step/first/show-more',
+          method: 'post',
+          data: {offset: offset, count: count, cid: collection_id, ctype: collection_type},
+          success: function (res) {
+              offset = Number(res.offset) || 0;
+              count = Number(res.count) || 20;
+              res.products.forEach(function (product) {
+                let productImage = product["image_data"]["sub"][0]
+                  let html = '<div class="col-md-3">\n' +
+                      '                <div class="product_item">\n' +
+                      '                    <div class="product_img">\n' +
+                      '                        <img src="' + productImage + '" alt="img"/>\n' +
+                      '                    </div>\n' +
+                      '                    <div class="product_info">\n' +
+                      '                        <div class="product_title">\n' +
+                      '                            <h4>' + product["product_title"] + '</h4>\n' +
+                      '                        </div>\n';
+                  if (product["collection_title"]) {
+                      html += '<div class="product_price">\n' +
+                          '                        <h5>' + product["collection_title"] + '</h5>\n' +
+                          '                    </div>\n';
+                  }
+
+                  html += '<p>\n' +
+                      '                            <img src="' + product["impact_icon"] + '" alt="img"/> '
+                      + product['short_desc'] + '\n' +
+                      '                        </p>\n' +
+                      '                        <button type="button" class="btn product_btn" prod-image="'
+                      + productImage + '" prod-title=\'' + product["product_title"]
+                      + '\' prod-desc-logo="' + product["impact_icon"]
+                      + '" prod-long-desc=\'' + product["html_body"]
+                      + '\' prod-short-desc=\'' + product["impact_short_description"]
+                      + '\' prod-id="' + product['variant_id'] + '">' +
+                      '                           ADD TO COLLECTION</button>\n' +
+                      '                    </div>\n' +
+                      '                </div>\n' +
+                      '            </div>';
+                  $('.product_area .container-fluid .products-row').append(html);
+              });
+              if (Number(res.count) < 20) {
+                  $("#product-show-more").hide();
+              }
+              bind_function();
+          }
+      });
+  });
+
+  // Event handler for "Complete Collection" button
+  $('#complete-collection').on('click', function () {
+      switch_step('step2');
+  });
+
+  function onProductImgError(e) {
+      e.src = '/resources/images/products/default.png';
+  }
+
+  function onLabelImgError(e) {
+      console.log('onLabelImgError');
+      e.src = '/resources/images/icons/hart.png';
+  }
+
+  $('.shopping-label-img').on('error', function () {
+      console.log('loading image filed');
+  });
+</script>

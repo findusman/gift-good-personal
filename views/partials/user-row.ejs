@@ -1,0 +1,104 @@
+<tr>
+  <td class="users_info"><%= idx %></td>
+  <td class="users_info"><div class="scroll_wrapper"><%= user['firstname'] %></div></td>
+  <td class="users_info"><div class="scroll_wrapper"><%= user['lastname'] %></div></td>
+  <td class="users_info email">
+    <div class="scroll_wrapper">
+      <%= user['email'] %>
+    </div>
+  </td>
+  <td class="users_info company">
+    <div class="scroll_wrapper">
+      <%= user['company'] %>
+    </div>
+  </td>
+  <td class="users_info job-title">
+    <div class="scroll_wrapper">
+      <img src="/resources/images/icons/user.png" alt="icon" />
+      <%
+      const job = user['job'];
+      const company = user['company'];
+      if (job && company) {
+      %>
+        <%= job %>
+      <% } %>
+    </div>
+  </td>
+  <td class="users_info"><div class="scroll_wrapper"><%= mapUserTypes(user['type']) %></div></td>
+  <% if(ability.can('manage', 'all')) { %>
+    <td class="users_info">
+      <div class="scroll_wrapper">
+        <a href="javascript:void(setImpersonatingUser('<%=user['email'] %>'))">
+          <svg style="width: 24px;" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+          <g>
+            <path d="M63,30.1C52.9,18.2,42.2,12,32,12c-10.2,0-20.9,6.2-31,18.1c-1,1.1-1,2.8,0,3.9C11.1,45.8,21.8,52,32,52
+                                        c10.2,0,20.9-6.2,31-18.1C63.9,32.8,63.9,31.2,63,30.1z M32,48c-8.7,0-18.4-5.7-27.4-16c9-10.3,18.7-16,27.4-16
+                                        c8.7,0,18.4,5.7,27.4,16C50.4,42.3,40.7,48,32,48z" />
+            <path d="M32,20c-6.6,0-12,5.4-12,12s5.4,12,12,12s12-5.4,12-12S38.6,20,32,20z M32,40c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8
+                                        S36.4,40,32,40z" />
+          </g>
+        </svg>
+        </a>
+      </div>
+    </td>
+  <% } %>
+  <% if (canEditSomeUsers) { %>
+    <td>
+      <% if (session.user.id !== user.id && (user.type !== 'client' || ability.can('manage', 'all'))) { %>
+        <button type="button" class="btn text-dark dropdown-toggle" data-toggle="dropdown" style="padding: 10px 15px;">
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li><span class="menu-title">More actions...</span></li>
+          <% if(ability.can('manage', 'all') && session.user.id !== user.id) { %>
+            <li>
+              <button type="button" class="btn-plain text-dark mb-2" onclick=resendVerification(<%-JSON.stringify( user['email']) %>) id="contact-save">
+                <i class="fas fa-envelope"></i>
+                Resend invite
+              </button>
+            </li>
+            <li>
+              <button type="button" class="btn-plain text-dark mb-2" onclick=verify(<%-JSON.stringify( user['id']) %>) id="contact-verify">
+                <i class="fas fa-check"></i>
+                Verify
+              </button>
+            </li>
+            <% if (ability.can('delete', 'User')) { %>
+              <li>
+                <button type="button" class="btn-plain text-dark mb-2" onclick=archiveUser(<%-JSON.stringify( user['id']) %>) id="contact-delete">
+                  <i class="fas fa-trash"></i>
+                  Archive
+                </button>
+              </li>
+            <% } %>
+            <li>
+              <button type="button" class="btn-plain text-dark mb-2" onclick=resetUserPassword(<%-JSON.stringify( user['id']) %>) id="reset-password">
+                <i class="fas fa-key"></i>
+                Reset password
+              </button>
+            </li>
+            <li>
+              <button type="button" class="btn-plain text-dark mb-2" onclick=openEditEmailModal(<%-JSON.stringify({ id: user['id'], email: user['email'] }) %>)>
+                <i class="fas fa-edit"></i>
+                Edit email
+              </button>
+            </li>
+          <% } %>
+          <% if (session.user.id !== user.id && (user.type !== 'client' || ability.can('manage', 'all'))) { %>
+            <li>
+              <button type="button" class="btn-plain text-dark mb-2" onclick=openEditPermissionsModal(<%-JSON.stringify(user['id']) %>)>
+                <i class="fas fa-lock"></i>
+                Edit permissions
+              </button>
+            </li>
+          <% } %>
+        </ul>
+      <% } %>
+    </td>
+  <% } %>
+  <td class="users_info">
+    <div class="scroll_wrapper">
+      <b><%= user['last_login_at'] ? moment(user['last_login_at']).format('MM/DD/YYYY') : '00/00/0000' %></b>
+    </div>
+  </td>
+</tr>

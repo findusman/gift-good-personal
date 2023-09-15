@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+<body>
+
+<main class="admin">
+  <% include ../../../partials/sidebar.ejs %>
+  <div class="admin_main">
+    <div class="container-fluid admin_title_area pt-4">
+      <div class="row col-md-12 d-flex justify-content-between">
+        <h2>Top Gifts Redeemed</h2>
+        <button type="button" class="btn common_btn" id="export_csv_btn">+ EXPORT CSV</button>
+      </div>
+    </div>
+    <div class="admin_header_nav combine_nav d-flex justify-content-end">
+      <%- include('../../../partials/campaigns-filter.ejs', { link: `/top-gifts-report?campaign=` }) %>
+    </div>
+    <div class="admin_content_area">
+      <table cellspacing="0" cellpadding="0" class="table-bordered table-responsive-lg table-hover table-report">
+        <thead>
+          <tr>
+              <th>No</th>
+              <th>Product</th>
+              <th>Number of Redemptions</th>
+              <th>Percentage of Redemptions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let i = 0; i < gifts.length; i++) { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td>
+                <div class="d-flex align-items-center m-2">
+                  <% if (gifts[i].image_data) { %>
+                    <img src="<%= gifts[i].image_data.main %>" alt="" width="150" class="mr-4" />
+                  <% } %>
+                  <%= gifts[i].product_title %>
+                </div>
+              </td>
+              <td><%= Math.floor(gifts[i].redemption_number).toLocaleString('en-US') %></td>
+              <td><%= gifts[i].percentage %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <% include ../../../partials/footer.ejs %>
+</main>
+<% include ../../../partials/storage.ejs %>
+<% include ../../../partials/foot.ejs %>
+
+<script type="text/javascript">
+  const gifts = <%- JSON.stringify(gifts) %>;
+  const activeCampaigns = <%- JSON.stringify(activeCampaigns) %>;
+  const activeCampaignIds = <%- JSON.stringify(activeCampaignIds) %>;
+  const userCompany = <%- session.user ? JSON.stringify(session.user.company) : '' %>;
+
+  $('#export_csv_btn').on('click', function () {
+    const baseFileName = `${userCompany} - Top Gifts`;
+    let activeCampaignsInfo = '';
+    if (activeCampaigns.length) {
+        activeCampaignsInfo = activeCampaigns.length === 1 ? `${activeCampaigns[0].title} - ` : `${activeCampaigns.length} campaigns selected - `;
+    }
+    const fileName = `${activeCampaignsInfo}${baseFileName}.csv`;
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    const header = ['No', 'Product name', 'Number of Redemptions', 'Percentage of Redemptions'].join(',');
+    csvContent += header + '\r\n';
+
+    for (let i = 0; i < gifts.length; i++) {
+        const row = formatStringArrayIntoJsonRow([i + 1, gifts[i]['product_title'], gifts[i]['redemption_number'], gifts[i]['percentage']]);
+        csvContent += row + '\r\n';
+    }
+    downloadCreatedCsv(csvContent, fileName);
+  });
+</script>
+</body>
+</html>
+
+              

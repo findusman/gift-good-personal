@@ -1,0 +1,281 @@
+<!-- Confirm dialog -->
+<div class="modal fade common-modal" id="confirm-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <input type="hidden" id="confirm-type" />
+        <input type="hidden" id="extra-param" />
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-title">
+          <h3>Please confirm.</h3>
+        </div>
+        <div class="message-section">
+          <p id="confirm-content"></p>
+        </div>
+        <div class="confirm-btn-group">
+          <button type="button" class="btn common_btn" data-dismiss="modal" id="confirm-btn"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Input dialog -->
+<div class="modal fade common-modal" id="input-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-title">
+          <h3>Input</h3>
+        </div>
+        <div class="message-section">
+          <input type="hidden" id="input-type" />
+          <input type="hidden" id="input-param" />
+          <input type="hidden" id="input-old-value" />
+          <label id="input-label" for="input-value"></label>
+          <input type="number" class="form-control" id="input-value" placeholder="New Unused Credit Balance">
+          <label id="input-label-comment" class="mt-2 hidden" for="input-value-comment"></label>
+          <input type="text" class="form-control hidden" id="input-value-comment" placeholder="Please add a comment to the credits update" required>
+        </div>
+        <div class="confirm-btn-group">
+          <button type="button" class="btn common_btn" id="save-btn"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- view contacts modal dialog -->
+<div class="modal fade contacts-modal" id="contacts-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-title">
+          <h3>Campaign Contacts</h3>
+        </div>
+        <div class="message-section">
+          <input type="hidden" id="campaign-id" />
+          <input type="hidden" id="campaign-title" />
+          <div class="modal-content-section">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">No</th>
+                  <th class="text-center">First Name</th>
+                  <th class="text-center">Last Name</th>
+                  <th class="text-center">Company</th>
+                  <th class="text-center">Email</th>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Delivery date</th>
+                  <th class="text-center">Sent at</th>
+                  <th class="text-center">Link</th>
+                  <th id="remove" class="text-center">Remove</th>
+                  <% if (page_title === 'admin-queues') { %>
+                    <th id="send-one" class="text-center">Send now</th>
+                  <% } %>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            <div id="table-bottom">Loading...</div>
+          </div>
+        </div>
+        <div class="confirm-btn-group">
+          <div class="d-flex" style="flex: 1;">
+            <button type="button" class="btn common_btn mr-2" data-dismiss="modal">Yes, Got it!</button>
+            <button type="button" class="btn common_btn grey_btn" id="export-contacts">Export to CSV
+            </button>
+          </div>
+          <div>
+            <label>Select to filter contacts</label>
+            <select class="form-control" style="width: 250px" name="sel_user_id" id="filter-select">
+              <option value="" style="color: black"></option>
+              <option value="bounced" style="color: black">bounced</option>
+              <option value="unredeemed" style="color: black">unredeemed gifts</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit reminder dialog -->
+<div class="modal fade common-modal" id="reminder-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <input type="hidden" id="reminder-key" />
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-title">
+          <h3 id="reminder-title"></h3>
+        </div>
+        <div class="message-section">
+          <input id="reminder-subject" type="text" class="form-control mb-3" placeholder="Subject" />
+          <textarea id="reminder-content" class="form-control" style="height: 300px;" placeholder="Email body goes here."></textarea>
+        </div>
+        <div class="confirm-btn-group">
+          <button type="button" class="btn common_btn" id="update-reminder-btn">UPDATE REMINDER</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Add dialog -->
+<div class="modal fade common-modal" id="add-product-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-title"></div>
+        <div class="message-section">
+          <select id="price-select" class="form-control" style="width: fit-content;"></select>
+          <div class="row product_area" id="modal-product-section"></div>
+        </div>
+        <div class="confirm-btn-group text-center">
+          <button type="button" class="btn common_btn" id="product-show-more">SHOW MORE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Purchase Credits Modal -->
+<div class="modal fade addCredit_modal" id="add-credit-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="padding: 35px 25px;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p class="failure-message hidden" style="color: red; padding-bottom: 10px;">
+          Failed to create a campaign. Purchase more credits to create campaign.
+        </p>
+        <h1 class='pt-4'>Buy Credit</h1>
+        <h6 class='pt-2'>Select Credit Option <span style="font-size: 12px;" class="pl-2">1 credit equals $1</span></h6>
+        <div class="credit-container">
+          <div>
+            <div class='radio'>
+              <label>
+                <input type="radio" name="prepay" value="1000" data-cash="$1,000" />
+                $1,000 for 1,000 credits
+              </label>
+            </div>
+          </div>
+          <div class='prepayment'>
+            <div class='radio'>
+              <label>
+                <input type="radio" name="prepay" value="2500" data-cash="$2,500" />
+                $2,500 for 2,500 credits
+              </label>
+            </div>
+          </div>
+          <div class='prepayment'>
+            <div class='radio'>
+              <label>
+                <input type="radio" name="prepay" value="5000" data-cash="$5,000" />
+                $5,000 for 5,000 credits
+              </label>
+            </div>
+          </div>
+          <div class='prepayment'>
+            <div class='radio'>
+              <label>
+                <input type="radio" name="prepay" value="10000" data-cash="$10,000" />
+                $10,000 for 10,000 credits
+              </label>
+            </div>
+          </div>
+          <div class='prepayment'>
+            <div class='radio'>
+              <label>
+                <input type="radio" name="prepay" value="custom" data-track="Custom Amount" />
+                Custom Amount
+                <input type="text" name="prepay" id="custom-amount" class="form-control" />
+              </label>
+            </div>
+          </div>
+        </div>
+        <h3 class='pt-4'>Add New Payment Method</h3>
+        <div class='stripe-form'>
+          <form class="credit-container" id="payment-form">
+            <section style="padding-bottom: 16px;">
+              <input type="text" class="form-control card-name" placeholder="Name" />
+            </section>
+            <section style="padding-bottom: 16px;">
+              <div class="form-control" id="card-number">
+                <!--Stripe.js injects the Card Element-->
+              </div>
+            </section>
+            <section style="padding-bottom: 16px;">
+              <div class="form-control" id="card-expiry">
+                <!--Stripe.js injects the Card Element-->
+              </div>
+            </section>
+            <section style="padding-bottom: 16px;">
+              <div class="form-control" id="card-cvc">
+                <!--Stripe.js injects the Card Element-->
+              </div>
+            </section>
+            <button id="submit" class="stripe" style="width: 204px;">
+              <div class="spinner hidden" id="spinner"></div>
+              <span id="button-text">COMPLETE PAYMENT</span>
+            </button>
+            <p id="card-error" role="alert"></p>
+            <p class="result-message hidden">
+              Success! Thank you for your payment.
+            </p>
+            <i class='pt-4'>Have additional questions about payment options? Please call (877) 554-1550 or email <a style="color: black;" href="mailto: support@giftsforgood.com">support@giftsforgood.com</a>.</i>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Credits history dialog -->
+<div class="modal fade" id="credits-history-modal" tabindex="-1" role="dialog" aria-labelledby="Credits history" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-title mb-4">
+          <h3>Credits History</h3>
+        </div>
+        <div style="overflow-x: scroll;">
+          <table class="dynamic-content">
+            <thead>
+            <th>Type</th>
+            <th>Updated at</th>
+            <th>Credit Amount</th>
+            <th>Comment</th>
+            <th>Savings balance</th>
+            <th>Campaign balance</th>
+            <th>Campaign id</th>
+            </thead>
+            <tbody>
+            <!-- dynamic content -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

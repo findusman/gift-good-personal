@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+
+  <div class="admin">
+    <% include ../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+      <div class="admin_title_area">
+        <div class="container-fluid">
+          <div class="row col-md-12">
+            <div style="flex: 1;">
+              <h2>Manage Campaigns</h2>
+            </div>
+            <% if (ability.can('create', 'Campaign')) { %>
+              <div>
+                <button type="button" class="btn common_btn send-a-gift">SEND A GIFT</button>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin_content_area">
+        <% if (!campaigns.length) { %>
+        <div class="pastorder_item text-center" id="no-user-found"><span style="font-size: 25px;">No campaign found.</span></div>
+        <% } else { %>
+        <% for (let i = 0; i < campaigns.length; i++) {
+            const campaign_id = campaigns[i]['id'];
+            const campaign_title = campaigns[i]['title'];
+            const campaign_schedule = campaigns[i]['is_scheduled'] && campaigns[i]['scheduled_date'];
+            const campaign_tz = campaigns[i]['is_scheduled'] && campaigns[i]['scheduled_tz'];
+            const contacts_count = campaigns[i]['contacts'] ? campaigns[i]['contacts'].length : 0;
+            const campaignStatus = campaignsStatus[i]
+        %>
+        <div class="queue_item">
+          <table border="0" cellspacing="0" cellpadding="0" class="fixed">
+            <col width="50px" />
+            <col />
+            <col />
+            <col />
+            <col />
+
+            <tr>
+              <td class="users_item_number">
+                <%= i + 1 %>
+              </td>
+              <td class="users_faceName"> <%= campaign_title %> &nbsp;
+                <% if(campaign_schedule) {%>
+                <span data-toggle="tooltip" title="<%= moment(campaign_schedule).tz(campaign_tz).format('MMMM Do YYYY, h:mm:ss a') + ' (' + campaign_tz + ')' %>">
+                  <svg style="fill:#C8B398" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="23" height="24" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+                    <path d="M320,64H192V32h128V64z M512,96v352c0,35.344-28.656,64-64,64H64c-35.344,0-64-28.656-64-64V96c0-35.344,28.656-64,64-64v32
+                                                c-17.641,0-32,14.375-32,32v64h448V96c0-17.625-14.344-32-32-32V32C483.344,32,512,60.656,512,96z M128,400H32v48
+                                                c0,17.656,14.359,32,32,32h64V400z M128,304H32v64h96V304z M128,192H32v80h96V192z M240,400h-80v80h80V400z M240,304h-80v64h80V304z
+                                                    M240,192h-80v80h80V192z M352,400h-80v80h80V400z M352,304h-80v64h80V304z M352,192h-80v80h80V192z M480,400h-96v80h64
+                                                c17.656,0,32-14.344,32-32V400z M480,304h-96v64h96V304z M480,192h-96v80h96V192z M112,96h32c8.844,0,16-7.156,16-16V16
+                                                c0-8.844-7.156-16-16-16h-32c-8.844,0-16,7.156-16,16v64C96,88.844,103.156,96,112,96z M368,96h32c8.844,0,16-7.156,16-16V16
+                                                c0-8.844-7.156-16-16-16h-32c-8.844,0-16,7.156-16,16v64C352,88.844,359.156,96,368,96z" />
+                  </svg>
+                </span>
+                <% } %>
+              </td>
+              <td class="users_info">Addressed to <%= contacts_count > 1 ? contacts_count
+                                            + ' recipients' : contacts_count == 1 ? '1 recipient' : ' no recipient' %></td>
+              <td class="users_info">Status: <b><%= campaignStatus %></b></td>
+              <td class="users_info" style="width: 450px;">
+                <a href="/preview/campaign-email?where=dashboard&cid=<%= campaign_id %>" target="_blank" style="color: white;">
+                  <button type="button" class="btn common_btn grey_btn ml-2">VIEW EMAIL</button>
+                </a>
+                <button type="button" class="btn common_btn light_dark_btn ml-2 view-contacts" campaign-id="<%= campaign_id %>" campaign-title="<%= campaign_title %>">VIEW CONTACTS</button>
+                <% if (ability.can('update', 'Campaign') && (campaigns[i].userId === session.user.id || ability.can('update', 'CompanyCampaign'))) { %>
+                  <a href="/edit-campaign?cid=<%= campaign_id %>" style="color: white;">
+                    <button type="button" class="btn common_btn ml-2">EDIT CAMPAIGN</button>
+                  </a>
+                <% } else { %>
+                  <a href="/preview/landing-page?where=dashboard&cid=<%= campaign_id %>" style="color: white; font-style: normal;" class="btn common_btn ml-2" target="_blank" rel="noopener">
+                    VIEW PAGE
+                  </a>
+                <% } %>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <% } %>
+        <% } %>
+      </div>
+
+    </div>
+
+    <% include ../../partials/footer.ejs %>
+  </div>
+
+  <% include ../../partials/modals.ejs %>
+
+  <% include ../../partials/storage.ejs %>
+  <% include ../../partials/foot.ejs %>
+  <% include client-campaigns_action.ejs %>
+  <% include ../../partials/modal-csv-export_actions.ejs %>
+
+</body>
+
+</html>

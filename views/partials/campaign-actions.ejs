@@ -1,0 +1,31 @@
+<script type="text/javascript">
+  $('.btn-star').on('click', function() {
+    const campaignId = $(this).attr('data-id');
+    const isStarred = $(this).attr('data-is-starred');
+    showLoader(true);
+    $.ajax({
+        url: '/toggle-campaign-star',
+        method: 'POST',
+        data: {
+          id: campaignId,
+          star: !JSON.parse(isStarred)
+        },
+        success: function(res) {
+          showInfo('Campaign has been updated');
+          showLoader(false);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+  });
+</script>

@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/theme.css?v=12927984427861795921') %>">
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/custom.css?v=17147846187842746493') %>">
+<% include ../partials/head.ejs %>
+<body class="prestige--v4 features--heading-large features--show-button-transition features--show-image-zooming features--show-element-staggering  template-product template-suffix-buy-and-customize">
+  <% include ../partials/header.ejs %>
+  <div class="container-fluid text-center my-4 py-4">
+    <% if (isRedeemed) { %>
+      <h1 class="mb-4 font-weight-bold">You have already picked out a gift using this link. <br /> We hope you love your gift for good!</h1>
+      <p class="p-large">If you think you received this message in error, please contact <a href="mailto:support@giftsforgood.com">support@giftsforgood.com</a>.</p>
+    <% } else if (isExpired) { %>
+      <h1 class="mb-4 font-weight-bold">This gift link has expired. You are no longer able to redeem a gift.</h1>
+      <p class="p-large">Want your gift to be re-sent? Please contact <a href="mailto:support@giftsforgood.com">support@giftsforgood.com</a>.</p>
+    <% } else if (shouldRequestNewLink) { %>
+      <h1 class="mb-4 font-weight-bold">Request A New Gift Link</h1>
+      <p class="p-large">Gifts for Good has recently made some technical updates to the GIFTforward platform.</p>
+      <p class="p-large">In order to redeem your gift, please request a new gift link by emailing <a href="mailto:support@giftsforgood.com">support@giftsforgood.com</a>.</p>
+    <% } else { %>
+      <h1 class="mb-4 font-weight-bold">This gift is no longer available!</h1>
+      <p class="p-large">If you think you received this message in error, please contact <a href="mailto:support@giftsforgood.com">support@giftsforgood.com</a>.</p>
+    <% } %>
+  </div>
+<% include ../partials/shopify_footer.ejs %>
+</body>

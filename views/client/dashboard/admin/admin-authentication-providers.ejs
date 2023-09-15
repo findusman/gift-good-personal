@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+<body>
+<div class="admin">
+    <% include ../../../partials/sidebar.ejs %>
+    <main class="admin_main">
+      <div class="container-fluid admin_title_area pt-4">
+        <div class="row mb-4 pb-4">
+            <div class="col-lg-8">
+                <h1>Authentication&nbsp;Providers</h1>
+            </div>
+        </div>
+        <div class="admin_content_area">
+          <table>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Adaptor</th>
+              <th>Date Created</th>
+              <th>Date Updated</th>
+            </tr>
+          <% providers.forEach((provider) => { %>
+            <tr data-provider-id="<%=provider.id%>">
+              <td><%=provider.id%></td>
+              <td><%=provider.name%></td>
+              <td><% adapters.forEach((adapter) => {
+                        if (adapter.code === provider.adapter) { %>
+                          <%=adapter.name%>
+                      <% }
+                     }) %></td>
+              <td><%=moment(provider.createdAt).format('MM/DD/YYYY hh:mmA')%></td>
+              <td><%=moment(provider.updatedAt).format('MM/DD/YYYY hh:mmA')%></td>
+            </tr>
+          <% }) %>
+          </table>
+
+          <button type="button" class="btn common_btn mb-4 mt-4" id="add-provider-link">
+            Add Provider
+          </button>
+
+          <div class="modal fade common-modal" id="edit-provider-modal" tabindex="-1" role="dialog" aria-labelledby="editProviderModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="spinner" id="spinner"></div>
+                  <div class="dynamic-content hidden">
+                    <h5 class="mb-3">Edit Provider</h5>
+                    <form>
+                      <div class="form-input-group">
+                        <label for="name">
+                          Name
+                        </label>
+                        <input type="text" name="name">
+                      </div>
+                      <div class="form-input-group">
+                        <label for="adapter">
+                          Adapter (Code)
+                        </label>
+                        <select name="adapter">
+                          <% adapters.forEach((adapter) => { %>
+                            <option value="<%=adapter.code%>"><%=adapter.name%></option>
+                          <% }) %>
+                        </select>
+                      </div>
+                      <div class="form-input-group">
+                        <label for="adapter">
+                          Configuration (JSON)
+                        </label>
+                        <textarea name="config" wrap="soft">
+                        </textarea>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <button type="button" class="btn common_btn mb-2 mt-2" id="save-provider">
+                          Update
+                        </button>
+                        <button type="button" class="btn common_btn grey_btn mb-2 mt-2" id="delete-provider">
+                          Delete
+                        </button>
+                      </div>
+                      <input type="hidden" name="id">
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade common-modal" id="add-provider-modal" tabindex="-1" role="dialog" aria-labelledby="addProviderModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <h5 class="mb-3">Add Provider</h5>
+                  <form action="#">
+                    <div class="form-input-group">
+                      <label for="name">
+                        Name
+                      </label>
+                      <input type="text" name="name">
+                    </div>
+                    <div class="form-input-group">
+                      <label for="adapter">
+                        Adapter (Code)
+                      </label>
+                      <select name="adapter">
+                        <% adapters.forEach((adapter) => { %>
+                          <option value="<%=adapter.code%>"><%=adapter.name%></option>
+                        <% }) %>
+                      </select>
+                    </div>
+                    <div class="form-input-group">
+                      <label for="adapter">
+                        Configuration (JSON)
+                      </label>
+                      <textarea name="config" wrap="soft"></textarea>
+                    </div>
+                    <div>
+                      <button type="button" class="btn common_btn mb-2 mt-2" id="add-provider">
+                        Add
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </main>
+    <% include ../../../partials/modals.ejs %>
+    <% include ../../../partials/footer.ejs %>
+  </div>
+  <% include ../../../partials/storage.ejs %>
+  <% include ../../../partials/foot.ejs %>
+</body>
+
+<script>
+  $('#add-provider-link').on('click', event => {
+    event.preventDefault();
+    $('#add-provider-modal').modal('show');
+  });
+
+  $('.admin_content_area tr').slice(1).on('click', event => {
+    $('#edit-provider-modal').modal('show');
+    const $element = $(event.currentTarget);
+    const id = $element.attr('data-provider-id');
+    const $spinner = $('#edit-provider-modal .spinner');
+    const $content = $('#edit-provider-modal .dynamic-content');
+
+    $content.addClass('hidden');
+    $spinner.removeClass('hidden');
+
+    $.ajax({
+      url: `/admin-authentication-providers/${id}`,
+      method: 'GET',
+      error: function (err) {
+        $('#edit-provider-modal').modal('hide');
+        // todo: show error toast
+      },
+      success: function(res) {
+        $spinner.addClass('hidden');
+        $content.removeClass('hidden');
+        if (res?.status === 'success') {
+          const { data: { provider : { id, name, adapter, config } } } = res;
+          $('#edit-provider-modal [name="id"]').val(id);
+          $('#edit-provider-modal [name="name"]').val(name);
+          $('#edit-provider-modal [name="adapter"]').val(adapter);
+          if (config) {
+            $('#edit-provider-modal textarea[name="config"]').val(JSON.stringify(config, null, 4));
+          }
+        }
+        else {
+          // todo: show error toast
+        }
+      },
+    });
+  });
+
+  $('#add-provider-modal button#add-provider').on('click', event => {
+    event.preventDefault();
+
+    const $spinner = $('#add-provider-modal .spinner');
+    const $content = $('#add-provider-modal .dynamic-content');
+
+    $content.addClass('hidden');
+    $spinner.removeClass('hidden');
+
+    $.ajax({
+      url: `/admin-authentication-providers`,
+      method: 'POST',
+      data: {
+        name: $('#add-provider-modal [name="name"]').val(),
+        adapter: $('#add-provider-modal [name="adapter"]').val(),
+        config: $('#add-provider-modal [name="config"]').val(),
+      },
+      error: function (err) {
+        $('#add-provider-modal').modal('hide');
+        // todo: show error toast
+        window.location.reload();
+      },
+      success: function(res) {
+        if (res?.status === 'success') {
+          window.location.reload();
+        }
+        else {
+          // todo: show error toast
+          window.location.reload();
+        }
+      },
+    });
+  });
+
+  $('#edit-provider-modal button#delete-provider').on('click', event => {
+    event.preventDefault();
+
+    if (!confirm('Are you sure?')) {
+      return;
+    }
+
+    const $spinner = $('#edit-provider-modal .spinner');
+    const $content = $('#edit-provider-modal .dynamic-content');
+    const id = $('#edit-provider-modal input[name="id"]').val();
+
+    $.ajax({
+      url: `/admin-authentication-providers/${id}`,
+      method: 'DELETE',
+      data: {
+        id
+      },
+      error: function (err) {
+        $('#edit-provider-modal').modal('hide');
+        // todo: show error toast
+        window.location.reload();
+      },
+      success: function(res) {
+        if (res?.status === 'success') {
+          window.location.reload();
+        }
+        else {
+          // todo: show error toast
+          window.location.reload();
+        }
+      },
+    });
+  });
+
+  $('#edit-provider-modal button#save-provider').on('click', event => {
+    event.preventDefault();
+
+    const $spinner = $('#edit-provider-modal .spinner');
+    const $content = $('#edit-provider-modal .dynamic-content');
+    const id = $('#edit-provider-modal input[name="id"]').val();
+
+    $content.addClass('hidden');
+    $spinner.removeClass('hidden');
+
+    $.ajax({
+      url: `/admin-authentication-providers/${id}`,
+      method: 'PUT',
+      data: {
+        id,
+        name: $('#edit-provider-modal [name="name"]').val(),
+        adapter: $('#edit-provider-modal [name="adapter"]').val(),
+        config: $('#edit-provider-modal [name="config"]').val(),
+      },
+      error: function (err) {
+        $('#edit-provider-modal').modal('hide');
+        // todo: show error toast
+        window.location.reload();
+      },
+      success: function(res) {
+        if (res?.status === 'success') {
+          window.location.reload();
+        }
+        else {
+          // todo: show error toast
+          window.location.reload();
+        }
+      },
+    });
+  });
+
+  $('#edit-provider-modal form,#add-provider-modal form').on('submit', event => event.preventDefault());
+</script>
+
+<style>
+  .admin_content_area table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .admin_content_area td,
+  .admin_content_area th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  .admin_content_area tr:nth-child(even) {
+    background-color: #ebe7e0;
+  }
+
+  .admin_content_area tr {
+    cursor: pointer;
+  }
+
+  .admin_content_area tr:first-child {
+    cursor: unset;
+  }
+
+  .admin_content_area form label {
+    display: block;
+    margin: 0;
+  }
+
+  .admin_content_area form input,
+  .admin_content_area form select,
+  .admin_content_area form textarea {
+    width: 100%;
+  }
+
+  .admin_content_area form textarea {
+    height: 225px;
+    font-family: monospace;
+    font-size: .85rem;
+  }
+
+  .admin_content_area form .form-input-group {
+    margin-top: .5rem;
+  }
+</style>

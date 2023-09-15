@@ -1,0 +1,119 @@
+<div class="admin_sitebar">
+
+    <div class="sitebar_logo">
+        <a href="#">
+            <img src="/resources/images/logo-giftforward-full.svg" alt="Giftforward"/>
+        </a>
+    </div>
+    <% if (ability.can('create', 'Campaign')) { %>
+        <div class="sitebar_btn">
+            <button type="button" class="btn common_btn send-a-gift">+ SEND GIFT</button>
+        </div>
+    <% } %>
+    <div class="sitebar_nav">
+        <ul>
+
+
+            <li class="<%= page_title === 'client-dashboard' ? 'active' : '' %>">
+                <a href="/dashboard">Gift Collections</a>
+            </li>
+            <% if (ability.can('read', 'Report')) { %>
+                <li class="<%= page_title === 'client-reports' ? 'active' : '' %>">
+                    <a href="/report">Reports</a>
+                </li>
+
+                <li class="sub-menu-item <%= page_title === 'client-gifts' ? 'active' : '' %>">
+                    <a href="/gifts">Gifts</a>
+                </li>
+
+                <li class="sub-menu-item <%= page_title === 'client-campaign-reports' ? 'active' : '' %>">
+                    <a href="/campaign-report">Order</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'client-recipient-reports' ? 'active' : '' %>">
+                    <a href="/recipient-report">Recipient</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'client-thanks-reports' ? 'active' : '' %>">
+                    <a href="/thanks-report">Thank you notes</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'client-gifts-reports' ? 'active' : '' %>">
+                    <a href="/top-gifts-report">Top Gifts Redeemed</a>
+                </li>
+            <% } %>
+
+            <% if (ability.can('read', 'User')) { %>
+                <li class="<%= page_title === 'client-users' ? 'active' : '' %>">
+                    <a href="/users">Users</a>
+                </li>
+                <% if (ability.can('manage', 'all')) { %>
+                    <li class="sub-sub-menu-item <%= page_title === 'client-users-standard' ? 'active' : '' %>">
+                        <a href="/users?type=standard">Standard</a>
+                    </li>
+                    <li class="sub-sub-menu-item <%= page_title === 'client-users-admin' ? 'active' : '' %>">
+                        <a href="/users?type=admin">Admin</a>
+                    </li>
+                <% } %>
+            <% } %>
+            <% if (ability.can('read', 'Campaign')) { %>
+                <li class="<%= page_title === 'client-campaigns' || page_title === 'client-edit-campaign' ? 'active' : '' %>">
+                    <a href="/campaigns">Campaigns</a>
+                </li>
+            <% } %>
+            <% if (ability.can('read', 'Credit')) { %>
+                <li class="<%= page_title === 'client-buy-credits' ? 'active' : '' %>">
+                    <a href="/credit/list">Buy Credit</a>
+                </li>
+            <% } %>
+            <% if (ability.can('manage', 'all')) { %>
+                <li class="<%= page_title === 'client-reports' ? 'active' : '' %>">
+                    <a href="#">Admin</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'admin-collections' ? 'active' : '' %>">
+                    <a href="/admin-collections">Collections</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'admin-campaigns' ? 'active' : '' %>">
+                    <a href="/admin-campaigns">Campaigns</a>
+                </li>
+                <li class="sub-sub-menu-item <%= page_title === 'admin-live-campaigns' ? 'active' : '' %>">
+                    <a href="/admin-campaigns?type=live">Live</a>
+                </li>
+                <li class="sub-sub-menu-item <%= page_title === 'admin-archived-campaigns' ? 'active' : '' %>">
+                    <a href="/admin-campaigns?type=archived">Archived</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'admin-demo-campaign' ? 'active' : '' %>">
+                    <a href="/demo/edit-campaign">Demo Campaign</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'admin-contacts' ? 'active' : '' %>">
+                    <a href="/admin-contacts">Contacts</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'admin-credits' ? 'active' : '' %>">
+                    <a href="/admin-credits">Credits</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'admin-queues' ? 'active' : '' %>">
+                    <a href="/admin-queues">Send Queue</a>
+                </li>
+                <li class="sub-menu-item <%= page_title === 'admin-settings' ? 'active' : '' %>">
+                    <a href="/admin-settings">Settings</a>
+                </li>
+                <li class="sub-sub-menu-item <%= page_title === 'admin-authentication-providers' ? 'active' : '' %>">
+                    <a href="/admin-authentication-providers">Authentication Providers</a>
+                </li>
+                <li class="sub-sub-menu-item <%= page_title === 'admin-authentication-tokens' ? 'active' : '' %>">
+                    <a href="/admin-authentication-tokens">Authentication Tokens</a>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+
+
+    <div class="sitebar_setting">
+        <ul>
+            <li>
+                <a href="/logout"><img src="/resources/images/icons/logout.png" alt="icon"/>Logout</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="alert alert-bar alert-success text-center" id="alert-bar" style="margin-left: 230px;">
+    <strong id="alert-title"></strong> <span id="alert-content"></span>
+</div>

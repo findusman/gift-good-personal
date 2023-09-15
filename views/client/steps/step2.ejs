@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+<% include ../../partials/header.ejs %>
+
+<div class="step_2_area">
+    <section class="title_area">
+        <div class="container">
+            <h2>
+                RECIPIENT INFORMATION
+            </h2>
+            <p class="step_2_txt_1">
+                Please add or import the names, email addresses, and
+                <br/>
+                company names of your gift recipients from a CSV file
+            </p>
+            <p class="step_2_txt_2">
+                Please enter the name and email of your gift recipient(s).
+            </p>
+        </div>
+    </section>
+
+    <!--Area Start -->
+
+    <section class="step_information_area">
+        <div class="add_title">
+            <div class="container">
+                <h3 id="step2-title">
+                    <img src="/resources/images/icons/add.png"/>
+                    <span>Add Contacts (0 contacts exist)</span>
+                </h3>
+            </div>
+        </div>
+        <div class="step_information_boxes">
+            <div class="container side_box">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="step_information_item information_form_box">
+
+                            <div class="step_information_item_box">
+                                <img src="/resources/images/icons/contacts.png"/>
+                                <h4>TYPE IN CONTACTS</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="step_information_item information_contact_box">
+                            <div class="step_information_item_box">
+                                <img src="/resources/images/icons/file.png"/>
+                                <h4>IMPORT FROM FILE</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <p>
+                        Physical gifts can only be sent to recipients in the U.S.
+                        Want to give Gifts for Good to someone in another country?
+                        We recommend our "donation in your honor" collections that allow recipients to pick a cause of
+                        their choice.
+                        For other international gift solutions, please <a href="mailto:giftforward@giftsforgood.com">contact
+                            us</a> or visit <a href="http://giftsforgood.com/">giftsforgood.com</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--information contact Area Start -->
+
+    <section class="information_contact_area">
+        <div class="add_title">
+            <div class="container">
+                <h3><img src="/resources/images/icons/file-2.png"/> Import Contacts From File</h3>
+            </div>
+        </div>
+        <div class="container side_box">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="choose_file_box">
+                        <div class="csv-content-area" style="display: none;">
+                            <div class="csv-content-section">
+                                <table class="table table-bordered table-hover" id="csv-content-table">
+                                    <thead>
+                                    <tr>
+                                        <th rowspan="2" class="text-center">No</th>
+                                        <th colspan="4" class="text-center">Sender Information</th>
+                                        <th colspan="4" class="text-center">Receiver Information</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center">First Name</th>
+                                        <th class="text-center">Last Name</th>
+                                        <th class="text-center">Company</th>
+                                        <th class="text-center">Email</th>
+                                        <th class="text-center">First Name</th>
+                                        <th class="text-center">Last Name</th>
+                                        <th class="text-center">Company</th>
+                                        <th class="text-center">Email</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="drag_area">
+                            <div class="drag_area_content">
+                                <img src="/resources/images/icons/drag-file.png"/>
+                                <h5 class="mobile_none">Choose a file or drag and drop it here</h5>
+                                <h5 class="desktop_none">Upload a file</h5>
+                                <p>(maximum number of rows per file is 1,000)</p>
+                            </div>
+                            <div class="drag_choose_field">
+                                <input type="file" class="form-control-file" id="contact-csv-file">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="csv_btn">
+                        <!-- <a href="http://giftforward.giftsforgood.com/resources/csv/contact_template.csv">-->
+                        <a href="/resources/csv/contact_template.csv">
+                            <button type="button" class="btn">Download Example CSV</button>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="step_buttons_area">
+                        <ul>
+                            <li>
+                                <div class="preview_here">
+                                    <a><img src="/resources/images/icons/question.png"/> <span
+                                                style="border: none; color: #7B7B7B !important;">Help</span></a>
+                                    <div class="preview_hover_view">
+                                        <p class="mobile_none">
+                                            Import contact information from file. File type should be csv format. You
+                                            can see the example csv file on the left link.
+                                        </p>
+                                        <p class="desktop_none">
+                                            Import contact information from file. File type should be csv format. You
+                                            can see the example csv file on the left link.
+                                        </p>
+                                        <!-- <h5 class="desktop_none"><span>Show more</span></h5>-->
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <button type="button" class="btn common_btn nextstep_btn">NEXT</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="GoBack_link">
+                        <a href="#">
+                            <img src="/resources/images/icons/arrow-1.png"/> Go back and type in contacts manually
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--information Form Area Start -->
+
+    <section class="information_form_area">
+        <div class="add_title">
+            <div class="container">
+                <h3><img src="/resources/images/icons/contacts-2.png"/> Contact Information</h3>
+            </div>
+        </div>
+        <div class="container side_box">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="information_form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="first-name">SENDER FIRST NAME(*)</label>
+                                    <input type="text" class="form-control" id="from-first-name">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="last-name">SENDER LAST NAME(*)</label>
+                                    <input type="text" class="form-control" id="from-last-name">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="company-name">SENDER COMPANY NAME(*)</label>
+                                    <input type="text" class="form-control" id="from-company-name">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="email">SENDER EMAIL ADDRESS(*)</label>
+                                    <input type="email" class="form-control" id="from-email">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="first-name">RECEIVER FIRST NAME(*)</label>
+                                    <input type="text" class="form-control" id="to-first-name">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="last-name">RECEIVER LAST NAME(*)</label>
+                                    <input type="text" class="form-control" id="to-last-name">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="company-name">RECEIVER COMPANY NAME(*)</label>
+                                    <input type="text" class="form-control" id="to-company-name">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="email">RECEIVER EMAIL ADDRESS(*)</label>
+                                    <input type="email" class="form-control" id="to-email">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mobile_none">
+                    <div class="GoBack_link">
+                        <a href="#">
+                            <img src="/resources/images/icons/arrow-1.png"/> Go back and import contacts from file
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="step_buttons_area">
+                        <ul>
+                            <li>
+                                <a id="add-second-contact" style="cursor: pointer;"><img
+                                            src="/resources/images/icons/add-small.png"/> <span>ADD CONTACT</span></a>
+                            </li>
+                            <li>
+                                <button type="button" class="btn common_btn nextstep_btn">NEXT</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-12 desktop_none">
+                    <div class="GoBack_link">
+                        <a href="#">
+                            <img src="/resources/images/icons/arrow-1.png"/> Go back and import contacts from file
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--Down Banner Area Start -->
+
+    <div class="down_banner_2">
+    </div>
+
+</div>
+
+<% include ../../partials/footer.ejs %>
+<% include ../../partials/storage.ejs %>
+<% include ../../partials/foot.ejs %>
+<% include ../../partials/process-contacts_action.ejs %>
+<% include step2_action.ejs %>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<script type="text/javascript">
+    let users = <%- JSON.stringify(users) %>
+
+    $('.activate-btn').on('click', function() {
+        const user_id = $(this).attr('id');
+        console.log('user_id ', user_id);
+        $.ajax({
+            url: '/activate',
+            type: 'post',
+            data: { user_id: user_id },
+            success: function(res) {
+                showInfo('Activation email sent successfully.');
+            },
+            error: function(err) {
+                console.log(err);
+                const status = err.responseJSON.status;
+                const msg = err.responseJSON.msg;
+                if (status === 'failed') {
+                    showError(msg);
+                }
+            }
+        })
+    })
+
+</script>

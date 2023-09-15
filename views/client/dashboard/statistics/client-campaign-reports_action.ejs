@@ -1,0 +1,55 @@
+<script type="text/javascript">
+    const is_only_mine = <%- JSON.stringify(onlymine) %>
+    const order_reports = <%- JSON.stringify(reports) %>
+    const activeCampaigns = <%- JSON.stringify(activeCampaigns) %>;
+    const userCompany = <%- session.user ? JSON.stringify(session.user.company) : '' %>;
+
+    if (is_only_mine === 'true') {
+        $('#only-mine-check').prop('checked', true);
+    }
+    $('#export_csv_btn').on('click', function () {
+        const baseFileName = `${userCompany} - Order Report`;
+        let activeCampaignsInfo = '';
+        if (activeCampaigns.length) {
+            activeCampaignsInfo = activeCampaigns.length === 1 ? `${activeCampaigns[0].title} - ` : `${activeCampaigns.length} campaigns selected - `;
+        }
+        const fileName = `${activeCampaignsInfo}${baseFileName}.csv`;
+        let csvContent = "";
+        const header = ["No", "Sender Company", "Sender Name", "Sender Email", "Collection Sent", "Total Gifts Sent",
+            "Redemption Rate", "Send Date"].join(",");
+        csvContent += header + "\r\n";
+
+      $.ajax({
+        url: '/export-campaign-reports',
+        method: 'GET',
+        data: {
+          onlymine: is_only_mine,
+          campaign: activeCampaigns,
+        },
+        success: function (res) {
+          if (res) {
+            let csvContent = "data:text/csv;charset=utf-8," + res;
+            const encodedUri = encodeURI(csvContent).replaceAll("#", "%23");
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", fileName);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        },
+        error: function (err) {
+          console.log(err);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      })
+    });
+
+    $('#only-mine-check').change(function () {
+        window.location.href = '/campaign-report?onlymine=' + this.checked;
+    })
+</script>

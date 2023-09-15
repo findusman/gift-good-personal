@@ -1,0 +1,10 @@
+.env
+node_modules
+*.min.*
+.env.local
+.env.local.*
+.env.development
+.env.development.*
+logfile
+public/dist
+.DS_Store

@@ -1,0 +1,13 @@
+<script>
+  $(document).ready(function() {
+    const header = $('.site_header');
+    $(window).on('scroll', () => {
+      const scrollPosition = $(this).scrollTop();
+      if (scrollPosition > 0) {
+        header.addClass('header-scrolled');
+      } else {
+        header.removeClass('header-scrolled');
+      }
+    });
+  });
+</script>

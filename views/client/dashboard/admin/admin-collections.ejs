@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+
+<style>
+    .modal-edit-collection .custom-control {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .modal-edit-collection .custom-control label {
+        margin: 0;
+        text-align: left;
+        font-weight: bold;
+        margin-right: 1rem;
+        width: 8rem;
+    }
+
+    .modal-edit-collection .custom-control input,
+    .modal-edit-collection .custom-control select {
+        width: 100%;
+    }
+
+    .modal-edit-collection small {
+        padding: 0.5rem 1.5rem;
+        text-align: left;
+        display: block;
+    }
+
+    .modal-edit-collection .btn {
+        height: 3rem;
+        font-size: 1rem;
+        margin: 0 0.5rem;
+        padding: 0 1rem;
+    }
+
+    .alert-danger {
+        z-index: 99999!important;
+    }
+</style>
+
+<body>
+
+<div class="admin">
+    <% include ../../../partials/loader.ejs %>
+    <% include ../../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+        <div class="admin_title_area">
+            <div class="container-fluid">
+                <div class="row col-md-12">
+                    <div class="col-md-4">
+                        <h2><b>Admin</b> - All Collections</h2>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group d-flex mb-0 justify-content-end" id="collection-search">
+                            <input type="text" class="form-control"
+                                   style="border-radius: 0; max-width: 300px;" placeholder="Search..." value="<%= key %>" />
+                            <button type="button" class="btn common_btn light_dark_btn" style="padding: 9px 20px;">GO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin_content_area">
+            <% if (!collections.length) { %>
+                <div class="pastorder_item text-center" id="no-user-found"><span style="font-size: 25px;">No collection found.</span>
+                </div>
+            <% } else { %>
+                <% for (let i = 0; i < collections.length; i++) {
+                    const collection_id = collections[i]['shopify_id'];
+                    const collection_title = collections[i]['title'];
+                    const products_count = collections[i]['products_count'];
+                    const is_internal = collections[i]['internal'];
+                    const collection_type = collections[i]['type'];
+                    const collection_price = collections[i]['price'];
+                    const collection_title_short = collections[i]['title_short'] || collection_title;
+                    const collection_title_long = collections[i]['title_long'] || collection_title;
+                    const collection_title_dropdown = collections[i]['title_dropdown'] || '';
+                %>
+                <div class="queue_item">
+                    <table border="0" cellspacing="0" cellpadding="0" class="fixed">
+                        <col width="100px"/>
+                        <col/>
+                        <col/>
+                        <col/>
+
+                        <tr data-collection-id="<%=collection_id%>">
+                            <td class="users_item_number">
+                                <%= i + 1 %>
+                            </td>
+                            <td class="users_faceName"> <%= collection_title %> </td>
+                            <td class="users_info"><%= products_count > 1 ? products_count
+                                        + ' SKUS in collection' : products_count == 1 ? '1 SKU in collection' : ' no SKU' %></td>
+                            <td class="users_info" style="width: 450px; text-align: center;">
+
+                                <div class="modal fade common-modal modal-edit-collection" data-collection-id="<%=collection_id%>" id="collection-edit-modal-<%=collection_id%>" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                        <div class="modal-body">
+                                            <div>
+                                                <div class="custom-control custom-control-lg custom-options">
+                                                    <label for="collection-type">
+                                                            Type: 
+                                                    </label>
+                                                    <select name="collection-type">
+                                                        <optgroup label="Collection Type">
+                                                            <option value="gifts" <%=collection_type == 'gifts' ? 'selected' : ''%>>Gifts</option>
+                                                            <option value="donation" <%=collection_type == 'donation' ? 'selected' : ''%>>Donation</option>
+                                                            <option value="international" <%=collection_type == 'international' ? 'selected' : ''%>>International</option>
+                                                        </optgroup>
+                                                    </select>
+                                                </div>
+                                                <small>The type of the collection:  gifts, donation or international.  This will be used to drive collection type specific functionality.</small>
+                                            </div>
+                                            <div>
+                                                <div class="custom-control custom-control-lg custom-options">
+                                                    <label for="collection-type">
+                                                            Price: 
+                                                    </label>
+                                                    <input type="text" name="collection-price" class="form-control" placeholder="25" value="<%= collection_price %>" />
+                                                </div>
+                                                <small>The value of the collection.  This will be used to calculate the cost of a campaign.</small>
+                                            </div>    
+                                            <div>
+                                                <div class="custom-control custom-control-lg custom-options">
+                                                    <label style="margin-right: 0.5rem;" for="collection-type">
+                                                            Internal Title: 
+                                                    </label>
+                                                    <input type="text" name="collection-title" class="form-control" placeholder="internal title" value="<%= collection_title %>" />
+                                                </div>
+                                                <small>The internal reference for this collection.</small>
+                                            </div>    
+                                            <div>
+                                                <div class="custom-control custom-control-lg custom-options">
+                                                    <label style="margin-right: 0.5rem;" for="collection-type">
+                                                            Short Title: 
+                                                    </label>
+                                                    <input type="text" name="collection-title-short" class="form-control" placeholder="short title" value="<%= collection_title_short %>" />
+                                                </div>
+                                                <small>The label displayed with the main "Gift the <short title> collection" dropdown in Step 1.</small>
+                                            </div>    
+                                            <div>
+                                                <div class="custom-control custom-control-lg custom-options">
+                                                    <label style="margin-right: 0.5rem;" for="collection-type">
+                                                            Long Title: 
+                                                    </label>
+                                                    <input type="text" name="collection-title-long" class="form-control" placeholder="long title" value="<%= collection_title_long %>" />
+                                                </div>
+                                                <small>The label displayed above the product listing in Step 1.</small>
+                                            </div>
+                                            <div>
+                                                <div class="custom-control custom-control-lg custom-options">
+                                                    <label style="margin-right: 0.5rem;" for="collection-type">
+                                                            Dropdown Title: 
+                                                    </label>
+                                                    <input type="text" name="collection-title-dropdown" class="form-control" placeholder="dropdown title" value="<%= collection_title_dropdown %>" />
+                                                </div>
+                                                <small>The label displayed in place of the price dropdown in Step 1 on the collection selection drawer.</small>
+                                            </div> 
+                                            <div class="confirm-btn-group">
+                                                <button type="button" class="btn common_btn" data-dismiss="modal" id="update-btn">
+                                                    Update
+                                                </button>
+                                                <button type="button" class="btn grey_btn" data-dismiss="modal" id="cancel-btn">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <div class="custom-control custom-control-lg custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input internal-check"
+                                               collection-id="<%= collection_id %>"
+                                               id="internal-check-<%= i %>" <%- is_internal ? 'checked' : 'none' %>/>
+                                        <label class="custom-control-label"
+                                               style="font-style: normal; margin-right: 15px;"
+                                               for="internal-check-<%= i %>">INTERNAL</label>
+                                    </div>
+                                    <div class="collection-remove-btn">
+                                        <button type="button" class="btn dark_btn dropdown-toggle"
+                                                data-toggle="dropdown"
+                                                style="padding: 10px 15px;">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><span class="menu-title">More actions...</span>
+                                            <li><span class="menu-delete-item" collection-id="<%= collection_id %>">DELETE COLLECTION</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <a href="/step/first?cid=<%= collection_id %>&ctype=signature"
+                                       style="color: white;">
+                                        <button type="button" class="btn common_btn light_dark_btn ml-2">VIEW</button>
+                                    </a>
+                                    <a href="#"
+                                        style="color: white;">
+                                         <button type="button" class="btn common_btn ml-2 button--edit" data-collection-id="<%=collection_id%>">EDIT</button>
+                                    </a> 
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <% } %>
+            <% } %>
+        </div>
+
+    </div>
+
+    <% include ../../../partials/footer.ejs %>
+</div>
+
+<% include ../../../partials/modals.ejs %>
+
+<% include ../../../partials/storage.ejs %>
+<% include ../../../partials/foot.ejs %>
+<% include admin-collections_action.ejs %>
+
+</body>
+</html>

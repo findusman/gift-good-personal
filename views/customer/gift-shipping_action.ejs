@@ -1,0 +1,205 @@
+<script type="text/javascript">
+  const contact = <%- JSON.stringify(contact) %>;
+  const campaign = <%- JSON.stringify(campaign) %>;
+  const variant = <%- JSON.stringify(variant) %>;
+  const is_demo = <%- JSON.stringify(demo) %>;
+  const hometown = <%- JSON.stringify(hometown) %>;
+  const coords = <%- JSON.stringify(coords) %>;
+  const optionState = <%- JSON.stringify(state) %>;
+  const userId = <%- JSON.stringify(uspsUser) || '' %>;
+  const isAddressVerificationEnabled = <%- JSON.parse(isAddressVerificationEnabled) %>;
+  const is_donation = variant['is_donation'] ? true : false;
+  const isMultipleRedemptionsFlow = <%- JSON.stringify(isMultipleRedemptionsFlow) %>;
+  const useAddressVerification = isAddressVerificationEnabled && !is_donation;
+  const submitButtonsSelector = '#confirm-address, #confirm-gift, #approve-proposed-address';
+
+  function enableDisableDonationConfirm(val) {
+    if (!val.match(/.+@.+/)) {
+      $('#confirm-gift').attr('disabled', true);
+    } else {
+      $('#confirm-gift').attr('disabled', false);
+    }
+  }
+  
+  $(document).ready(function() {
+    enableDisableDonationConfirm($('#email').val());
+  });
+
+  $('#email').on('keyup change', function() {
+    enableDisableDonationConfirm($(this).val());
+  });
+
+  function showVerificationModal({ currentAddress, proposedData, message }) {
+    const shippingnModal = $('#shipping-modal');
+    $('#current-address').html(currentAddress);
+    $('#shipping-validation-message span').html(message);
+    $('#confirm-address').on('click', () => submitShippingForm({ isVerified: true }));
+    $('#proposed-address-block').hide();
+    if (proposedData) {
+      const { address, city, state, zipCode, apartment } = proposedData;
+      const proposedAddress = (address && city && state && zipCode) && 
+        `<p>${address} ${apartment}<br />${city}, ${state} ${zipCode}</p>`;
+      if (proposedAddress) {
+        $('#proposed-address').html(proposedAddress);
+        $('#proposed-address-block').show();
+        $('#approve-proposed-address').on('click', () => submitShippingForm({ isVerified: true, proposedData }))
+      }
+    }
+    shippingnModal.modal('show');
+  };
+
+  function checkIfCorrected({ currentData, proposedData }) {
+    const correctedValues = Object.entries(currentData).map(([key, val]) => {
+      if (key === 'zipCode') {
+        // proposed will be zip+4, so if current is only zip, we want to accept that as matching
+        return proposedData.zip5 === val || proposedData[key] === val;
+      }
+      else {
+        return proposedData[key].toLowerCase() === val.toLowerCase();
+      }
+    });
+    return !correctedValues.every(el => el === true);
+  }
+
+  function verifyAddress({ address, apartment, city, state, zip_code }) {
+    const [zip5, zip4] = zip_code.split('-');
+    const fullZipCode = zip4 ? `${zip5}-${zip4}` : zip5;
+    const xmlParam = `<AddressValidateRequest USERID="${userId}">
+      <Revision>1</Revision>
+      <Address>
+        <Address1>${apartment}</Address1>
+        <Address2>${address}</Address2>
+        <City>${city}</City>
+        <State>${state}</State>
+        <Zip5>${zip5}</Zip5>
+        <Zip4>${zip4 || ''}</Zip4>
+      </Address>
+    </AddressValidateRequest>`;
+
+    $.ajax({
+      url: `https://production.shippingapis.com/ShippingAPI.dll`,
+      data: {
+        API: 'Verify',
+        XMl: xmlParam
+      },
+      method: 'get',
+      success: function(res) {
+        const xmlResponse = $(res);
+        const xmlError = xmlResponse.find('Error').first();
+        if (xmlError && xmlError.length) {
+          const message = $(xmlError).find('Description').text();
+          showVerificationModal({
+            currentAddress: `<p>${address} ${apartment}<br />${city}, ${state} ${fullZipCode}</p>`,
+            message: 'Please check your address to make sure it is correct.'
+          });
+        } else {
+          const proposedZip4 = xmlResponse.find('Zip4').text();
+          const proposedZip5 = xmlResponse.find('Zip5').text();
+          const proposedData = {
+            address: xmlResponse.find('Address2').text(),
+            city: xmlResponse.find('City').text(),
+            apartment: xmlResponse.find('Address1').text(),
+            state: xmlResponse.find('State').text(),
+            zipCode: proposedZip4 ? `${proposedZip5}-${proposedZip4}` : proposedZip5,
+            zip5: proposedZip5,
+            zip4: proposedZip4,
+          }
+          if (checkIfCorrected({ currentData: { address, city, apartment, state, zipCode: zip_code }, proposedData })) {
+            showVerificationModal({
+              currentAddress: `<p>${address} ${apartment}<br />${city}, ${state} ${zip_code}</p>`,
+              message: 'Please check our suggestions in <b>bold</b>, or edit your original address.',
+              proposedData
+            });
+          } else {
+            submitShippingForm({ isVerified: true, proposedData });
+          }
+        }
+      },
+      error: function(error) {
+        console.error(error);
+        submitShippingForm({ isVerified: true });
+      }
+    });
+  };
+
+  function submitShippingForm({ isVerified, proposedData }) {
+    const submitButtons = $(submitButtonsSelector);
+    submitButtons.attr('disabled', true);
+
+    const first_name = !is_donation || isMultipleRedemptionsFlow ? $('#first-name').val().trim() : '';
+    const last_name = !is_donation || isMultipleRedemptionsFlow ? $('#last-name').val().trim() : '';
+    const to_company_name = is_donation && isMultipleRedemptionsFlow ? $('#company-name').val().trim() : '';
+    let address = !is_donation ? $('#address').val().trim() : '';
+    let apartment = !is_donation ? $('#apartment').val().trim() : '';
+    let city = !is_donation ? $('#city').val().trim() : '';
+    let state = !is_donation ? $('#state').val().trim() : '';
+    let zip_code = !is_donation ? $('#zip-code').val().trim() : '';
+    let country = !is_donation ? $('#country').val().trim() : 'US';
+    const phone = $('#phone').val() ? $('#phone').val().trim() : '';
+    const email = $('#email').val() ? $('#email').val().trim() : '';
+
+    if (proposedData) {
+      address = proposedData.address;
+      city = proposedData.city;
+      state = proposedData.state;
+      zip_code = proposedData.zipCode;
+      apartment = proposedData.apartment;
+    }
+
+    const data = {
+      cid: contact['id'],
+      vid: variant['variant_id'],
+      campaignId: campaign.id,
+      first_name,
+      last_name,
+      to_company_name,
+      address,
+      apartment,
+      city,
+      state,
+      zip_code,
+      country,
+      phone,
+      hometown,
+      coords,
+      optionState,
+      email: campaign['lock_emails'] && contact ? contact['to_email'] : email
+    };
+
+    if (is_demo) {
+      window.location.href = '/demo/gift-confirmation?cid=' + contact['id'] + '&vid=' + variant['variant_id'];
+    } else if (isVerified || !useAddressVerification) {
+      showLoader(true);
+      $.ajax({
+        url: '/customer/confirm-gift',
+        method: 'post',
+        data,
+        success: function(res) {
+          showLoader(false);
+          window.location.href = res.redirectPath;
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          submitButtons.attr('disabled', false);
+          if (status === 'failed') {
+            showError(msg);
+          } else {
+            showError('Something went wrong.');
+          }
+        }
+      });
+    } else {
+      submitButtons.attr('disabled', false);
+      verifyAddress(data);
+    }
+  }
+
+  $('.information_form').parsley();
+  $('.information_form').on('submit', (e) => {
+    e.preventDefault();
+    submitShippingForm({ isVerified: false });
+  });
+</script>

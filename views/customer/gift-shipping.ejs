@@ -1,0 +1,391 @@
+<style>
+  .address-block {
+    background-color: #F5F8FA;
+  }
+  .address-block .btn.text-body {
+    text-decoration: underline;
+  }
+  .address-block .common_btn {
+    width: auto;
+  }
+  .shipping-modal p {
+    font-size: 1rem;
+  }
+  .address-validation {
+    display: flex;
+  }
+  .product_slide_2 {
+    height: 118px;
+  }
+
+  .ProductSection p {
+    line-height: 1.65;
+    font-size: .875rem;
+  }
+
+  .heading-container {
+    padding-top: 130px;
+    padding-bottom: 110px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .donation-heading-container {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .heading {
+    font-family: Crimson Text;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 56px;
+    line-height: 58px;
+    text-align: center;
+
+    /* Primary/Charcoal */
+
+    color: #333333;
+  }
+
+  .sub-heading {
+    font-family: Lato;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 139.5%;
+    /* or 22px */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.035em;
+
+    /* Primary/Charcoal */
+
+    color: #333333;
+    max-width: 680px;
+    margin-top: 47px;
+  }
+
+  .donation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  @media screen and (max-width: 767px) {
+    .heading {
+      font-size: 40px;
+      line-height: 1;
+    }
+
+    section.note_form_area {
+      padding-top: 20px;
+    }
+  }
+
+
+
+  :root {
+    --heading-font-family: "Crimson Text", serif;
+    --heading-font-weight: 400;
+    --heading-font-style: normal;
+
+    --text-font-family: Lato, sans-serif;
+    --text-font-weight: 400;
+    --text-font-style: normal;
+
+    --base-text-font-size: 16px;
+    --default-text-font-size: 14px;
+    --background: #ffffff;
+    --background-rgb: 255, 255, 255;
+    --light-background: #ffffff;
+    --light-background-rgb: 255, 255, 255;
+    --heading-color: #333333;
+    --text-color: #333333;
+    --text-color-rgb: 51, 51, 51;
+    --text-color-light: #666666;
+    --text-color-light-rgb: 102, 102, 102;
+    --link-color: #333333;
+    --link-color-rgb: 51, 51, 51;
+    --border-color: #e0e0e0;
+    --border-color-rgb: 224, 224, 224;
+
+    --button-background: #333333;
+    --button-background-rgb: 51, 51, 51;
+    --button-text-color: #ffffff;
+
+    --header-background: #ffffff;
+    --header-heading-color: #333333;
+    --header-light-text-color: #666666;
+    --header-border-color: #e0e0e0;
+
+    --footer-background: #ffffff;
+    --footer-text-color: #666666;
+    --footer-heading-color: #333333;
+    --footer-border-color: #e8e8e8;
+
+    --navigation-background: #ffffff;
+    --navigation-background-rgb: 255, 255, 255;
+    --navigation-text-color: #333333;
+    --navigation-text-color-light: rgba(51, 51, 51, 0.5);
+    --navigation-border-color: rgba(51, 51, 51, 0.25);
+
+    --newsletter-popup-background: #ffffff;
+    --newsletter-popup-text-color: #333333;
+    --newsletter-popup-text-color-rgb: 51, 51, 51;
+
+    --secondary-elements-background: #333333;
+    --secondary-elements-background-rgb: 51, 51, 51;
+    --secondary-elements-text-color: #ffffff;
+    --secondary-elements-text-color-light: rgba(255, 255, 255, 0.5);
+    --secondary-elements-border-color: rgba(255, 255, 255, 0.25);
+
+    --product-sale-price-color: #f94c43;
+    --product-sale-price-color-rgb: 249, 76, 67;
+
+    /* Shopify related variables */
+    --payment-terms-background-color: #ffffff;
+
+    /* Products */
+
+    --horizontal-spacing-four-products-per-row: 40px;
+    --horizontal-spacing-two-products-per-row: 40px;
+
+    --vertical-spacing-four-products-per-row: 60px;
+    --vertical-spacing-two-products-per-row: 75px;
+
+    /* Animation */
+    --drawer-transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --header-base-height: 80px;
+    /* We set a default for browsers that do not support CSS variables */
+
+    /* Arrows */
+    --arrow-right: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/arrow.svg?v=17300509536057275799);
+
+    /* Cursors */
+    --cursor-zoom-in-svg: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/cursor-zoom-in.svg?v=6123313730325737771);
+    --cursor-zoom-in-2x-svg: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/cursor-zoom-in-2x.svg?v=5276726306539990872);
+  }
+</style>
+
+
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/theme.css?v=12927984427861795921') %>">
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/custom.css?v=17147846187842746493') %>">
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/build-a-box.css?v=3535801119237388454') %>">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  document.documentElement.style.setProperty('--window-height', window.innerHeight + 'px');
+
+  // We do a quick detection of some features (we could use Modernizr but for so little...)
+  (function() {
+    document.documentElement.className += ((window.CSS && window.CSS.supports('(position: sticky) or (position: -webkit-sticky)')) ? ' supports-sticky' : ' no-supports-sticky');
+    document.documentElement.className += (window.matchMedia('(-moz-touch-enabled: 1), (hover: none)')).matches ? ' no-supports-hover' : ' supports-hover';
+  }());
+</script>
+
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/lazysizes.min.js?v=17435836340443258698') %>" async></script>
+
+<script src="https://cdn.polyfill.io/v3/polyfill.min.js?unknown=polyfill&features=fetch,Element.prototype.closest,Element.prototype.remove,Element.prototype.classList,Array.prototype.includes,Array.prototype.fill,Object.assign,CustomEvent,IntersectionObserver,IntersectionObserverEntry,URL" defer></script>
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/libs.min.js?v=2617854318439446974') %>" defer></script>
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/custom.js?v=12215157884757723718') %>" defer></script>
+
+<link href="https://monorail-edge.shopifysvc.com" rel="dns-prefetch">
+</head>
+
+<% include ../partials/head.ejs %>
+
+<body class="prestige--v4 features--heading-large features--show-button-transition features--show-image-zooming features--show-element-staggering  template-product template-suffix-buy-and-customize">
+  <% include ../partials/header.ejs %>
+  <% include ../partials/loader.ejs %>
+
+  <% if (!variant['is_donation']) { %>
+  <div class='heading-container container'>
+    <h1 class="heading">Where should we send <span>your</span> gift?</h1>
+    <% if (isInternationalCollection) { %>
+      <p class='sub-heading'>Please note shipping timelines will vary. You will receive an email when your gift ships. </p>
+    <% } else { %>
+      <p class='sub-heading'>Please note we cannot ship to P.O. Boxes. Physical gifts can only be sent to U.S. addresses. If you are based outside of the United States, please contact us and we will happily donate the value of your gift.</p>
+    <% } %>
+  </div>
+  <% } else { %>
+  <div class="donation-heading-container container">
+    <h1 class="heading">Please confirm <span>your</span> donation choice</h1>
+  </div>
+  <% } %>
+
+  </div>
+
+
+  <!--Note Sub title Area Start -->
+  <section class="note_form_area">
+    <div class="container side_box_2">
+
+      <div class="row">
+
+        <% if (!variant['is_donation']) { %>
+
+        <div class="col-md-4 order-2 order-md-1">
+
+          <div class="note_form_item">
+            <div class="note_form_item_box">
+              <div class="image-wrapper">
+                <img src="<%= variant['image_data']['sub'][[0]] %>" alt="img" />
+              </div>
+            </div>
+            <p class="mb-3"><%= variant['product_title'] %></p>
+
+          </div>
+
+        </div>
+        <div class="col-md-8 order-1 order-md-2">
+          <form class="information_form" data-parsley-validate="">
+            <input type="hidden" id="country" value="<%= country.code || "US" %>">
+            <% if (!variant['is_donation']) { %>
+              <%- include("address_forms/format_" + addressFormat + ".ejs") %>
+            <% } %>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group email">
+                  <input 
+                    type="text" 
+                    name="email" 
+                    style="background: #F5F8FA;" 
+                    class="form-control" id="email" 
+                    placeholder="Email address" 
+                    data-parsley-trigger="change"
+                    data-parsley-pattern="<%= /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i %>"
+                    required="" 
+                    value="<%= campaign['no_email_invite'] ? '' : contact['to_email']%>"
+                    <% if (contact && contact['to_email'] && campaign['lock_emails']) { %>disabled<% } %>
+                  >
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group phone_number">
+                  <input 
+                    type="text" 
+                    style="background: #F5F8FA;" 
+                    class="form-control" 
+                    id="phone" 
+                    placeholder="Phone Number" 
+                    value="<%= contact && contact['shipping_phone'] %>" 
+                    data-parsley-trigger="change"
+                    required=""
+                  >
+                </div>
+              </div>
+              <div class="container">
+                <div class="col-md-6">
+                  <div class="note_confirm_btn_area">
+                    <button type="submit" class="btn dark_btn" id="confirm-gift">CONFIRM</button>
+                  </div>
+                </div>
+              </div>
+          </form>
+        </div>
+        <% } else { %>
+        <div class="donation-container">
+          <div class="d-flex flex-column align-items-center">
+            <div class="image-wrapper" style="width: 25%;">
+              <img src="<%= variant['image_data']['sub'][[0]] %>" alt="img" />
+            </div>
+            <p class="mb-3 px-4 px-sm-0"><%= variant['product_title'] %></p>
+          </div>
+          <form class="information_form pt-4" data-parsley-validate="" style="width: 325px;">
+            <% if (isMultipleRedemptionsFlow) { %>
+              <div class="form-group">
+                <input type="text" style="background: #F5F8FA;" class="form-control mb-2" id="first-name" placeholder="First Name" value="<%= contact['shipping_first_name'] %>" data-parsley-trigger="change" data-parsley-pattern="<%= namePattern %>" required="" />
+              </div>
+              <div class="form-group">
+                <input type="text" style="background: #F5F8FA;" class="form-control mb-2" id="last-name" placeholder="Last Name" value="<%= contact['shipping_last_name'] %>" data-parsley-trigger="change" data-parsley-pattern="<%= namePattern %>" required="" />
+              </div>
+              <div class="form-group">
+                <input type="text" style="background: #F5F8FA;" class="form-control mb-2" id="company-name" placeholder="Company Name" value="<%= contact['to_company_name'] %>" data-parsley-trigger="change" required="" />
+              </div>
+            <% } %>
+            <div class="form-group email">
+              <input 
+                type="text" 
+                name="email" 
+                style="background: #F5F8FA;" 
+                class="form-control" 
+                id="email" 
+                placeholder="Email address" 
+                data-parsley-trigger="change" 
+                data-parsley-type="email"
+                required="" 
+                value="<%= campaign['no_email_invite'] ? '' : contact['to_email']%>"
+                <% if (contact && contact['to_email'] && campaign['lock_emails']) { %>disabled<% } %>
+              >
+            </div>
+            <div class="note_confirm_btn_area" style="padding-top: 10px !important;">
+              <button type="submit" class="btn dark_btn" id="confirm-gift" disabled style="background: #333333;">CONFIRM</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <% } %>
+    </div>
+
+  </section>
+
+
+  <% include ../partials/shopify_footer.ejs %>
+  <% include ../partials/foot.ejs %>
+  <% include gift-shipping_action.ejs %>
+  <% include redeem_actions.ejs %>
+
+  <script>
+    const landingUrl = <%- JSON.stringify(landingUrl) %>;
+    $('#backto-gifts').add('#backto-gifts-link').on('click', function() {
+      window.location.href = landingUrl;
+    });
+  </script>
+  <div class="modal fade shipping-modal" id="shipping-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <div class="modal-title px-4 pt-4">
+            <h3 class="mb-4">Verify Address</h3>
+          </div>
+          <p id="shipping-validation-message" class="px-4 mb-2">
+            We think your address may be incorrect or incomplete. <span></span>
+          </p>
+          <div class="modal-body shipping-proposals row">
+            <div class="address-validation col-md-6 mb-4 mb-md-0 flex-column">
+              <p class="mb-2">You entered:</p>
+              <div class="address-block pb-2 pt-4 px-4 d-flex flex-column align-items-center flex-fill">
+                <div id="current-address" class="mb-4"></div>
+                <button type="button" class="btn common_btn text-uppercase" data-dismiss="modal">
+                  Edit
+                </button>
+                <button type="button" class="btn text-body" id="confirm-address">
+                  Use this address
+                </button>
+              </div>
+            </div>
+            <div class="address-validation proposed-address col-md-6 flex-column" id="proposed-address-block">
+              <p class="mb-2 font-weight-bold">We propose:</p>
+              <div class="address-block pb-2 pt-4 px-4 d-flex flex-column align-items-center flex-fill">
+                <div id="proposed-address" class="mb-4"></div>
+                <button type="button" class="btn common_btn text-uppercase" id="approve-proposed-address">
+                  Proceed with this address
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>

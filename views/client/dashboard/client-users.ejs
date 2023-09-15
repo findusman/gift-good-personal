@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+
+  <div class="admin">
+    <% include ../../partials/loader.ejs %>
+    <% include ../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+      <div class="alert alert-dismissible fade show signed_alart d-none" role="alert">
+        <img src="/resources/images/icons/green-tic.png" alt="img" />
+        Signed in successfully.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="admin_title_area">
+        <div class="container-fluid">
+          <div class="row col-md-12">
+            <div style="flex: 1;">
+              <h2 class="text-capitalize"><%= type ? `${type} ` : '' %>Users</h2>
+            </div>
+            <div class="d-flex">
+              <% if (ability.can('create', 'User')) { %>
+                <div class="add_user">
+                  <button type="button" class="btn common_btn" data-toggle="modal" data-target="#add-user-modal">+ ADD USER</button>
+                </div>
+              <% } %>
+              <% if (ability.can('create', 'Campaign')) { %>
+                <div class="ml-3">
+                  <button type="button" class="btn common_btn send-a-gift">SEND A GIFT</button>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin_content_area">
+        <div>
+          <form id="users-search" class="d-flex align-items-center">
+            <input id="search" class="users_search" placeholder="Search" type="text" value="<%= search %>"></input>
+            <button type="submit" class="btn dark_btn py-1 ml-2">Search</button>
+          </form>
+        </div>
+        <% if (!groupedUsers.length) { %>
+          <div class="pastorder_item text-center" id="no-user-found"><span style="font-size: 25px;">No user found.</span></div>
+        <% } else { %>
+        <div class="users_item">
+          <table cellspacing="0" cellpadding="0" class="table-bordered table-hover table-users" id="users-table">
+            <thead>
+              <tr>
+                <th class="users_item_number">No</th>
+                <th class="users_item_number">First Name</th>
+                <th class="users_item_number">Last Name</th>
+                <th class="users_item_number email">Email</th>
+                <th class="users_item_number company">Company</th>
+                <th class="users_item_number job-title">Job Title</th>
+                <th class="users_item_number">User type</th>
+                <% if(ability.can('manage', 'all')) { %>
+                  <th class="users_item_number">
+                    Impersonate
+                  </th>
+                <% } %>
+                <% const canEditSomeUsers = ability.can('update', 'User') && users.find(user => session.user.id != user.id && (user.type !== 'client' || ability.can('manage', 'all'))); %>
+                <% if (canEditSomeUsers) { %>
+                  <th class="users_item_number">
+                    More actions
+                  </th>
+                <% } %>
+                <th class="users_item_number">Date of Last Sign In</th>
+              </tr>
+            </thead>
+            <% for (let parentIdx = 0; parentIdx < groupedUsers.length; parentIdx++) { %>
+              <tbody class="user-parent-group">
+                <%- include('../../partials/user-row.ejs', { user: groupedUsers[parentIdx], isChild: false, idx: parentIdx + 1, canEditSomeUsers }) %>
+                <% if (groupedUsers[parentIdx].children) { %>
+                  <% for (let i = 0; i < groupedUsers[parentIdx].children.length; i++) { %>
+                    <%- include('../../partials/user-row.ejs', { user: groupedUsers[parentIdx].children[i], isChild: true, idx: '', canEditSomeUsers }) %>
+                  <% } %>
+                <% } %>
+              </tbody>
+            <% } %>
+          </table>
+        </div>
+        <% } %>
+      </div>
+
+    </div>
+
+    <% include ../../partials/footer.ejs %>
+
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade addUser_modal" id="add-user-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <form class="information_form add-user-form" data-parsley-validate="">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group user-avatar-section">
+                  <div class="user-image-area">
+                    <img src="/resources/images/users/default.png" id="user-avatar-img" alt="user-image">
+                  </div>
+                  <div class="user-image-select-area">
+                    <input type="file" class="form-control-file" id="user-avatar-file" accept="image/png">
+                  </div>
+                  <label>SELECT USER AVATAR</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="first-name">FIRST NAME</label>
+                  <input type="text" class="form-control" id="first-name" placeholder="" data-parsley-trigger="change" required="">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="last-name">LAST NAME</label>
+                  <input type="text" class="form-control" id="last-name" placeholder="" data-parsley-trigger="change" required="">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group email_address">
+                  <label for="email">EMAIL ADDRESS</label>
+                  <input type="email" class="form-control" id="email" data-parsley-type="email" placeholder="" data-parsley-trigger="change" required="">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group phone_number">
+                  <label for="password">PASSWORD</label>
+                  <input type="password" class="form-control" id="password" placeholder="" data-parsley-trigger="change" required="" autocomplete="new-password" />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="job">JOB TITLE</label>
+                  <input type="text" class="form-control" id="job" placeholder="" data-parsley-trigger="change" required="">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="company">COMPANY</label>
+                  <input type="text" class="form-control" id="company" placeholder="" data-parsley-trigger="change" required="">
+                </div>
+              </div>
+            </div>
+            <div class="form_devider"></div>
+            <%- include('../../partials/user-permissions-form.ejs', { isEdit: false }) %>
+            <div class="note_confirm_btn_area">
+              <button type="submit" class="btn common_btn" id="add-user">ADD</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Start Impersonating Modal -->
+  <div class="modal fade addUser_modal" id="impersonate-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <div>
+            <div class="row">
+              <div class="col-12 text-center">Are you sure you want to impersonate user '<strong id="impersonating-email"></strong>'?</div>
+            </div>
+            <div class="form_devider"></div>
+            <div class="note_confirm_btn_area">
+              <button type="button" class="btn common_btn" data-dismiss="modal">CANCEL</button>
+              <button type="button" class="btn common_btn" onclick="startImpersonatingUser()">IMPERSONATE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Email Modal -->
+  <div class="modal fade edit-email-modal" id="edit-email-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          Edit user's email
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <form  class="col-12" id="edit-email-form">
+              <div class="form-group">
+                <label for="edit-email">New email address</label>
+                <input type="email" name="edit-email" id="edit-email" class="form-control mb-3" />
+                <input type="hidden" name="edit-email-id" id="edit-email-id" />
+                <button type="submit" class="btn common_btn">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Permissions Modal -->
+  <div class="modal fade edit-permissions-modal" id="edit-permissions-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          Edit user's permissions
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <form  class="col-12" id="edit-permissions-form">
+              <div class="form-group">
+                <%- include('../../partials/user-permissions-form.ejs', { isEdit: true } ) %>
+                <input type="hidden" name="user-id" id="edit-user-id" />
+                <button type="submit" class="btn common_btn">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% include ../../partials/storage.ejs %>
+  <% include ../../partials/foot.ejs %>
+  <% include client-users_action.ejs %>
+  <script>
+    function resendVerification(email) {
+      var r = confirm("You are about to resend this users invite email.");
+      showLoader(true);
+      if (r == true) {
+        console.log('contactId view', email)
+        $.ajax({
+          url: `/resent-verification`,
+          method: 'POST',
+          data: {
+            email: email
+          },
+          success: function(res) {
+            showInfo('Contact has been updated.');
+            showLoader(false);
+            setTimeout(function() {
+              window.location.reload();
+            }, 500);
+          },
+          error: function(err) {
+            console.log(err);
+            showLoader(false);
+            const status = err.responseJSON.status;
+            const msg = err.responseJSON.msg;
+            if (status === 'failed') {
+              showError(msg);
+            }
+          }
+        });
+      }
+
+    }
+
+    function verify(id) {
+      showLoader(true);
+      $.ajax({
+        url: `/admin-verify`,
+        method: 'POST',
+        data: {
+          uid: id
+        },
+        success: function(res) {
+          showInfo('Contact has been verified.');
+          showLoader(false);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+
+    function archiveUser(id) {
+
+      var r = confirm("You are about to archive this user.");
+      if (r == true) {
+        showLoader(true);
+        $.ajax({
+          url: `/admin-archive-user`,
+          method: 'POST',
+          data: {
+            uid: id
+          },
+          success: function(res) {
+            showInfo('User has been archived.');
+            showLoader(false);
+            setTimeout(function() {
+              window.location.reload();
+            }, 500);
+          },
+          error: function(err) {
+            console.log(err);
+            showLoader(false);
+            const status = err.responseJSON.status;
+            const msg = err.responseJSON.msg;
+            if (status === 'failed') {
+              showError(msg);
+            }
+          }
+        });
+      }
+
+    }
+  </script>
+</body>
+
+
+</html>

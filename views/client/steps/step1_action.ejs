@@ -1,0 +1,86 @@
+<!-- Action related with step1.ejs -->
+<!-- Created by CSTAR -->
+<!-- August 13rd, 2020 -->
+
+<script>
+  let collection_id = <%- JSON.stringify(cid) %>;
+  let collection_type = <%- JSON.stringify(ctype) %>;
+  let online_products = <%- JSON.stringify(products) %>;
+  const setPriceAndCollection = () => {
+    const prices = document.querySelector('#price-select');
+    if (prices.length) {
+      const selectedItem = prices[prices.selectedIndex];
+      const campaignPrice = selectedItem.dataset.price;
+      const selectedCollectionId = $(selectedItem).val();
+      const selectedCollectionType = $(selectedItem).attr('type');
+      if (campaignPrice) {
+        setCampaignData('price', campaignPrice);
+      }
+      setCampaignData('collection_id', selectedCollectionId);
+      setCampaignData('collection_type', selectedCollectionType);
+    }
+  }
+
+  setPriceAndCollection()
+
+  function switch_step(next_step) {
+    const campaign_products = get_campaign_products();
+    const campaign_title = get_campaign_title();
+    if (campaign_products.length > 0) {
+      if (campaign_title) {
+        const step2_validated = get_campaign_contacts().length > 0;
+        const campaign_brands = get_campaign_brands();
+        const step3_validated = campaign_brands['message'] && campaign_brands['video'] &&
+          campaign_brands['logo'] && campaign_brands['banner'];
+
+        if (next_step === 'step4' && step2_validated && step3_validated) {
+          window.location.href = '/step/fourth';
+        } else if (step2_validated && (next_step === 'step3' || (next_step === 'step4' && !step3_validated))) {
+          window.location.href = '/step/third';
+        } else {
+          window.location.href = '/step/second';
+        }
+      } else {
+        $('#next-step').val(next_step);
+        $('#input-label').text('Please input collection name.');
+        $('#save-btn').text('SAVE COLLECTION');
+        $('#input-modal').modal();
+      }
+    } else {
+      showError('Please add product to the cart.');
+    }
+  }
+
+  $("#price-select").next().next().children().on('click', function() {
+    const selected_index = $(this).index();
+    const selected_elem = $("#price-select").children().eq(selected_index);
+
+    const selected_collection_id = selected_elem.val();
+    const selected_collection_type = selected_elem.attr('type');
+    if (selected_collection_id !== collection_id || selected_collection_type !== collection_type) {
+      window.location.href = '/step/first?cid=' + selected_collection_id + '&ctype=' + selected_collection_type;
+    }
+  });
+  $(".gift_close").on('click', function() {
+    $(".getintouch_btn").dropdown('toggle');
+  });
+
+  // Event handler for "Complete Collection" button
+  $('#complete-collection').on('click', function() {
+    switch_step('step2');
+  });
+
+  // Event handler for "Save Collection" button in collection name input dialog
+  $('#save-btn').on('click', function() {
+    $('#input-modal').modal('hide');
+    const collection_name = $('#input-value').val();
+    if (collection_name) {
+      setCampaignData('title', collection_name);
+      switch_step($('#next-step').val());
+    }
+  });
+
+  $('.shopping-label-img').on('error', function() {
+    console.log('loading image filed');
+  });
+</script>

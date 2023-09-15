@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./fonts.css";
+
+@layer base {
+  html {
+    font-family: 'Lato', sans-serif;
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Crimson Pro', serif;
+  }
+}
+
+@layer components {
+  /**
+  Buttons
+  */
+  .btn-primary {
+    @apply px-5 py-3 bg-dark text-white shadow-sm transition ease-in-out duration-300 leading-snug whitespace-nowrap text-base font-semibold;
+  }
+
+  .btn-primary:disabled {
+    @apply bg-dark;
+  }
+
+  .btn-underline {
+    @apply text-base border-b border-black
+  }
+
+  .btn-secondary {
+    @apply py-2.5 px-9 bg-transparent border border-black-soft font-semibold leading-5 text-black-soft hover:bg-black-soft hover:text-white transition;
+  }
+
+  .btn-icon:hover img {
+    filter: invert(98%) sepia(6%) saturate(300%) hue-rotate(230deg) brightness(116%) contrast(100%);
+  }
+}
+
+.product-details p:not(:last-child) {
+  @apply mb-6.5;
+}
+
+/**
+Typography
+*/
+
+.heading-1 {
+  @apply text-[28px] leading-[34px] 2xl:text-4.2xl;
+}
+
+:disabled {
+  cursor: not-allowed;
+}
+
+/**
+Input
+*/
+
+.floating-label-small {
+  position: absolute;
+  pointer-events: none;
+  left: 10px;
+  top: 5px;
+  font-size: 9px;
+  transition: 0.2s ease all;
+}
+
+.floating-label {
+  position: absolute;
+  pointer-events: none;
+  left: 10px;
+  top: 13px;
+  font-size: 12px;
+  transition: 0.2s ease all;
+}
+
+input:focus ~ .floating-label {
+  position: absolute;
+  pointer-events: none;
+  left: 10px;
+  top: 5px;
+  font-size: 9px;
+  transition: 0.2s ease all;
+}
+
+input[type="date"],
+input[type="time"]
+{
+  background: white;
+  -webkit-appearance: none;
+}
+
+.disabled--no-interactive {
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+.smart-tags-editor * {
+  @apply leading-7;
+}

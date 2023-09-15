@@ -1,0 +1,337 @@
+
+<script>
+    let SITE_LINK = <%- JSON.stringify(site_link) %>;
+    let brands_message = '';
+    let brands_video = '';
+    let brands_no_video = false;
+    let brands_logo = '';
+    let brands_banner = '';
+    let brands_datetime = null;
+    let brands_is_scheduled = false;
+
+    function switch_step(next_step) {
+        if (next_step === 'step1') {
+            window.location.href = '/step/first';
+        } else if (next_step === 'step2') {
+            window.location.href = '/step/second';
+        } else if (next_step === 'step4') {
+            brands_message = $('#email-message').val();
+            brands_is_scheduled = $('#is-scheduled').prop('checked');
+            brands_datetime = $('#scheduled-date').val();
+            brands_tz = $('#scheduled-tz').find(":selected").attr('data-name');
+            brands_no_video = $('#no-video-check').prop('checked');
+            if (!brands_message
+                || (!brands_no_video && !brands_video)
+                || !brands_banner) {
+                showError("Please fill out all fields.");
+                return;
+            }
+
+            setCampaignData('brands', { message: brands_message, video: brands_video, no_video: brands_no_video, banner: brands_banner, logo: brands_logo, scheduled: brands_is_scheduled, scheduled_datetime: brands_datetime, scheduled_tz: brands_tz });
+            window.location.href = '/step/fourth';
+        }
+    }
+
+    $('.nextstep_btn').on('click', function() {
+    	switch_step('step4');
+    });
+
+    function video_upload_progress(e) {
+        if (e.lengthComputable) {
+            var max = e.total;
+            var current = e.loaded;
+
+            var percentage = Math.round((current * 100) / max);
+            $('#email-video-progress-section progress').val(percentage);
+            $('#email-video-progress-section p').text('Uploading... ' + percentage + '%');
+        }
+    }
+
+    $('#is-scheduled').on('change', renderScheduleDateField);
+      function renderScheduleDateField(){
+        if($('#is-scheduled').prop('checked')){
+            $('#scheduled-date').show();
+            $('#scheduled-tz').show();
+        }else{
+            $('#scheduled-date').hide();
+            $('#scheduled-tz').hide();
+        }
+      }
+      
+
+    $('#email-video-file').on("change", function(evt) {
+    	if (!evt.target.files.length) {
+    		return;
+        }
+    	let formData = new FormData();
+    	formData.append('file', evt.target.files[0]);
+        let thisObj = $(this);
+        
+        // Hide video drag section
+        //$('#email-video-drag').hide();
+         $('#email-video-section').hide();
+        $('#email-video-drag-content').hide();
+        // Show progress section
+        $('#email-video-progress-section').show();
+        $('#email-video-progress-section progress').val(0);
+        $('#email-video-progress-section p').text('Uploading... 0%');
+
+    	$.ajax({
+            url: '/upload-file',
+            type: 'post',
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhr: function() {
+                const myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) {
+                    myXhr.upload.addEventListener('progress', video_upload_progress, false);
+                }
+                return myXhr;
+            },
+            success: function(res) {
+            	brands_video = res.file_link;
+                
+                // Hide progress section
+                $('#email-video-progress-section').hide();
+                // Show video section
+                $('#email-video-section').show();
+                $('#email-video-reupload').show();
+
+                const filename = evt.target.files[0].name;
+                const mimetype = evt.target.files[0].type;
+                if (mimetype.startsWith('video')) {
+                    let $source = $('#email-video-src');
+                    $source[0].src = URL.createObjectURL(evt.target.files[0]);
+                    $source.parent()[0].load();
+                }
+            },
+            error: function (e) {
+            	console.log(e);
+                showError('Video upload failed');
+                // Hide progress section
+                $('#email-video-progress-section').hide();
+                // Show drag section
+                $('#email-video-drag').show();
+                $('#email-video-drag-content').show();
+                
+            }
+        })
+    });
+    $('#email-video-cancel').on('click', function() {
+        $('#email-video-drag-content').show();
+        $('#email-video-file').show();
+        $('#email-video-section > video').get(0).pause();
+        $('#email-video-section').hide();
+    });
+
+    $('#email-logo-file').on("change", function(evt) {
+        if (!evt.target.files.length) {
+            return;
+        }
+        let formData = new FormData();
+        formData.append('file', evt.target.files[0]);
+        let thisObj = $(this);
+        $.ajax({
+            url: '/upload-file',
+            type: 'post',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                brands_logo = res.file_link;
+                let $source = $('#email-logo-img');
+                $source[0].src = URL.createObjectURL(evt.target.files[0]);
+                //thisObj.hide();
+                $('#email-logo-drag-content').hide();
+                $('#email-logo-section').show();
+                $('#email-logo-reupload').show();
+               
+            },
+            error: function (e) {
+                console.log(e);
+                showError('Logo upload failed');
+            }
+        });
+    });
+
+    $('#email-banner-file').on("change", function(evt) {
+        if (!evt.target.files.length) {
+            return;
+        }
+        let formData = new FormData();
+        formData.append('file', evt.target.files[0]);
+        let thisObj = $(this);
+        $.ajax({
+            url: '/upload-file',
+            type: 'post',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                brands_banner = res.file_link;
+                const filename = evt.target.files[0].name;
+                const mimetype = evt.target.files[0].type;
+                //thisObj.hide();
+                $('#email-banner-drag-content').hide();
+                $('#email-banner-section').show();
+                $('#email-banner-reupload').show();
+                if (mimetype.startsWith('image')) {
+                    let $source = $('#email-banner-img');
+                    $source[0].src = URL.createObjectURL(evt.target.files[0]);
+                }
+            },
+            error: function (e) {
+                console.log(e);
+                showError('Banner upload failed');
+            }
+        });
+    });
+
+    $('#preview-email').on('click', function () {
+        let message = $('#email-message').val();
+        let link = '/preview/campaign-email?where=step';
+        const campaign_contacts = get_campaign_contacts();
+        if (campaign_contacts.length > 0) {
+            link += '&rec_name=' + encodeURIComponent(campaign_contacts[0]['to_first_name']);
+            link += '&snd_name=' + encodeURIComponent(campaign_contacts[0]['from_first_name']);
+            link += '&snd_company=' + encodeURIComponent(campaign_contacts[0]['from_company_name']);
+            message = message.split(':first_name').join(campaign_contacts[0]['to_first_name'])
+                        .split(':last_name').join(campaign_contacts[0]['to_last_name'])
+                        .split(':email').join(campaign_contacts[0]['to_email'])
+                        .split(':company').join(campaign_contacts[0]['to_company_name'])
+                        .split(':name').join(campaign_contacts[0]['to_first_name'] + ' ' + campaign_contacts[0]['to_last_name'])
+                        .split(':sender_first_name').join(campaign_contacts[0]['from_first_name'])
+                        .split(':sender_last_name').join(campaign_contacts[0]['from_last_name'])
+                        .split(':sender_email').join(campaign_contacts[0]['from_email'])
+                        .split(':sender_company').join(campaign_contacts[0]['from_company_name'])
+                        .split(':sender_name').join(campaign_contacts[0]['from_first_name'] + ' ' + campaign_contacts[0]['from_last_name'])
+            ;
+        }
+        link += '&message=' + encodeURIComponent(message)
+        if (brands_video) {
+            link += '&video=' + encodeURIComponent(brands_video);
+        }
+        if (brands_logo) {
+            link += '&logo=' + encodeURIComponent(brands_logo)
+        }
+        if (brands_banner) {
+            link += '&banner=' + encodeURIComponent(brands_banner)
+        }
+
+        window.open(link, '_blank');
+    });
+
+    $('#default-message-check').on('change', function () {
+        if ($(this).prop('checked')) {
+            $('#email-message').val('Hello!');
+        } else {
+            $('#email-message').val('');
+        }
+    })
+
+    $('#no-video-check').on('change', function () {
+        if ($(this).prop('checked')) {
+            $('#default-video-check').prop('checked', false);
+            $('#email-video-choose-box').hide();
+
+            brands_video = '';
+        } else {
+            $('#email-video-choose-box').show();
+            $('#email-video-drag-content').show();
+            $('#email-video-drag').show();
+            $('#email-video-section').hide();
+        }
+    })
+
+    $('#default-video-check').on('change', function () {
+        if ($(this).prop('checked')) {
+            $('#no-video-check').prop('checked', false);
+            brands_video = SITE_LINK + '/resources/videos/default.mp4';
+
+            let $source = $('#email-video-src');
+            $source[0].src = '/resources/videos/default.mp4';
+            $('#email-video-drag').hide();
+            $('#email-video-drag-content').hide();
+            $('#email-video-section').show();
+            $('#email-video-choose-box').show();
+            $source.parent()[0].load();
+        } else {
+            brands_video = '';
+            $('#email-video-file').show();
+            $('#email-video-drag-content').show();
+            $('#email-video-drag').show();
+            $('#email-video-section').hide();
+        }
+    })
+
+    if (!String.prototype.startsWith) {
+        String.prototype.startsWith = function(searchString, position) {
+            position = position || 0;
+            return this.indexOf(searchString, position) === position;
+        };
+    }
+
+    function fill_with_cache_data() {
+        const campaign_brands = get_campaign_brands();
+        brands_message = campaign_brands['message'];
+        brands_video = campaign_brands['video'];
+        brands_no_video = campaign_brands['no_video'];
+        brands_banner = campaign_brands['banner'];
+        brands_logo = campaign_brands['logo'];
+        brands_datetime = campaign_brands['scheduled_datetime'];
+        brands_tz = campaign_brands['scheduled_tz'];
+        brands_is_scheduled = campaign_brands['scheduled'];;
+
+        if (brands_message) {
+            $('#email-message').val(brands_message);
+        }
+        if (brands_video) {
+            $('#email-video-drag').hide();
+            $('#email-video-drag-content').hide();
+            $('#email-video-section').show();
+
+            let $source = $('#email-video-src');
+            $source[0].src = brands_video;
+            $source.parent()[0].load();
+        }
+        if(brands_no_video){
+            $('#default-video-check').prop('checked', false);
+            $('#no-video-check').prop('checked', true);
+            $('#email-video-choose-box').hide();
+
+            brands_video = '';
+        }
+        if (brands_banner) {
+            $('#email-banner-drag-content').hide();
+            $('#email-banner-drag').hide();
+            $('#email-banner-section').show();
+            let $source = $('#email-banner-img');
+            $source[0].src = brands_banner;
+        }
+        if (brands_logo) {
+            let $source = $('#email-logo-img');
+            $source[0].src = brands_logo;
+
+            $('#email-logo-drag-content').hide();
+            $('#email-logo-drag').hide();
+            $('#email-logo-section').show();
+        }
+        if(brands_datetime){
+            $('#scheduled-date').val(brands_datetime);
+        }
+        if(brands_tz){
+            $('#scheduled-tz option[data-name="'+brands_tz+'"]').attr('selected', 'selected')
+        }
+        if(brands_is_scheduled){
+            $('#is-scheduled').prop('checked', brands_is_scheduled);
+            $('#scheduled-date').show();
+            $('#scheduled-tz').show();
+        }else{
+            $('#scheduled-date').hide();
+            $('#scheduled-tz').hide();
+        }
+    }
+    fill_with_cache_data();
+
+</script>

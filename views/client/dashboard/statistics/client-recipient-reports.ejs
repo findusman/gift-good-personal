@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+
+<body>
+
+  <div class="admin">
+    <% include ../../../partials/loader.ejs %>
+    <% include ../../../partials/sidebar.ejs %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+      <div class="admin_title_area">
+        <div class="container-fluid">
+          <div class="row col-md-12">
+            <div style="flex: 1;">
+              <h2>Recipient Report</h2>
+            </div>
+            <div class="d-flex">
+              <div class="add_user">
+                <button type="button" class="btn common_btn" id="export_csv_btn">+ EXPORT CSV</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <form class="information_form admin_search_input">
+            <div class="form-group search_input">
+                <input type="text" class="form-control" id="gift-search" placeholder="Search gifts by typing name or email" value="<%= search %>">
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="admin_header_nav combine_nav d-flex justify-content-between">
+        <div class="btn-group nav-menu">
+          <div class="custom-control custom-control-lg custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="only-mine-check">
+            <label class="custom-control-label" for="only-mine-check">ONLY SHOW MY GIFTS</label>
+          </div>
+        </div>
+        <div>
+          <div class="btn-group nav-menu">
+            <button type="button" class="btn dropdown_btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">FILTER BY EMAIL STATUS<img src="/resources/images/icons/arrow-down-2.png">
+            </button>
+            <div>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-6px, 48px, 0px);">
+                <% emailFilterOptions.map(option => { %>
+                  <a
+                          class="dropdown-item email-filter <%= email === option.code ? 'active' : '' %>"
+                          href="/recipient-report?fm=<%= fm %>&onlymine=<%= onlymine %>&search=<%= search %>&campaign=<%= activeCampaignIds.join(',') %>&email=<%= option.code %>"
+                  >
+                    <%= option.title %>
+                  </a>
+                <% }) %>
+              </div>
+            </div>
+            <div>
+              <button type="button" class="btn dropdown_btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">FILTER BY STATUS<img src="/resources/images/icons/arrow-down-2.png">
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-6px, 48px, 0px);">
+                <% filterOptions.map(option => { %>
+                  <a
+                          class="dropdown-item <%= fm === option.code ? 'active' : '' %>"
+                          href="/recipient-report?fm=<%= option.code %>&onlymine=<%= onlymine %>&search=<%= search %>&campaign=<%= activeCampaignIds.join(',') %>&email=<%= email %>"
+                  >
+                    <%= option.title %>
+                  </a>
+                <% }) %>
+              </div>
+            </div>
+          </div>
+          <%- include('../../../partials/campaigns-filter.ejs', { link: `/recipient-report/?fm=${fm || ''}&onlymine=${onlymine || ''}&search=${search || ''}&campaign=` }) %>
+        </div>
+      </div>
+
+      <div class="admin_content_area">
+        <% if (!reports.length) { %>
+        <div class="pastorder_item text-center" id="no-user-found"><span style="font-size: 25px;">No recipient report found.</span></div>
+        <% } else { %>
+        <div>
+          <table cellspacing="0" cellpadding="0" class="table-bordered table-responsive-lg table-hover table-report">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Sender</th>
+                <th>Recipient</th>
+                <th>Product</th>
+                <th>Gift Status</th>
+                <th>Redeemed On</th>
+                <th>Email Sent On</th>
+                <th>Email Opened On</th>
+                <th>Email Clicked On</th>
+                <% if (fm === 'declined') { %>
+                  <th>Declined Reason</th>
+                <% } %>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let i = 0; i < reports.length; i++) { %>
+              <tr>
+                <td><%= (i + 1) + ((page - 1) * limit) %></td>
+                <td>
+                  <div>
+                    <span class="sender-company"><%= reports[i]['from_company_name'] %></span>
+                    <span class="sender-name"><%= `${reports[i]['from_first_name'] || ''} ${reports[i]['from_last_name'] || ''}` %></span>
+                    <span class="sender-email"><%= reports[i]['from_email'] %></span>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <span class="shipping-name"><%= reports[i]['to_first_name'] + ' ' + reports[i]['to_last_name'] %></span>
+                    <span class="shipping-email"><%= reports[i]['to_email'] %></span>
+                  </div>
+                </td>
+                <td><%= reports[i]['product'] ? reports[i]['product']['product_title'] : '-' %></td>
+                <td style="text-transform: capitalize;"><%= reports[i]['failed_order'] ? 'canceled' : statusHelper(reports[i]['step']) %></td>
+                <td><%= reports[i]['redeemed_at'] ? moment(reports[i]['redeemed_at']).format('MM/DD/YYYY hh:mmA') : '-' %></td>
+                <td><%= reports[i]['sent_at'] ? moment(reports[i]['sent_at']).format('MM/DD/YYYY hh:mmA') : '-' %></td>
+                <td><%= reports[i]['email_opened_at'] ? moment(reports[i]['email_opened_at']).format('MM/DD/YYYY hh:mmA') : '-' %></td>
+                <td><%= reports[i]['email_clicked_at'] ? moment(reports[i]['email_clicked_at']).format('MM/DD/YYYY hh:mmA') : '-' %></td>
+                <% if (fm === 'declined') { %>
+                  <td><%= reports[i]['decline_reason'] %></td>
+                <% } %>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+
+      <% const campaignParam = activeCampaignIds.length ? `&campaign=${activeCampaignIds.join(',')}` : '' %>
+      <%- include('../../../partials/pagination.ejs', { maxPage, page, link: '/recipient-report', urlParams: `&fm=${fm}&onlymine=${onlymine}${campaignParam}` }) %>
+
+    </div>
+
+    <% include ../../../partials/footer.ejs %>
+
+  </div>
+
+  <% include ../../../partials/storage.ejs %>
+  <% include ../../../partials/foot.ejs %>
+  <% include client-recipient-reports_action.ejs %>
+
+</body>
+
+</html>

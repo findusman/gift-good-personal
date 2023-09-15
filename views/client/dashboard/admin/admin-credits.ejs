@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+
+<body>
+
+  <div class="admin">
+    <% include ../../../partials/sidebar.ejs %>
+    <% const urlParams = query && type ? `&q=${query}&type=${type}` : '' %>
+
+    <!-- Admin Main Area CSS -->
+
+    <div class="admin_main">
+
+      <div class="admin_title_area">
+        <div class="container-fluid">
+          <div class="row col-md-12 justify-content-between">
+            <div class="row">
+              <h2><b>Admin</b> - Manage Credits</h2>
+              <h2 class="ml-5">Total Remaining Credits: <%= masterTotalLiability.toLocaleString() %></h2>
+            </div>
+            <div class="export mt-4">
+              <button type="button" class="btn common_btn" id="export_csv_btn">+ EXPORT CSV</button>
+            </div>
+          </div>
+          <div class="row col-md-12 mt-2 px-0">
+            <form id="credits-form" method="get" class="col d-flex mb-0 align-items-end justify-content-end">
+              <div class="form-group mb-0 mr-2">
+                <label for="query">Search:</label>
+                <input type="text" class="form-control" id="query" name="q"
+                       style="border-radius: 0; max-width: 300px;" placeholder="Search..." />
+              </div>
+              <div class="form-group mb-0 mr-2">
+                <label for="type">Search by:</label>
+                <select class="form-control" id="type" name="type">
+                  <option value="all">All</option>
+                  <option value="email">Email</option>
+                  <option value="firstname">First Name</option>
+                  <option value="lastname">Last Name</option>
+                  <option value="username">Username</option>
+                  <option value="company">Company Name</option>
+                </select>
+              </div>
+              <input type="hidden" name="page" value="1" />
+              <button type="submit" class="btn common_btn light_dark_btn" style="padding: 9px 20px;" id="btn-search">Search</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin_content_area">
+        <% if (!users_credits.length) { %>
+        <div class="pastorder_item text-center" id="no-user-found"><span style="font-size: 25px;">No data found.</span>
+        </div>
+        <% } else { %>
+
+        <% let userIndex = page ? (page -1) * 100 : 1; %>
+
+        <% for (let i = 0; i < users_credits.length; i++) {
+          const user_id = users_credits[i]['id'];
+          userIndex += 1;
+          const name = users_credits[i]['firstname'] + ' ' + users_credits[i]['lastname'];
+          const email = users_credits[i]['email'];
+          const company = users_credits[i]['company'];
+          const savingsLiability = users_credits[i]['savingsLiability'];
+          const campaignLiability = users_credits[i]['campaignLiability'];
+          const donateCredits = users_credits[i]['campaigns'] !== null ? users_credits[i]['campaigns'].map(c => c.donation.balance).reduce((a, b) => a + b, 0) : 0;
+          const totalLiability = users_credits[i]['total'];
+          const unusedCredits = totalLiability - campaignLiability;
+          const update_date = users_credits[i]['updatedAt'];
+          const children = users_credits[i]['children'];
+        %>
+          <div class="queue_item">
+            <table border="0" cellspacing="0" cellpadding="0" class="fixed">
+              <col width="100px" />
+              <col />
+              <col />
+              <col />
+              <col />
+
+              <tr>
+                <td class="users_item_number">
+                  <%= userIndex %>
+                </td>
+                <td class="users_faceName"> <%= name %> </td>
+                <td class="users_info" style="display: flex; flex-direction: column;">
+                  <span><b>Email: </b><%= email %></span>
+                  <span><b>Company: </b><%= company %></span>
+                  <span><b>Remaining Credits Amount: </b><%= totalLiability %></span>
+                  <span><b>Open Campaign Credits: </b><%= campaignLiability %></span>
+                  <span><b>Unused Credits: </b><%= unusedCredits %></span>
+                  <span><b>Donate Credits Amount</b>: <%= donateCredits %></span>
+                  <a href="#" class="mt-2 view-credits-history" user-id="<%= user_id %>">
+                    <b style="text-decoration: underline;">View Credits history</b>
+                  </a>
+                </td>
+                <td class="users_info">Last Updated: <b><%= moment(update_date).format('MM/DD/YYYY') %></b></td>
+                <td class="users_info" style="text-align: right;">
+                  <% if (ability.can('update', 'Credit')) { %>
+                    <button type="button" class="btn common_btn ml-2 update-credits-btn" user-id="<%= user_id %>" credits="<%= unusedCredits %>">
+                      UPDATE CREDITS
+                    </button>
+                  <% } %>
+                  <% if (donateCredits) { %>
+                    <button type="button" class="btn common_btn ml-2 mt-2 manage-credits-btn" user-id="<%= user_id %>">MANAGE DONATIONS</button>
+                  <% } %>
+                </td>
+              </tr>
+            </table>
+            <% if (children.length) { %>
+              <div class="mt-5 pl-4">
+                <p class="font-weight-bold mb-4">Subaccounts:</p>
+                <ul class="pl-4">
+                  <% for (let i = 0; i < children.length; i++) { %>
+                    <li><%= children[i].firstname %> <%= children[i].lastname %>, Email: <%= children[i].email %> (<strong><%= mapUserTypes(children[i].type) %></strong>)</li>
+                  <% } %>
+                </ul>
+              </div>
+            <% } %>
+          </div>
+
+            <% } %>
+        <% } %>
+      </div>
+      <% if(maxPage > 1) { %>
+        <nav aria-label="Contacts pagination" class="mt-4 d-flex justify-content-center">
+          <ul class="pagination">
+            <li class="page-item <%= page === 1 && 'disabled' %>">
+              <a class="page-link text-reset" href="/admin-credits?page=1<%= urlParams %>" aria-label="First">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">First</span>
+              </a>
+            </li>
+            <li class="page-item <%= parseInt(page) - 1 < 1 && 'disabled' %>"><a class="page-link text-reset" href="/admin-credits?page=<%= parseInt(page) - 1 %><%= urlParams %>">Previous</a></li>
+            <li class="page-item disabled"><a class="page-link text-reset" href="/admin-credits?page=1<%= urlParams %>">Page <%= page %> of <%= maxPage %></a></li>
+            <li class="page-item <%= parseInt(page) + 1 > maxPage && 'disabled' %>"><a class="page-link text-reset" href="/admin-credits?page=<%= parseInt(page) + 1 %><%= urlParams %>">Next</a></li>
+            <li class="page-item <%= page === maxPage && 'disabled' %>">
+              <a class="page-link text-reset" href="/admin-credits?page=<%= maxPage %><%= urlParams %>" aria-label="Last">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Last</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      <% } %>
+    </div>
+
+    <% include ../../../partials/footer.ejs %>
+  </div>
+
+  // Manage credits modal
+  <div class="modal" tabindex="-1" role="dialog" id="manage-credits-modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Manage donations</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Credits</th>
+              <th>Donate</th>
+              <th>Move to savings</th>
+            </tr>
+          </thead>
+          <tbody class="campaigns-list"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <% include ../../../partials/modals.ejs %>
+
+  <% include ../../../partials/storage.ejs %>
+  <% include ../../../partials/foot.ejs %>
+  <% include admin-credits_action.ejs %>
+
+  <script type="text/javascript">
+    const selectedType = '<%- type %>' || 'all';
+    const selectedQuery = '<%- query %>';
+
+    $('#credits-form select').on('change', function() {
+      const type = $(this).val();
+      if (type === 'all') {
+        $('#credits-form #query').val('');
+        $('#credits-form #query').hide();
+        $('#credits-form label[for="query"]').hide();
+      } else {
+        $('#credits-form #query').show();
+        $('#credits-form label[for="query"]').show();
+      }
+    });
+
+    if (selectedType) {
+      $('#credits-form select').val(selectedType);
+    }
+
+    if (selectedType === 'all') {
+      $('#credits-form #query').hide();
+      $('#credits-form label[for="query"]').hide();
+    }
+
+    if (selectedQuery) {
+      $('#credits-form #query').val(selectedQuery);
+    }
+  </script>
+
+</body>
+
+</html>

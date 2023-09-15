@@ -1,0 +1,155 @@
+
+/*************start*************/
+img {
+	max-width: 100%;
+	display: inline-block;
+}
+body {
+	font-family: 'Lato', sans-serif;
+}
+h1, h2, h3, h4, h5, h6, p{
+	margin: 0px;
+	padding: 0px;
+	font-weight: normal;
+	line-height: 100%;
+}
+a:hover, a:focus{
+	text-decoration: none;
+}
+.container-fluid{
+	max-width: 1430px;
+	margin: 0 auto;
+}
+.desktop_none{
+	display: none;
+}
+
+.btn {
+    font-size: 16px;
+    line-height: 19px;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 0px;
+    padding: 15px 20px;
+		-webkit-appearance: none;
+}
+.btn:focus {
+    outline: 0;
+    box-shadow: none;
+}
+.common_btn {
+	color: white;
+	background: #C8B398 !important;
+}
+.grey_btn {
+	background: #848484 !important;
+}
+.light_dark_btn {
+	background: #555555;
+}
+.dark_btn {
+	background: #353535 !important;
+}
+.dark_btn:hover {
+    color: #7d858e;
+}
+.black-btn {
+	background: #000;
+}
+.black-btn:hover {
+	color: #eee;
+}
+.btn-plain {
+	background: transparent;
+	border: 0;
+}
+.btn-plain:hover {
+	opacity: 0.7;
+}
+button.yellow_border_btn {
+	font-size: 12px;
+	background: none;
+	color: #7B7B7B;
+	border: 1px solid #C8B398;
+	width: fit-content;
+	height: fit-content;
+    border-radius: 0;
+    padding: 10px 20px;;
+}
+button.yellow_border_btn:focus {
+	border: 1px solid #C8B398;
+}
+button.yellow_border_btn:hover {
+	background: #C8B398;
+	color: white;
+}
+button.red_border_btn {
+	font-size: 12px;
+	background: none;
+	color: #7B7B7B;
+	border: 1px solid #e24d4d;
+	width: fit-content;
+	height: fit-content;
+    border-radius: 0;
+    padding: 10px 20px;;
+}
+button.red_border_btn:focus {
+	border: 1px solid #e24d4d;
+}
+button.red_border_btn:hover {
+	background: #e24d4d;
+	color: white;
+}
+button.grey_border_btn {
+	font-size: 12px;
+	background: none;
+	color: #7B7B7B;
+	border: 1px solid #b7aaaa;
+	width: fit-content;
+	height: fit-content;
+    border-radius: 0;
+    padding: 10px 20px;;
+}
+button.grey_border_btn:focus {
+	border: 1px solid #b7aaaa;
+}
+button.grey_border_btn:hover {
+	background: #7B7B7B;
+	color: white;
+}
+.fnt-14 {
+	font-size: 14px !important;
+}
+.color-444 {
+	color: #444444 !important;
+}
+.flex-1 {
+	flex: 1;
+}
+/* Alert bar and the badge */
+
+.alert.alert-bar {
+	position: fixed;
+	width: 100%;
+	z-index: 1055;
+	display: none;
+}
+
+.btn-group .badge {
+	position: absolute;
+	border-radius: 50%;
+	background-color: #C8B398;
+	color: white;
+}
+
+.parsley-errors-list {
+	color: red;
+}
+
+.col-md-2-5 {
+	padding-left: 5px;
+	padding-right: 5px;
+	-ms-flex: 0 0 20%;
+	flex: 0 0 20%;
+	max-width: 20%;
+}

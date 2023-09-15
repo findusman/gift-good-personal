@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../../partials/head.ejs %>
+<body>
+<div class="admin">
+    <% include ../../../partials/sidebar.ejs %>
+    <main class="admin_main">
+      <div class="container-fluid admin_title_area pt-4">
+        <div class="row mb-4 pb-4">
+            <div class="col-lg-8">
+                <h1>Authentication&nbsp;Tokens</h1>
+            </div>
+        </div>
+        <div class="admin_content_area">
+            <form action="/admin-authentication-tokens" class="d-flex form-input-group select-provider">
+                <select name="provider_id">
+                    <option value="">Select Provider</option>
+                    <% providers.forEach((provider) => {
+                         let selected = provider_id == provider.id ? 'selected' : '';
+                    %>
+                            <option value="<%=provider.id%>" <%=selected%>><%=provider.name%></option>
+                    <% }) %>
+                </select>
+                <input type="submit" class="btn common_btn ml-2 mr-2" id="set-provider" value="Set Provider">
+            </form>
+
+            <% if (filteredTokens) { %>
+                <div class="mt-4">
+                    <form class="d-flex justify-content-end mb-4 token-filters">
+                        <input name="token" placeholder="Token">
+                        <input type="submit" class="btn grey_btn ml-2" id="filter-tokens" value="Filter">
+                        <input type="hidden" name="provider_id" value="<%=provider_id%>">
+                    </form>
+                    <table>
+                        <tr>
+                        <th>ID</th>
+                        <th>Token</th>
+                        <th>Contact</th>
+                        <th>Authenticated At</th>
+                        <th>Date Created</th>
+                        <th>Date Updated</th>
+                        </tr>
+                    <% filteredTokens.rows.forEach((filteredToken) => { %>
+                        <tr data-token-id="<%=filteredToken.id%>">
+                        <td><%=filteredToken.id%></td>
+                        <td><%=filteredToken.token%></td>
+                        <td>
+                            <% if (filteredToken.contact) { %>
+                                <%=filteredToken.contact.id%> <%=filteredToken.contact.to_email%>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (filteredToken.authenticatedAt) { %>
+                                <%=moment(filteredToken.authenticatedAt).format('MM/DD/YYYY hh:mmA')%>
+                            <% } %>
+                        </td>
+                        <td><%=moment(filteredToken.createdAt).format('MM/DD/YYYY hh:mmA')%></td>
+                        <td><%=moment(filteredToken.updatedAt).format('MM/DD/YYYY hh:mmA')%></td>
+                        </tr>
+                    <% }) %>
+                    </table>
+                    <div class="d-flex justify-content-end mt-2 token-pagination">
+                        <%
+                            let page = offset + 1;
+                            let pages = Math.ceil(filteredTokens.count/limit);
+                            let showPrev = page > 1;
+                            let showNext = page < pages;
+                        %>
+                        <% if (showPrev) { %>
+                            <a href="/admin-authentication-tokens?provider_id=<%=provider_id%>&limit=<%=limit%>&offset=<%=offset-1%>&token=<%=token%>" class="mr-2">
+                                &lt;&lt;
+                            </a>
+                        <% } %>
+                        <span>
+                            Page <%=page%> of <%=pages%>
+                        </span>
+                        <% if (showNext) { %>
+                            <a href="/admin-authentication-tokens?provider_id=<%=provider_id%>&limit=<%=limit%>&offset=<%=offset+1%>&token=<%=token%>" class="ml-2">
+                                &gt;&gt;
+                            </a>
+                        <% } %>
+
+                    </div>
+                    <div>
+                        <button type="button" class="btn common_btn mb-4 mt-4" id="add-token-link">
+                            Add Token
+                        </button>
+                        <button type="button" class="btn common_btn mb-4 mt-4" id="import-tokens">
+                          Import tokens
+                        </button>
+                        <button type="button" class="btn common_btn mb-4 mt-4" id="export-tokens">
+                          Export tokens as CSV
+                        </button>
+                    </div>
+                </div>
+            <% } %>
+
+          <div class="modal fade common-modal" id="edit-token-modal" tabindex="-1" role="dialog" aria-labelledby="editTokenModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="spinner" id="spinner"></div>
+                  <div class="dynamic-content hidden">
+                    <h5 class="mb-3">Edit Token</h5>
+                    <p class="token-error hidden">
+                        Unable to edit token
+                    </p>
+                    <form action="#">
+                        <div class="form-input-group">
+                          <label for="token">
+                            Token
+                          </label>
+                          <input type="text" name="token">
+                        </div>
+                        <div class="form-input-group">
+                          <label for="authenticatedAt">
+                            Authenticated At
+                          </label>
+                          <input type="text" name="authenticatedAt">
+                        </div>
+                        <div class="form-input-group">
+                          <label for="contactId">
+                            Contact Id
+                          </label>
+                          <input type="text" name="contactId">
+                        </div>
+                        <div class="d-flex justify-content-between">
+                          <button type="button" class="btn common_btn mb-2 mt-2" id="save-token">
+                            Update
+                          </button>
+                          <button type="button" class="btn common_btn grey_btn mb-2 mt-2" id="delete-token">
+                            Delete
+                          </button>
+                        </div>
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="provider_id" value="<%=provider_id%>">
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade common-modal" id="add-token-modal" tabindex="-1" role="dialog" aria-labelledby="addTokenModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                    <h5 class="mb-3">Add Token</h5>
+                    <p class="token-error hidden">
+                        Unable to add token
+                    </p>
+                    <form action="#">
+                        <div class="form-input-group">
+                            <label for="token">
+                                Token
+                            </label>
+                            <input type="text" name="token">
+                        </div>
+                        <div>
+                            <button type="button" class="btn common_btn mb-2 mt-2" id="add-token">
+                                Add
+                            </button>
+                            <!-- <button type="button" class="btn common_btn grey_btn mb-2 mt-2 ml-2" id="add-cancel">
+                                Cancel
+                            </button> -->
+                        </div>
+                        <input type="hidden" name="provider_id" value="<%=provider_id%>">
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade common-modal" id="import-tokens-modal" tabindex="-1" role="dialog" aria-labelledby="import-tokens" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <form id="tokens-import-form">
+                    <label for="tokens-import-input">
+                      <input type="file" id="tokens-import-input" />
+                    </label>
+                    <button type="submit" class="btn common_btn mb-4 mt-4">Import tokens</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </main>
+    <% include ../../../partials/modals.ejs %>
+    <% include ../../../partials/footer.ejs %>
+  </div>
+  <% include ../../../partials/storage.ejs %>
+  <% include ../../../partials/foot.ejs %>
+</body>
+
+<script>
+  const filteredTokens = <%- JSON.stringify(filteredTokens) %>;
+  const providers = <%- JSON.stringify(providers) %>;
+  const providerId = <%- JSON.stringify(provider_id) %>;
+  let tokensToSave = [];
+
+  function createTokensCsv(tokens) {
+    const selectedProvider = providers.find(el => el.id == providerId);
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    const header = ['No', 'Token', 'Contact email', 'Contact status', 'Authenticated at'].join(',');
+    csvContent += header + '\r\n';
+
+    tokens.rows.forEach(function(el, index) {
+      const row = [
+        index + 1, 
+        el.token, 
+        el.contact ? el.contact.to_email : '', 
+        el.contact ? el.contact.step : '', 
+        el.authenticatedAt
+      ].join(',');
+      csvContent += row + '\r\n';
+    });
+
+    downloadCreatedCsv(csvContent, `Tokens-${selectedProvider && selectedProvider.name}`);
+  }
+
+  $('#add-token-link').on('click', event => {
+    event.preventDefault();
+    $('#add-token-modal').modal('show');
+  });
+
+  $('#add-token-modal #add-cancel').on('click', event => {
+    event.preventDefault();
+    $('#add-token-modal').modal('hide');
+  });
+
+  $('.admin_content_area tr').slice(1).on('click', event => {
+    $('#edit-token-modal').modal('show');
+    const $element = $(event.currentTarget);
+    const id = $element.attr('data-token-id');
+    const $spinner = $('#edit-token-modal .spinner');
+    const $content = $('#edit-token-modal .dynamic-content');
+
+    $content.addClass('hidden');
+    $spinner.removeClass('hidden');
+
+    $.ajax({
+      url: `/admin-authentication-tokens/${id}`,
+      method: 'GET',
+      error: function (err) {
+        $('#edit-token-modal').modal('hide');
+        // todo: show error toast
+      },
+      success: function(res) {
+        $spinner.addClass('hidden');
+        $content.removeClass('hidden');
+        if (res?.status === 'success') {
+          const { data: { token : { id, token, authenticatedAt, contactId } } } = res;
+          $('#edit-token-modal [name="id"]').val(id);
+          $('#edit-token-modal [name="token"]').val(token);
+          $('#edit-token-modal [name="authenticatedAt"]').val(authenticatedAt);
+          $('#edit-token-modal [name="contactId"]').val(contactId);
+        }
+        else {
+          // todo: show error toast
+        }
+      },
+    });
+  });
+
+  $('#add-token-modal button#add-token').on('click', event => {
+    event.preventDefault();
+
+    const $spinner = $('#add-token-modal .spinner');
+    const $content = $('#add-token-modal .dynamic-content');
+    const $error = $('#add-token-modal .token-error');
+
+    $content.addClass('hidden');
+    $spinner.removeClass('hidden');
+    $error.addClass('hidden');
+
+    const token = $('#add-token-modal [name="token"]').val();
+    const authenticationProviderId = $('#add-token-modal [name="provider_id"]').val();
+
+    $.ajax({
+      url: `/admin-authentication-tokens`,
+      method: 'POST',
+      data: {
+        token,
+        authenticationProviderId,
+      },
+      error: function (err) {
+        $error.removeClass('hidden');
+      },
+      success: function(res) {
+        if (res?.status === 'success') {
+            window.location.href = `/admin-authentication-tokens?provider_id=${authenticationProviderId}&token=${token}`
+        }
+        else {
+            $error.removeClass('hidden');
+        }
+      },
+    });
+  });
+
+  $('#edit-token-modal button#delete-token').on('click', event => {
+    event.preventDefault();
+
+    if (!confirm('Are you sure?')) {
+      return;
+    }
+
+    const $spinner = $('#edit-token-modal .spinner');
+    const $content = $('#edit-token-modal .dynamic-content');
+    const id = $('#edit-token-modal input[name="id"]').val();
+
+    $.ajax({
+      url: `/admin-authentication-tokens/${id}`,
+      method: 'DELETE',
+      data: {
+        id
+      },
+      error: function (err) {
+        $('#edit-token-modal').modal('hide');
+        // todo: show error toast
+        window.location.reload();
+      },
+      success: function(res) {
+        if (res?.status === 'success') {
+          window.location.reload();
+        }
+        else {
+          // todo: show error toast
+          window.location.reload();
+        }
+      },
+    });
+  });
+
+  $('#edit-token-modal button#save-token').on('click', event => {
+    event.preventDefault();
+
+    const $spinner = $('#edit-token-modal .spinner');
+    const $content = $('#edit-token-modal .dynamic-content');
+    const $error = $('#edit-token-modal .token-error');
+    const id = $('#edit-token-modal input[name="id"]').val();
+
+    $content.addClass('hidden');
+    $spinner.removeClass('hidden');
+    $error.addClass('hidden');
+
+    $.ajax({
+      url: `/admin-authentication-tokens/${id}`,
+      method: 'PUT',
+      data: {
+        id,
+        token: $('#edit-token-modal [name="token"]').val(),
+        authenticatedAt: $('#edit-token-modal [name="authenticatedAt"]').val(),
+        contactId: $('#edit-token-modal [name="contactId"]').val(),
+      },
+      error: function (err) {
+        $content.removeClass('hidden');
+        $spinner.addClass('hidden');
+        $error.removeClass('hidden');
+      },
+      success: function(res) {
+        if (res?.status === 'success') {
+            window.location.reload();
+        }
+        else {
+            $content.removeClass('hidden');
+            $spinner.addClass('hidden');
+            $error.removeClass('hidden');
+        }
+      },
+    });
+  });
+
+  $('#export-tokens').on('click', () => {
+    $.ajax({
+      url: `/admin-export-tokens?id=${providerId}`,
+      method: 'GET',
+      error: function (err) {
+        showError(err);
+      },
+      success: function(res) {
+        createTokensCsv(res.tokens);
+      },
+    });
+  });
+
+  $('#import-tokens').on('click', () => {
+    $('#import-tokens-modal').modal('show');
+  });
+
+  $('#tokens-import-input').on('change', function(event) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const content = e.target.result;
+      tokensToSave = content.split(/\r\n|\n|\r/);
+    };
+    reader.readAsText(event.target.files[0]); 
+  });
+
+  $('#tokens-import-form').on('submit', (e) => {
+    e.preventDefault();
+    const authenticationProviderId = $('#add-token-modal [name="provider_id"]').val();
+    if (tokensToSave.length) {
+      $.ajax({
+        url: `/admin-import-tokens`,
+        method: 'POST',
+        data: {
+          authenticationProviderId,
+          tokens: tokensToSave
+        },
+        error: function (err) {
+          $('#import-tokens-modal').modal('hide');
+          showError(err);
+        },
+        success: function(res) {
+          if (res?.status === 'success') {
+            showInfo('Tokens have been imported');
+            setTimeout(() => {
+              window.location.reload();
+            }, 5000)
+          }
+          else {
+            showError('Something went wrong, please try again');
+          }
+        },
+      });
+    } else {
+      showError('Please upload tokens file');
+    }
+  });
+
+  $('#edit-token-modal form,#add-token-modal form').on('submit', event => event.preventDefault());
+</script>
+
+<style>
+  .admin_content_area .token-error {
+    color: #ff0000;
+  }
+
+  .admin_content_area .select-provider select,
+  .admin_content_area .select-provider input {
+    max-height: 50px;
+  }
+
+  .admin_content_area .token-filters input,
+  .admin_content_area .token-filters button {
+    max-height: 50px;
+  }
+
+  .admin_content_area table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .admin_content_area td,
+  .admin_content_area th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  .admin_content_area tr:nth-child(even) {
+    background-color: #ebe7e0;
+  }
+
+  .admin_content_area tr {
+    cursor: pointer;
+  }
+
+  .admin_content_area tr:first-child {
+    cursor: unset;
+  }
+
+  .admin_content_area .modal form label {
+    display: block;
+    margin: 0;
+  }
+
+  .admin_content_area .modal form input,
+  .admin_content_area .modal form select,
+  .admin_content_area .modal form textarea {
+    width: 100%;
+  }
+
+  .admin_content_area .modal form textarea {
+    height: 225px;
+    font-family: monospace;
+    font-size: .85rem;
+  }
+
+  .admin_content_area .modal form .form-input-group {
+    margin-top: .5rem;
+  }
+</style>

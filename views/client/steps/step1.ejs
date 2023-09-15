@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+<% include ../../partials/header.ejs %>
+
+<!--Hero Area Start -->
+
+<section class="hero_area">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="hero_content">
+                    <h3>
+                        <span class="hero_content_sp">
+                            I want to help people and the planet
+                            <br/>
+                            by giving the
+                        </span>
+                        <% disable = is_admin ? 'all' : 'none' %>
+                        <span class="custom-select ml-auto" style="vertical-align: middle; pointer-events: <%= disable %>">
+                            <select id="price-select">
+                                <%
+                                for (let i = 0; i < collections.signature.length; i++) {
+                                    const selected = collections.signature[i]['shopify_id'] == cid && ctype === 'signature'
+                                            ? "selected" : "";
+                                %>
+                                <option value="<%= collections.signature[i]['shopify_id'] %>" data-price="<%= collections.signature[i]['price']%>"
+                                        type="signature" <%= selected %>>
+                                  <%= collections.signature[i]['title'] %>
+                              </option>
+                                <% } %>
+                                <%
+                                for (let i = 0; i < collections.campaign.length; i++) {
+                                    const selected = collections.campaign[i]['id'] == cid && ctype === 'campaign'
+                                            ? "selected" : "";
+                                %>
+                                <option value="<%= collections.campaign[i]['id'] %>" type="campaign" <%= selected %>>
+                                  <%= collections.campaign[i]['title'] %>
+                                </option>
+                                <% } %>
+                            </select>
+                        </span>
+                        .
+                    </h3>
+                    <p>
+                        <b>Please select up to 12 gifts you would like to send
+                            <br/>
+                            in your custom collection of gift choices.
+                        </b>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--Product Area Start -->
+<%- include('../../partials/product-listing.ejs', { isMarketing: false }) %>
+
+<!--Down Banner Area Start -->
+
+<div class="down_banner">
+</div>
+
+<% include ../../partials/footer.ejs %>
+<% include ../../partials/modals.ejs %>
+
+<% include ../../partials/storage.ejs %>
+<% include ../../partials/foot.ejs %>
+<% include ../../partials/product-listing_actions.ejs %>
+<% include step1_action.ejs %>
+
+</body>
+</html>

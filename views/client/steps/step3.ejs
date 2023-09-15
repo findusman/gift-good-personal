@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<% include ../../partials/head.ejs %>
+
+<body>
+  <% include ../../partials/header.ejs %>
+
+  <section class="title_area step3_title_area">
+    <div class="container">
+      <h2>
+        BRAND & CUSTOMIZE YOUR MESSAGE
+      </h2>
+      <p>
+        Upload your brand assets and personalize with a video.
+      </p>
+    </div>
+  </section>
+
+  <!--type email  Area Start -->
+
+  <section class="type_email_area">
+    <div class="add_title">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h3><img src="/resources/images/icons/envelop.png" /> Type your email gift message:</h3>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="massege_box">
+            <textarea class="form-control" rows="3" id="email-message" placeholder="Write the message that will appear in the email to your gift recipient alongside your personalized video (below). "></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 token_hint">
+          <strong>Please use these tokens in your gift message:</strong><br>
+          :first_name, :last_name, :name, :email, :company, :sender_first_name, :sender_last_name, :sender_name, :sender_email, :sender_company
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--information contact Area Start -->
+
+  <section class="email_video_area">
+    <div class="add_title">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h3><img src="/resources/images/icons/video.png" /> Personalize your email with a video</h3>
+          </div>
+          <div class="col-md-6">
+            <div class="email_video_txt">
+              <p>
+                <img src="/resources/images/icons/question.png" />
+                See example of a personalized video embedded in an email
+                <!--                            <a target="_blank" href="http://giftforward.giftsforgood.com/template/email_template.png">here</a>-->
+                <a target="_blank" href="/template/email_template.png">here</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="choose_file_box" id="email-video-choose-box">
+            <div class="drag_area">
+              <div class="drag_area_content" id="email-video-drag-content">
+                <img src="/resources/images/icons/video-big.png" />
+                <h5 class="mobile_none"><b>Choose a video file</b> or drag and drop it here</h5>
+                <h5 class="desktop_none">Choose a video file</h5>
+                <p>(maximum size of the video is 500 MB)</p>
+              </div>
+              <div class="drag_area_content" id="email-video-progress-section" style="display: none;">
+                <progress value="32" max="100"> 32% </progress>
+                <p>Uploading...</p>
+              </div>
+              <div class="drag_choose_field" id="email-video-drag">
+                <input type="file" class="form-control-file" id="email-video-file" accept="video/mp4">
+              </div>
+              <div class="email-brand-section" style="display: none" id="email-video-section">
+                <video controls style="outline: none !important;">
+                  <source src="" id="email-video-src">
+                  Your browser does not support HTML5 video.
+                </video>
+                <!-- <button type="button" class="btn close" id="email-video-cancel">
+                               <img src="/resources/images/icons/close.png" alt="icon"/>
+                            </button> -->
+              </div>
+            </div>
+            <div class="drag_area_content" id="email-video-reupload" style="display:none; text-decoration: underline;">
+              <p>Click to change video</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="step_checkbox_area">
+            <ul class="">
+              <li class="checkbox_list">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="default-video-check">
+                  <label class="custom-control-label" for="default-video-check">Click here if you’d like to use <br /> the Gifts for Good default email video.</label>
+                </div>
+              </li>
+              <li class="preview_list">
+                <div class="preview_here">
+                  <a href="/resources/videos/default.mp4" target="_blank">Preview Here</a>
+                </div>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="no-video-check">
+                  <label class="custom-control-label" for="no-video-check">Click here for no video or email message on your landing page.</label>
+                </div>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!--Design Experience Area Start -->
+
+  <section class="design_experience_area">
+    <div class="add_title">
+      <div class="container">
+        <h3><img src="/resources/images/icons/design.png" /> Design Your Gifting Experience</h3>
+      </div>
+    </div>
+    <div class="step_information_boxes">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="choose_file_box">
+              <div class="drag_area">
+                <div class="drag_area_content" id="email-logo-drag-content">
+                  <img src="/resources/images/icons/uplode.png" />
+                  <h5><b>Upload logo</b></h5>
+                  <p>(Please upload your logo in a PNG file format.)</p>
+                </div>
+                <div class="drag_choose_field" id="email-logo-drag">
+                  <input type="file" class="form-control-file" id="email-logo-file" accept="image/*">
+                </div>
+                <div class="email-brand-section" style="display: none" id="email-logo-section">
+                  <img src="" id="email-logo-img">
+                </div>
+              </div>
+              <div class="drag_area_content" id="email-logo-reupload" style="display: none;  text-decoration: underline;">
+                <p>Click to change logo</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="choose_file_box">
+              <div class="drag_area">
+                <div class="drag_area_content" id="email-banner-drag-content">
+                  <img src="/resources/images/icons/uplode-video.png" />
+                  <h5>Upload photo for <b>banner image</b> and <b>preview on a collection page</b></h5>
+                  <p>(We recommend banner images <br /> with dimensions 1440x325 px.)</p>
+                </div>
+                <div class="drag_choose_field" id="email-banner-drag">
+                  <input type="file" class="form-control-file" id="email-banner-file" accept="image/*">
+                </div>
+                <div class="email-brand-section" style="display: none" id="email-banner-section">
+                  <img src="" id="email-banner-img">
+                </div>
+              </div>
+              <div class="drag_area_content" id="email-banner-reupload" style="display: none;  text-decoration: underline;">
+                <p>Click to change banner</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="schedule_area">
+    <div class="add_title">
+      <div class="container">
+        <h3><svg style="fill:#C8B398" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="43" height="46" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+            <path d="M320,64H192V32h128V64z M512,96v352c0,35.344-28.656,64-64,64H64c-35.344,0-64-28.656-64-64V96c0-35.344,28.656-64,64-64v32
+               c-17.641,0-32,14.375-32,32v64h448V96c0-17.625-14.344-32-32-32V32C483.344,32,512,60.656,512,96z M128,400H32v48
+               c0,17.656,14.359,32,32,32h64V400z M128,304H32v64h96V304z M128,192H32v80h96V192z M240,400h-80v80h80V400z M240,304h-80v64h80V304z
+                M240,192h-80v80h80V192z M352,400h-80v80h80V400z M352,304h-80v64h80V304z M352,192h-80v80h80V192z M480,400h-96v80h64
+               c17.656,0,32-14.344,32-32V400z M480,304h-96v64h96V304z M480,192h-96v80h96V192z M112,96h32c8.844,0,16-7.156,16-16V16
+               c0-8.844-7.156-16-16-16h-32c-8.844,0-16,7.156-16,16v64C96,88.844,103.156,96,112,96z M368,96h32c8.844,0,16-7.156,16-16V16
+               c0-8.844-7.156-16-16-16h-32c-8.844,0-16,7.156-16,16v64C352,88.844,359.156,96,368,96z" />
+          </svg> Schedule your campaign</h3>
+      </div>
+    </div>
+    <div class="step_information_boxes">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="is-scheduled">
+                <label class="custom-control-label" for="is-scheduled">Scheduled Date/Time</label>
+              </div>
+            </div>
+            <input type="datetime-local" value="" id="scheduled-date" />
+
+            <select class="simple-select" id="scheduled-tz">
+              <% for(var tz of moment.tz.zonesForCountry('US', true)){ %>
+              <option value="<%= moment.tz(tz.name).format('Z') %>" data-name="<%= tz.name %>">(GMT<%= moment.tz(tz.name).format('Z') %>) <%= tz.name %></option>
+              <% }; %>
+            </select>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="GoBack_link">
+              <a style="cursor:pointer;" id="preview-email">
+                Preview Your Customized Email Here.
+              </a>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="step_buttons_area">
+              <button type="button" class="btn common_btn max_w_250 nextstep_btn">CONTINUE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--Down Banner Area Start -->
+
+  <div class="down_banner_3">
+  </div>
+
+  <% include ../../partials/footer.ejs %>
+  <% include ../../partials/storage.ejs %>
+  <% include ../../partials/foot.ejs %>
+  <% include step3_action.ejs %>
+
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<% if (showAuthenticationInterstitial) { %>
+
+    <div class="modal fade common-modal authentication-modal" id="modal_authentication" tabindex="-1" role="dialog" aria-labelledby="authentication" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="spinner hidden" id="spinner"></div>
+                <div class="dynamic-content">
+                    <% if (authenticationProvider.adapter === 'com.gfg.validator.token') { %>
+                        <% include ./token.ejs %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <style>
+        #modal_authentication p,
+        #modal_authentication .form-input-group {
+            margin: 1rem 0;
+        }
+        #modal_authentication input {
+            border: 1px solid #777;
+            width: 100%;
+            padding: .25rem;
+        }
+
+        #modal_authentication input::placeholder {
+            color: #ddd;
+            font-style: italic;
+        }
+
+        #modal_authentication .error {
+            color: #ff0000;
+            margin: -.5rem 0;
+        }
+    </style>
+    <script>
+        const showAuthenticationInterstitial = <%=showAuthenticationInterstitial ? true : false %>;
+
+        $(document).ready(function() {
+            const $modal = $('#modal_authentication');
+            const $submitButton = $('#modal_authentication button[type=submit]');
+            const $form = $('#modal_authentication form');
+
+            $('#modal_authentication.modal.fade').on('click', function(event) {
+                event.stopImmediatePropagation();
+            });
+
+            if (showAuthenticationInterstitial) {
+                $modal.modal('show');
+            }
+
+            $form.on('submit', function(event) {
+                event.preventDefault();
+            });
+
+            $submitButton.on('click', function(event) {
+                event.preventDefault();
+                $submitButton.prop('disabled', true);
+                handleAuthentication($modal);
+            });
+        });
+  </script>
+<% } %>
+
+

@@ -1,0 +1,881 @@
+<style>
+  .intl-location-modal .modal-content {
+    background-color: #f4f0ea;
+    border-radius: 5px;
+  }
+
+  .intl-location-modal.common-modal .modal-body {
+    padding: 0;
+  }
+
+  .intl-location-modal h3 {
+    font-family: var(--heading-font-family);
+    margin: 1rem;
+  }
+
+  .intl-location-modal .flag {
+    padding: 0 .5rem;
+  }
+
+  .intl-location-modal .flag img {
+    height: 1.5rem;
+    width: 2.25rem;
+  }
+
+  .intl-location-modal .search-results {
+    background-color: #fff;
+    border-bottom: 1px solid #ebebeb;
+    border-top: 1px solid #ebebeb;
+    height: 35vh;
+    overflow-y: scroll;
+    min-height: 200px;
+  }
+
+  .intl-location-modal .country-list-empty {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+  }
+
+  .intl-location-modal .country-list {
+    list-style: none;
+    margin-bottom: 0;
+  }
+
+  .intl-location-modal .country-list li {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #ebebeb;
+  }
+
+  .intl-location-modal .country-list li:last-child {
+    border-bottom: 0;
+  }
+
+  .intl-location-modal .country-list li[data-active=true],
+  .intl-location-modal .country-list li:hover {
+    cursor: pointer;
+    background-color: #eee;
+  }
+
+  .intl-location-modal .country-list li[data-active=true] {
+    font-weight: bold;
+  }
+
+  .intl-location-modal .search-group {
+    border: 1px solid #333;
+    margin: 1rem;
+    height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .intl-location-modal .search-group .search-icon {
+    display: inline-block;
+    height: 1.5rem;
+    margin: 0.25rem 0.5rem;
+    max-height: 100%;
+    max-width: 100%;
+    width: 1.5rem;
+  }
+
+  .intl-location-modal .search-group input {
+    border: 0;
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+  }
+
+  .intl-location-modal .search-group input::placeholder {
+    color: #666666;
+    font-style: italic;
+  }
+
+  .intl-location-modal .confirm-btn-group {
+    display: flex;
+    justify-content: end;
+  }
+
+  .intl-location-modal.common-modal .common_btn {
+    background-color: #333;
+    margin: 1rem 1rem 0 0;
+    min-width: 7rem;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: normal;
+    color: #fefefe;
+  }
+
+  .intl-location-modal.common-modal .common_btn:disabled {
+    cursor: not-allowed;
+  }
+
+  #intl-change-location {
+    margin: 0.5rem 0 0;
+    font-size: .875rem;
+  }
+
+  #intl-change-location .flag {
+    margin: 0 0.25rem 0 0.4rem;
+  }
+
+  #intl-change-location .flag img {
+    width: 1.35rem;
+  }
+
+  #intl-change-location a {
+    display: flex;
+    align-items: center;
+    color: #333;
+  }
+
+  #intl-change-location a .country-name {
+    text-decoration: underline;
+    font-weight: bold;
+  }
+
+  .product_slide_2 {
+    height: 118px;
+  }
+
+  .ProductSection p {
+    line-height: 1.65;
+    font-size: 0.875rem;
+  }
+
+  .heading-container {
+    padding-top: 130px;
+    padding-bottom: 111px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .product-caption {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding-top: 10px;
+  }
+
+  .product-title {
+    font-family: Lato;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: left;
+
+    /* Primary/Charcoal */
+
+    color: #333333;
+  }
+
+  .product-icon {
+    width: 13px;
+    color: #666666;
+  }
+
+  .product-icon-text {
+    /* Body/Extra Small */
+
+    font-family: Lato;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 146%;
+    /* identical to box height, or 18px */
+
+    letter-spacing: 0.035em;
+
+    /* Secondary/Dark Grey */
+
+    color: #666666;
+  }
+
+  .video-container {
+    position: relative;
+    margin: 0 36px 0 0;
+    width: 50%;
+    max-width: 50%;
+    border: 1px solid #BBBBBB;
+  }
+
+  @media only screen and (max-width: 900px) {
+      .video-container {
+          width: 100%;
+          max-width: 100%;
+          margin: 0;
+      }
+  }
+
+  .landing-video {
+    display: block;
+    outline: none !important;
+    width: 100%;
+  }
+
+  .video-image {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+  }
+
+  .campaign-message {
+    flex: 1;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .campaign-message * {
+    font-size: 1rem;
+  }
+
+  .campaign-message p {
+    line-height: 1.65;
+    min-height: 1.65rem;
+  }
+
+  .campaign-message .bold {
+    font-weight: bold;
+  }
+
+  .campaign-message .italic {
+    font-style: italic;
+  }
+
+  .campaign-message .underline {
+    text-decoration: underline;
+  }
+
+  .campaign-message .align-right {
+    text-align: right;
+  }
+
+  .campaign-message .align-center {
+    text-align: center;
+  }
+
+  .message-container {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    padding-top: 36px;
+  }
+
+  .message-container.single-product {
+    flex-direction: column;
+    max-width: 730px;
+    margin: 0 auto;
+  }
+
+  .message-container.single-product .campaign-message {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 80px;
+  }
+
+  .message-container.single-product .video-container {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  @media only screen and (max-width: 900px) {
+    .message-container.single-product .campaign-message {
+      margin-bottom: 72px;
+    }
+  }
+
+  .product_area {
+    position: relative;
+  }
+
+  .product_area_scroll {
+    position: absolute;
+    top: -125px;
+  }
+
+  .product_area + .single_product {
+    padding-top: 67px;
+  }
+
+  .single_product {
+    padding-bottom: 100px;
+  }
+
+  .single_product .product_item {
+    height: auto;
+    align-items: center;
+  }
+
+  .single_product img {
+    max-width: 536px;
+    max-height: 536px;
+    object-fit: contain;
+  }
+
+  .single_product .btn-container {
+    margin-top: 44px;
+  }
+
+  @media only screen and (max-width: 900px) {
+    .single_product img {
+      max-width: 100%;
+    }
+
+    .single_product .btn-container {
+      margin-top: 32px;
+    }
+  }
+
+  @media only screen and (max-width: 900px) {
+    .landing-video {
+      width: 100%;
+      max-width: 100%;
+      outline: none !important;
+      padding-top: 0;
+    }
+
+    .email-section {
+      padding-right: 0px !important;
+    }
+
+    .campaign-message {
+      padding-top: 36px;
+      padding-bottom: 16px;
+      font-size: 20px;
+      width: 100%;
+    }
+
+    .product_area_scroll {
+      top: -200px;
+    }
+
+    .message-container {
+      display: block;
+      padding-top: 0;
+    }
+  }
+
+  .heading {
+    font-family: Crimson Text;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 56px;
+    line-height: 58px;
+    text-align: center;
+
+    /* Primary/Charcoal */
+
+    color: #333333;
+  }
+
+  #select-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    max-width: 591px;
+    padding: 32px;
+    border: 1px solid #C7B299;
+    margin: auto;
+  }
+
+  .sub-heading {
+    font-family: Lato;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 139.5%;
+    /* or 22px */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 0.035em;
+
+    /* Primary/Charcoal */
+
+    color: #333333;
+    max-width: 680px;
+    margin-top: 47px;
+  }
+
+  .message {
+    font-family: Crimson Text;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 31px;
+    line-height: 43px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #333333;
+    padding-top: 114px;
+  }
+
+  #select-gift {
+    font-family: Lato;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 125.5%;
+    /* identical to box height, or 15px */
+
+    text-align: center;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    /* Primary/Charcoal */
+
+    color: #333333;
+  }
+
+  #select-message {
+    /* Body/Regular */
+
+    font-family: Lato;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 139.5%;
+    /* or 22px */
+
+    text-align: center;
+    letter-spacing: 0.035em;
+
+    /* Primary/Charcoal */
+
+    color: #333333;
+
+  }
+
+  :root {
+    --heading-font-family: "Crimson Text", serif;
+    --heading-font-weight: 400;
+    --heading-font-style: normal;
+
+    --text-font-family: Lato, sans-serif;
+    --text-font-weight: 400;
+    --text-font-style: normal;
+
+    --base-text-font-size: 16px;
+    --default-text-font-size: 14px;
+    --background: #ffffff;
+    --background-rgb: 255, 255, 255;
+    --light-background: #ffffff;
+    --light-background-rgb: 255, 255, 255;
+    --heading-color: #333333;
+    --text-color: #333333;
+    --text-color-rgb: 51, 51, 51;
+    --text-color-light: #666666;
+    --text-color-light-rgb: 102, 102, 102;
+    --link-color: #333333;
+    --link-color-rgb: 51, 51, 51;
+    --border-color: #e0e0e0;
+    --border-color-rgb: 224, 224, 224;
+
+    --button-background: #333333;
+    --button-background-rgb: 51, 51, 51;
+    --button-text-color: #ffffff;
+
+    --header-background: #ffffff;
+    --header-heading-color: #333333;
+    --header-light-text-color: #666666;
+    --header-border-color: #e0e0e0;
+
+    --footer-background: #ffffff;
+    --footer-text-color: #666666;
+    --footer-heading-color: #333333;
+    --footer-border-color: #e8e8e8;
+
+    --navigation-background: #ffffff;
+    --navigation-background-rgb: 255, 255, 255;
+    --navigation-text-color: #333333;
+    --navigation-text-color-light: rgba(51, 51, 51, 0.5);
+    --navigation-border-color: rgba(51, 51, 51, 0.25);
+
+    --newsletter-popup-background: #ffffff;
+    --newsletter-popup-text-color: #333333;
+    --newsletter-popup-text-color-rgb: 51, 51, 51;
+
+    --secondary-elements-background: #333333;
+    --secondary-elements-background-rgb: 51, 51, 51;
+    --secondary-elements-text-color: #ffffff;
+    --secondary-elements-text-color-light: rgba(255, 255, 255, 0.5);
+    --secondary-elements-border-color: rgba(255, 255, 255, 0.25);
+
+    --product-sale-price-color: #f94c43;
+    --product-sale-price-color-rgb: 249, 76, 67;
+
+    /* Shopify related variables */
+    --payment-terms-background-color: #ffffff;
+
+    /* Products */
+
+    --horizontal-spacing-four-products-per-row: 40px;
+    --horizontal-spacing-two-products-per-row: 40px;
+
+    --vertical-spacing-four-products-per-row: 60px;
+    --vertical-spacing-two-products-per-row: 75px;
+
+    /* Animation */
+    --drawer-transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --header-base-height: 80px;
+    /* We set a default for browsers that do not support CSS variables */
+
+    /* Arrows */
+    --arrow-right: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/arrow.svg?v=17300509536057275799);
+
+    /* Cursors */
+    --cursor-zoom-in-svg: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/cursor-zoom-in.svg?v=6123313730325737771);
+    --cursor-zoom-in-2x-svg: url(//cdn.shopify.com/s/files/1/1826/6559/t/55/assets/cursor-zoom-in-2x.svg?v=5276726306539990872);
+  }
+</style>
+
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/theme.css?v=12927984427861795921') %>">
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/custom.css?v=17147846187842746493') %>">
+<link rel="stylesheet" href="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/build-a-box.css?v=3535801119237388454') %>">
+
+<script>
+  // This allows to expose several variables to the global scope, to be used in scripts
+  window.theme = {
+    pageType: "product",
+    moneyFormat: "${{amount}}",
+    moneyWithCurrencyFormat: "${{amount}} USD",
+    productImageSize: "square",
+    searchMode: "product,page",
+    showPageTransition: false,
+    showElementStaggering: true,
+    showImageZooming: true
+  };
+
+
+  document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  document.documentElement.style.setProperty('--window-height', window.innerHeight + 'px');
+
+  // We do a quick detection of some features (we could use Modernizr but for so little...)
+  (function() {
+    document.documentElement.className += ((window.CSS && window.CSS.supports('(position: sticky) or (position: -webkit-sticky)')) ? ' supports-sticky' : ' no-supports-sticky');
+    document.documentElement.className += (window.matchMedia('(-moz-touch-enabled: 1), (hover: none)')).matches ? ' no-supports-hover' : ' supports-hover';
+  }());
+</script>
+
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/lazysizes.min.js?v=17435836340443258698') %>" async></script>
+<script defer src="https://unpkg.com/alpinejs@3.3.2/dist/cdn.min.js"></script>
+
+<script src="https://cdn.polyfill.io/v3/polyfill.min.js?unknown=polyfill&features=fetch,Element.prototype.closest,Element.prototype.remove,Element.prototype.classList,Array.prototype.includes,Array.prototype.fill,Object.assign,CustomEvent,IntersectionObserver,IntersectionObserverEntry,URL" defer></script>
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/libs.min.js?v=2617854318439446974') %>" defer></script>
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/theme.js?v=16033869116533443534&enable_js_minification=1') %>" defer></script>
+<script src="<%= getShopifyUrl('https://cdn.shopify.com/s/files/1/1826/6559/t/55/assets/custom.js?v=12215157884757723718') %>" defer></script>
+
+<!--end-boost-pfs-filter-css-->
+<link href="https://monorail-edge.shopifysvc.com" rel="dns-prefetch">
+</head>
+
+<% include ../partials/head.ejs %>
+
+<body class="prestige--v4 features--heading-large features--show-button-transition features--show-image-zooming features--show-element-staggering  template-product template-suffix-buy-and-customize">
+  <% const isSingleProduct = typeof singleProduct !== 'undefined' && singleProduct %>
+  <% include ../partials/header.ejs %>
+  <div class="container-fluid">
+    <% if (shouldDisplayBanner) { %>
+      <div class="hero">
+        <img src="<%= campaign['banner_url'] %>" class="d-block w-100" alt="img" />
+      </div>
+    <% } %>
+    <% if (isSingleProduct) { %>
+    <div class="message-container  single-product">
+    <% } else { %>
+    <div class="message-container">
+    <% } %>
+      <% if (campaign['message']) { %>
+        <div class='campaign-message'>
+            <%- sanitizeHtml(campaign['message'], {
+              allowedAttributes: {
+                '*': [ 'class' ],
+                a: [ 'href', 'name', 'target' ]
+              },
+            }) %>
+        </div>
+      <% } %>
+      <% if (shouldDisplayVideo) { %>
+        <div class='video-container'>
+          <video id="landing-page-video" class='landing-video'>
+            <source src="<%= campaign['video_url'].includes('/resources/videos/default') ? campaign['video_url'] : campaign['video_url'] %>#t=0.1" id="email-video-src" />
+            Your browser does not support HTML5 video.
+          </video>
+          <buttton id="video-play-button" type="button" class="video-image">
+            <img class="video-image" src="/resources/images/play_button.svg" alt="play button" />
+          </buttton>
+        </div>
+      <% } %>
+    </div>
+    <% if (!isSingleProduct) { %>
+    <section class="product_area collections_product_area" id='product_area'>
+      <span class="product_area_scroll" id="product_area_scroll"></span>
+      <div class="container-fluid">
+        <div class="row">
+          <% const products = campaign['products']; 
+            for (let i = 0; i < products.length; i++) { 
+              if (products[i]['enabled'] == false) {
+                continue; 
+              } 
+              const mainParam = contact && contact.id ? `cid=${contact.id}` : `campaign=${campaign.id}`; 
+              let product_link = `/customer/gift-detail?${mainParam}&pid=${products[i]['product_id']}`;
+              if (demo) {
+                product_link = `/demo/gift-detail?cid=${contact['id']}&pid=${products[i]['product_id']}`
+              } else if (isPreview) {
+                product_link = `/collection/product_detail/${products[i]['product_id']}`;
+              }
+          %>
+            <div class="col-md-3">
+              <a href="<%= product_link %>">
+                <div class="product_item">
+                  <div class="product_img">
+                    <img src="<%= products[i]['image_data']['sub'][[0]] %>" alt="img" />
+                  </div>
+                  <div class="product-caption">
+                    <h4 class='product-title'><%= products[i]['product_title'] %></h4>
+                    <span>
+                      <% if (products[i]['impact_icon']) { %>
+                        <img src="<%= products[i]['impact_icon'] %>" alt="img" class='product-icon' />
+                      <% } %>
+                      <span class='product-icon-text'><%= products[i]['impact_story_collection'] %></span>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </section>
+    <% } %>
+  </div>
+  <% if (isInternationalCollection) { %>
+    <div class="modal fade common-modal intl-location-modal" id="modal_intl_location" tabindex="-1" role="dialog" aria-labelledby="set_intl_location" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <section>
+              <h3>
+                  What country are you shipping to?
+              </h3>
+              <form action="#" id="intl-location">
+                <div class="search-group">
+                  <span class="search-icon">
+                    <svg viewBox="0 0 20 20" focusable="false" aria-hidden="true"><path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm9.707 4.293-4.82-4.82a5.968 5.968 0 0 0 1.113-3.473 6 6 0 0 0-12 0 6 6 0 0 0 6 6 5.968 5.968 0 0 0 3.473-1.113l4.82 4.82a.997.997 0 0 0 1.414 0 .999.999 0 0 0 0-1.414z"></path></svg>
+                  </span>
+                  <input type="text" name="search-country" placeholder="Enter your country" />
+                </div>
+                <div class="search-results">
+                  <p class="country-list-empty" style="display: none;">
+                    There are no matching countries
+                  </p>
+                  <ul class="country-list">
+                    <% for (let i = 0; i < countries.length; i++) {
+                        let country = countries[i]; %>
+                      <li data-value="<%=country.code%>" data-featured="<%=country.featured%>" data-active="<%=(activeLocation === country.code ? 'true' : 'false')%>">
+                        <span class="flag">
+                          <img src="https://cdn.shopify.com/shopifycloud/shopify<%=country.flag%>" alt="<%=country.name%> Flag" />
+                        </span>
+                        <%=country.name%>
+                      </li>
+                    <% } %>
+                  </ul>
+                </div>
+                <div class="confirm-btn-group">
+                  <button type="submit" class="btn common_btn" disabled>
+                    Done
+                  </button>
+                </div>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
+  <% if (isSingleProduct) { %>
+  <section class="single_product" id='product_area'>
+      <div class="container-fluid">
+          <div class="">
+              <% const products = campaign['products']; 
+                for (let i = 0; i < products.length; i++) { 
+                  if (products[i]['enabled'] == false) {
+                    continue; 
+                  } 
+                  const mainParam = contact && contact.id ? `cid=${contact.id}` : `campaign=${campaign.id}`;
+                  let product_link = `/customer/gift-detail?${mainParam}&pid=${products[i]['product_id']}`;
+                  if (demo) {
+                    product_link = `/demo/gift-detail?cid=${contact['id']}&pid=${products[i]['product_id']}`
+                  } else if (isPreview) {
+                    product_link = `/collection/product_detail/${products[i]['product_id']}`;
+                  }
+                %>
+                  <a href="<%= product_link %>">
+                    <div class="product_item">
+                        <img src="<%= products[i]['image_data']['sub'][[0]] %>" alt="img" />
+                    </div>
+                  </a>
+                  <div class="btn-container d-flex justify-content-center">
+                      <div class="btn-group">
+                          <a href="<%= isPreview ? '#' : product_link %>" type="button" class="btn select-gift" style="background-color: #333333">
+                              Redeem Your Gift
+                          </a>
+                      </div>
+                  </div>
+              <% } %>
+          </div>
+      </div>
+  </section>
+  <% } %>
+
+  <% include ../partials/foot.ejs %>
+  <% include ../partials/shopify_footer.ejs %>
+  <% include blocked-shopify-popup.ejs %>
+  <% include redeem_actions.ejs %>
+
+  <script>
+    <% if (showLocationInterstitial) { %>
+    const showLocationInterstitial = true;
+    <% } else { %>
+    const showLocationInterstitial = false;
+    <% } %>
+    $(document).ready(function() {
+        let $modal = $('#modal_intl_location');
+        let $submitButton = $('#modal_intl_location button[type=submit]');
+        let $searchResults = $('#modal_intl_location .search-results');
+        let $countryContainer = $('#modal_intl_location .country-list');
+        let $countryEntry = $('#modal_intl_location .country-list li');
+        let $noCountries = $('#modal_intl_location .country-list-empty');
+
+        $('#modal_intl_location.modal').on('keydown', function(event) {
+          if (event.keyCode === 27) {
+            event.stopImmediatePropagation();
+          }
+        });
+
+        $('#modal_intl_location.modal.fade').on('click', function(event) {
+          event.stopImmediatePropagation();
+        });
+
+        if (showLocationInterstitial) {
+          $modal.modal('show');
+        }
+
+        $countryEntry.on('click', function(event) {
+          let $target = $(event.currentTarget);
+          let countryCode = $target.attr('data-value');
+
+          let $countryClicked = $countryEntry.filter('[data-value=' + countryCode + ']');
+          let $countryActive = $countryClicked.attr('data-active');
+
+          $countryEntry.attr('data-active', 'false');
+
+          if ($countryActive !== 'true') {
+            $countryClicked.attr('data-active', 'true');
+          }
+
+          $submitButton.prop('disabled', $countryEntry.filter('[data-active=true]').length === 0);
+        });
+
+        $('#intl-change-location').click(function(event) {
+          event.preventDefault();
+          $modal.modal('show');
+          setTimeout(function() {
+            scrollInner($searchResults, $countryEntry.filter('[data-active=true]'));
+          }, 600);
+        });
+
+        $('#modal_intl_location .search-group input').on('keyup', function(event) {
+          let $this = $(this);
+          let $entries = $('.intl-location-modal .country-list li');
+          let searchText = $this.val();
+
+          $entries.show();
+
+          if (!(searchText && searchText.length)) {
+            return;
+          }
+
+          $entries.each(function(idx, elem) {
+            let $elem = $(elem);
+
+            if (!$elem.text().toLowerCase().includes(searchText.toLowerCase())) {
+              if ($elem.attr('data-active') !== 'true') {
+                $elem.hide();
+              }
+            }
+          });
+
+          $noCountries.hide();
+
+          if (!$('.intl-location-modal .country-list li:visible').length) {
+            $noCountries.show();
+          }
+        });
+
+        $submitButton.on('click', function(event) {
+          event.preventDefault();
+
+          $submitButton.prop('disabled', true);
+
+          let location = $countryEntry.filter('[data-active=true]').attr('data-value');
+
+          setLocation(location);
+        });
+
+        $submitButton.prop('disabled', $countryEntry.filter('[data-active=true]').length === 0);
+    });
+
+    function setLocation(location) {
+        let url = '/customer/set-location';
+        let data = { location };
+        $.ajax({
+            url: url,
+            method: 'post',
+            data: data,
+            success: function (res) {
+                if (res.status === 'success') {
+                  setTimeout(function () {
+                      window.location.reload();
+                  }, 0);
+                } else {
+                  alert("Sorry, there was a problem with setting your location.  Please try again.");
+                  $submitButton.prop('disabled', false);
+                }
+            }
+        })
+    }
+
+    function scrollInner($parentDiv, $innerListItem) {
+      if (!($parentDiv && $innerListItem && $parentDiv.length && $innerListItem.length && $parentDiv.scrollTop() && $innerListItem.position())) {
+        return;
+      }
+
+      $parentDiv.scrollTop($parentDiv.scrollTop() + $innerListItem.position().top);
+      $parentDiv.scrollTop($parentDiv.scrollTop() + $innerListItem.position().top - $parentDiv.height() + $innerListItem.height()/4);
+    }
+  </script>
+
+  <script>
+    const vid = document.getElementById('landing-page-video');
+    const playButton = document.getElementById('video-play-button');
+
+    playButton.addEventListener('click', () => {
+      if (vid.paused) {
+        vid.play();
+        playButton.style.visibility = 'hidden';
+        vid.controls = true;
+      }
+    })
+  </script>
+</body>

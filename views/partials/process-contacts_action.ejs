@@ -1,0 +1,101 @@
+<script type="text/javascript">
+  const fields = [ 'Required',
+          'Optional',
+          'Required',
+          'Optional',
+          'Required',
+          'Optional',
+          'Optional',
+          'Required',
+          'Optional:^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{2,4}$',
+          'Optional:^[0-9]{1,2}:[0-9]{1,2}$'
+        ];
+  function processContactsFile (evt) {
+    let reader = new FileReader();
+    reader.onload = function() {
+      $('.csv-content-area').css('display', 'block');
+      $('.drag_area').css('display', 'none');
+      if (reader.result) {
+        reader.content = reader.result
+          .replace(/^Recipient First Name,Recipient Last Name,Recipient Email,Recipient Company,Sender First Name,Sender Last Name,Sender Email,Sender Company,Send On Date,Send at Time\r\n|\n|\r$/, '')
+          .replace(/^Required,Optional,Required,Optional,Required,Optional,Optional,Required,Optional: mm\/dd\/yyyy,Optional: hh:mm\r\n|\n|\r$/, '');
+      }
+      const allTextLines = reader.content.split(/\r\n|\n|\r/);
+      let html = '';
+      contactList = [];
+      const entries = allTextLines.map(el => el.split(','));
+
+      const PAGE_SIZE = 20;
+      const MAX_ROWS = 50000;
+      let START_AT = 0;
+
+      const validEntries = entries
+        .slice(START_AT, MAX_ROWS)
+        .filter(entry => {
+          const validEntry = entry.length === fields.length && entry.every((field, index) => {
+            const [ isRequired, matchPattern ] = fields[index].split(':');
+            const isOptional = isRequired === 'Optional';
+
+            if (isOptional && !field) {
+              return true;
+            }
+
+            if (matchPattern) {
+              const regEx = new RegExp(matchPattern);
+              return regEx.test(field);
+            }
+
+            return field;
+          });
+
+          if (!validEntry) {
+            console.warn("Skipping invalid entry,", entry);
+          }
+
+          return validEntry;
+        });
+
+      contactList = validEntries.map(el => (
+        {
+          to_first_name: el[0],
+          to_last_name: el[1],
+          to_email: el[2],
+          to_company_name: el[3],
+          from_first_name: el[4],
+          from_last_name: el[5],
+          from_email: el[6],
+          from_company_name: el[7],
+          send_on_date: el[8],
+          send_on_time: el[9],
+        }
+      ));
+
+      html = contactList.map((contact, idx) => {
+        return `
+          <tr ${idx > PAGE_SIZE ? 'class="hide_contact_row"' : ''}>
+            <td>${idx + 1}</td>
+            ${Object.values(contact).map((el) => (
+              `<td>${el}</td>`
+            ))}
+          </tr>`;
+      });
+
+      if (html) {
+        $('.csv-content-section #csv-content-table > tbody').append(html);
+
+        $('.csv-content-section').on('scroll', function(event) {
+          const element = event.target;
+          if ((element.scrollHeight - element.scrollTop) === element.clientHeight) {
+            $('.csv-content-section tr.hide_contact_row').slice(0, PAGE_SIZE).removeClass('hide_contact_row');
+          }
+        });
+      }
+    }
+    reader.readAsText(evt.target.files[0]);
+  }
+</script>
+<style>
+  .hide_contact_row {
+    display: none;
+  }
+</style>

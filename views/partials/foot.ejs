@@ -1,0 +1,208 @@
+<!-- Optional JavaScript -->
+<% if (page_title === 'gift-detail' || page_title === 'gift-detail-marketing') { %>
+<script type="text/javascript" src="/resources/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="/resources/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/resources/js/popper.min.js"></script>
+<script src="/resources/js/bootstrap.min.js"></script>
+<script src="/resources/js/slick.min.js"></script>
+<% } else { %>
+<script type="text/javascript" src="/resources/js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="/resources/js/popper.min.js"></script>
+<script type="text/javascript" src="/resources/js/bootstrap.min.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="/resources/css/jquery.datetimepicker.min.css" /> -->
+<!-- <script type="text/javascript" src="/resources/js/jquery.datetimepicker.full.min.js"></script> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha512-f0tzWhCwVFS3WeYaofoLWkTP62ObhewQ1EZn65oSYDZUg1+CyywGKkWzm8BxaJj5HGKI72PnMH9jYyIFz+GH7g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha512-AIOTidJAcHBH2G/oZv9viEGXRqDNmfdPVPYOYKGy3fti0xIplnlgMHUGfuNRzC6FkzIo0iIxgFnr9RikFxK+sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<% } %>
+
+<!-- Custom JavaScript -->
+<script type="text/javascript" src="/resources/js/custom.js"></script>
+<script type="text/javascript" src="/resources/js/custome-select.js"></script>
+<script type="text/javascript" src="/resources/js/parsley.min.js"></script>
+
+<script type="text/javascript">
+  if (!Array.prototype.find) {
+    Array.prototype.find = function(predicate) {
+      if (this == null) {
+        throw new TypeError('Array.prototype.find called on null or undefined');
+      }
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+      let list = Object(this);
+      let length = list.length >>> 0;
+      let thisArg = arguments[1];
+      let value;
+
+      for (let i = 0; i < length; i++) {
+        value = list[i];
+        if (predicate.call(thisArg, value, i, list)) {
+          return value;
+        }
+      }
+      return undefined;
+    };
+  }
+
+  function formatStringArrayIntoJsonRow(strArray) {
+    let finalVal = '';
+    for (let j = 0; j < strArray.length; j++) {
+      let innerValue = !strArray[j] ? '' : strArray[j].toString();
+      if (strArray[j] instanceof Date) {
+        innerValue = strArray[j].toLocaleString();
+      }
+      let result = innerValue.replace(/"/g, '""').replace(/&|#/g, '');
+      if (result.search(/("|,|\n|\r\n|\r)/g) >= 0)
+        result = '"' + result + '"';
+      if (j > 0)
+        finalVal += ',';
+      finalVal += result;
+    }
+    return finalVal;
+  }
+
+  $('#alert-bar').hide();
+
+  function showInfo(message) {
+    if ($('#alert-bar').hasClass('alert-danger')) {
+      $('#alert-bar').removeClass('alert-danger');
+    }
+    if (!$('#alert-bar').hasClass('alert-success')) {
+      $('#alert-bar').addClass('alert-success');
+    }
+
+    showAlert('Success! ', message)
+  }
+
+  function showError(message) {
+    if ($('#alert-bar').hasClass('alert-success')) {
+      $('#alert-bar').removeClass('alert-success');
+    }
+    if (!$('#alert-bar').hasClass('alert-danger')) {
+      $('#alert-bar').addClass('alert-danger');
+    }
+
+    showAlert('Error! ', message)
+  }
+
+  function showAlert(title, message) {
+    $('#alert-bar #alert-title').html(title);
+    $('#alert-bar #alert-content').html(message);
+    $("#alert-bar").fadeTo(4000, 500).slideUp(500, function() {
+      $("#alert-bar").slideUp(500);
+    });
+  }
+
+  window.showError = showError;
+  window.showInfo = showInfo;
+
+  function downloadCreatedCsv(csvContent, title) {
+    var encodedUri = encodeURI(csvContent).replaceAll("#", "%23");
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", title + ".csv");
+    document.body.appendChild(link); // Required for FF
+
+    link.click(); // This will download the data file named "contacts_export.csv".
+  }
+
+  // Set status of the order step indication bar
+  const cur_page_type = <%- JSON.stringify(page_type) %>
+  const cur_page_title = <%- JSON.stringify(page_title) %>
+
+  if (cur_page_type === 'gift-step-page' && cur_page_title !== 'confirmed-order') {
+    $('.step_item').each(function() {
+      $(this).removeClass('step_active');
+    });
+
+    if (cur_page_title === 'gift-it-forward') {
+      $('#step1_ind').addClass('step_active');
+    } else if (cur_page_title === 'recipient-information') {
+      $('#step2_ind').addClass('step_active');
+    } else if (cur_page_title === 'brand-message') {
+      $('#step3_ind').addClass('step_active');
+    } else {
+      $('#step4_ind').addClass('step_active');
+    }
+  }
+
+  // Event listener when click step indication items
+  $('.step_item').on('click', function() {
+    const ind_id = $(this).attr('id');
+    let next_step = ind_id === 'step1_ind' ? 'step1' :
+      ind_id === 'step2_ind' ? 'step2' :
+      ind_id === 'step3_ind' ? 'step3' :
+      'step4';
+    switch_step(next_step);
+  });
+
+  $('.next-step-btn').on('click', function() {
+    if (cur_page_type === 'gift-step-page') {
+      if (cur_page_title === 'gift-it-forward') {
+        switch_step('step2');
+      } else if (cur_page_title === 'recipient-information') {
+        switch_step('step3');
+      } else if (cur_page_title === 'brand-message') {
+        switch_step('step4');
+      } else if (cur_page_title === 'confirm-details') {
+        switch_step('end');
+      } else if (cur_page_title === 'confirmed-order') {
+        window.location.href = '/';
+      }
+    } else if (cur_page_title === 'change-campaign-products') {
+      switch_step('');
+    }
+  });
+
+  $('.send-a-gift').on('click', function() {
+    clean_campaign_data();
+    window.location.href = '/step/first';
+  });
+
+  const campaignData = get_campaign_data();
+  if (campaignData && campaignData.expirationTime && new Date() > new Date(campaignData.expirationTime)) {
+    clean_campaign_data();
+  }
+
+  // Load campaign products in step pages
+  function load_campaign_products() {
+    const remove_product_available = (cur_page_type === 'gift-step-page' && cur_page_title === 'gift-it-forward') ||
+      (cur_page_type === 'client-dashboard-page' && cur_page_title === 'change-campaign-products');
+
+    if (cur_page_title === 'change-campaign-products') {
+      const cur_campaign_products = <%- typeof current_campaign_products === 'undefined' ? [] : JSON.stringify(current_campaign_products) %>
+      setCampaignData('products', cur_campaign_products);
+    }
+
+    if (typeof get_campaign_products === 'function') {
+      const campaign_products = get_campaign_products();
+
+      if (campaign_products.length &&
+        (cur_page_type === 'gift-step-page' || cur_page_title === 'change-campaign-products')) {
+        // show products' count
+        $('#cart-badge').show();
+        $('#cart-badge').html(campaign_products.length);
+
+        campaign_products.forEach(function(campaign_product) {
+          let html = '<li>\n' +
+            '                       <div class="gift_list_img">\n' +
+            '                           <div class="gift_list_img_box">\n' +
+            '                               <img src="' + campaign_product['variant_image'] + '" alt="img"/>\n' +
+            '                           </div>\n' +
+            '                       </div>\n' +
+            '                       <div class="gift_list_txt">\n' + campaign_product['product_title'] + '</div>\n';
+          if (remove_product_available) {
+            html += '<div class="gift_list_remove_cart" prod-id="' + campaign_product['variant_id'] +
+              '"><i class="fas fa-times-circle"></i></div>';
+          }
+
+          html += '</li>';
+          $('.dropdown_gift_list > ul').append(html);
+        });
+      }
+    }
+
+  }
+
+  load_campaign_products();
+</script>

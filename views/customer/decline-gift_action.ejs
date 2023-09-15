@@ -1,0 +1,64 @@
+<script type="text/javascript">
+  const contactId = <%- JSON.stringify(cid) %>;
+  const isPreview = <%- JSON.stringify(isPreview) %>;
+
+  $('input[type=radio][name=reason]').change(function(event) {
+    const reason = event.target.value;
+    if (reason === 'reason-other') {
+      $('#reason-text').removeClass('hidden');
+    } else {
+      $('#reason-text').addClass('hidden');
+    }
+
+    if (reason) {
+      $('#decline-gift-button').prop('disabled', false);
+    }
+  });
+
+  $('#decline-gift-button').on('click', submitForm);
+
+  function showDeclineSuccess () {
+    showInfo('Gift declined successfully');
+    $('#decline-gift-form').hide();
+    $('#decline-gift-confirmation').removeClass('hidden');
+  };
+
+  function submitForm (event) {
+    event.preventDefault();
+
+    const reason = $('input[type=radio][name=reason]:checked').val()
+    let reasonText = '';
+    if ('other-reason') {
+      reasonText = $('#reason-text').val();
+    }
+
+    const data = {
+      reason,
+      reasonText,
+      contactId,
+    };
+
+    if (isPreview) {
+      showDeclineSuccess();
+    } else {
+      $.ajax({
+        url: '/customer/decline-contact',
+        type: 'post',
+        data,
+        success: function () {
+          showDeclineSuccess();
+        },
+        error: function (error) {
+          console.error(error);
+          const status = error.responseJSON.status;
+          const msg = error.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          } else {
+            showError(error.responseText);
+          }
+        },
+      });
+    }
+  }
+</script>

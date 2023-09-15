@@ -1,0 +1,19 @@
+:root {
+  --swiper-navigation-size: 1rem;
+}
+
+.swiper .swiper-wrapper {
+  @apply mb-18;
+}
+
+.swiper .swiper-pagination-bullets {
+  @apply bottom-0;
+}
+
+.swiper-button-next.custom-swiper-next {
+  @apply top-1/2 right-0 pr-4 pl-5 py-5 text-black-soft text-base bg-white hover:bg-beige-light;
+}
+
+.swiper-button-prev.custom-swiper-prev {
+  @apply top-1/2 left-0 pl-4 pr-5 py-5 text-black-soft text-base bg-white hover:bg-beige-light;
+}

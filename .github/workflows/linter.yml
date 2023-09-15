@@ -1,0 +1,89 @@
+---
+#################################
+#################################
+## Lint & Build GitHub Actions ##
+#################################
+#################################
+name: Pre-Deployment Checks
+
+#
+# Documentation:
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
+#
+
+#############################
+# Start the job on all push #
+#############################
+on:
+  pull_request:
+    branches: [develop, staging, main]
+  
+  push:
+    branches: [develop, staging]
+
+###############
+# Set the Job #
+###############
+jobs:
+  lint:
+    # Name the Job
+    name: Lint Code Base
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - uses: actions/checkout@v3        
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      ################################
+      # Install Dependencies #
+      ################################
+      - name: Install Dependencies
+        working-directory: ./frontend
+        run: npm install --include=dev
+
+      ################################
+      # Run ESLint #
+      ################################
+      - name: Run Linter
+        working-directory: ./frontend
+        run: npm run lint-all
+  build:
+    name: Test Production Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - uses: actions/checkout@v3        
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+      ################################
+      # Build Code #
+      ################################
+      - name: Build Prod
+        working-directory: ./frontend
+        run: npm run prod

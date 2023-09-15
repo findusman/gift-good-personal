@@ -1,0 +1,211 @@
+<script type="text/javascript">
+  let usersCredits = <%- JSON.stringify(users_credits) %>;
+  const excludedAccounts = <%- JSON.stringify(excludedAccounts); %>
+  const q = <%- JSON.stringify(query) %>;
+  const t = <%- JSON.stringify(type) %>;
+
+  $('#save-btn').prop('disabled', true);
+  $('#input-value-comment, #input-value').on('input', function() {
+    const creditsValue = $('#input-value').val().trim();
+    const commentValue = $('#input-value-comment').val().trim();
+
+    if (creditsValue !== '' && commentValue !== '') {
+      $('#save-btn').prop('disabled', false);
+    } else {
+      $('#save-btn').prop('disabled', true);
+    }
+  });
+
+
+  $('#export_csv_btn').on('click', function() {
+    debugger;
+    $.ajax({
+      url: '/export-admin-credits',
+      method: 'GET',
+      data: {
+        q,
+        type: t || 'all',
+      },
+      success: function (res) {
+        debugger;
+
+        if (res) {
+          let csvContent = "data:text/csv;charset=utf-8," + res;
+          const encodedUri = encodeURI(csvContent).replaceAll("#", "%23");
+          const link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", "order_report_export.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      },
+      error: function (err) {
+        console.log(err);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  });
+
+  $('.update-credits-btn').on('click', function() {
+    const user_id = $(this).attr('user-id');
+    const credits = $(this).attr('credits');
+    const formattedCredits = credits.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    $('#input-modal .modal-title h3').text('Update Credits');
+    $('#input-type').val('update-credits');
+    $('#input-param').val(user_id);
+    $('#input-old-value').val(credits);
+    $('#save-btn').text('ADJUST CREDITS');
+    $('#input-label').text('Current Unused Credit Balance: ' + formattedCredits);
+    $('#input-modal').modal('show');
+    $('#input-label-comment').text('Comment');
+    $('#input-label-comment').removeClass('hidden');
+    $('#input-value-comment').removeClass('hidden');
+  });
+
+  $('#save-btn').on('click', function() {
+    $('#input-modal').modal('hide');
+    const input_type = $('#input-type').val();
+    if (input_type === 'update-credits') {
+      const user_id = $('#input-param').val();
+      const old_credits = $('#input-old-value').val().trim();
+      const new_credits = $('#input-value').val().trim();
+      const comment = $('#input-value-comment').val().trim();
+
+      if (new_credits === '') {
+        showError('Please input new credits amount')
+        return;
+      }
+
+      if (comment === '') {
+        showError('Please input comment')
+        return;
+      }
+
+      if (!new_credits.match(/^-?\d*(\.\d+)?$/) || Number.parseInt(new_credits) < 0) {
+        showError('Please input valid credits amount')
+      } else {
+        if (old_credits !== new_credits) {
+          $.ajax({
+            url: '/credit/update',
+            method: 'POST',
+            data: {
+              uid: user_id,
+              credits: new_credits,
+              comment,
+            },
+            success: function(res) {
+              if (res.status === 'success') {
+                $('#input-label-comment').text('');
+                $('#input-value-comment').addClass('hidden');
+                showInfo(res.msg);
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1500);
+              }
+            },
+            error: function(err) {
+              console.log(err);
+              const status = err.responseJSON.status;
+              const msg = err.responseJSON.msg;
+              if (status === 'failed') {
+                showError(msg);
+              }
+            }
+          });
+        }
+      }
+    }
+  });
+
+  $('.manage-credits-btn').on('click', function() {
+    const userId = $(this).attr('user-id');
+    $('.campaigns-list').empty();
+    const userData = usersCredits.find(el => el.id === parseInt(userId));
+    userData.campaigns.forEach(campaign => {
+      if (campaign.donation && campaign.donation.balance > 0) {
+        const campaignEl = `<tr>
+          <td>${campaign.title}</td>
+          <td>${campaign.donation.balance}</td>
+          <td><button type="button" class="btn common_btn dark_btn" onClick="manageCredits(${campaign.id}, 'donate', ${userId})">Donate</button></td>
+          <td><button class="btn common_btn dark_btn" onClick="manageCredits(${campaign.id}, 'savings', ${userId})">Savings</button></td>
+        </tr>`;
+        $('.campaigns-list').append(campaignEl);
+      }
+    });
+    $('#manage-credits-modal').modal();
+  });
+
+  function manageCredits(campaignId, type, userId) {
+    const isDonate = type === 'donate';
+    const url = isDonate ? '/credit/donate' : '/credit/move-to-savings';
+    $.ajax({
+      url,
+      method: 'post',
+      data: { campaignId, userId },
+      success: function(res) {
+        $('#manage-credits-modal').modal('toggle');
+        showInfo(isDonate ? 'Credits have been saved as donated.' : 'Credits have been moved to savings.');
+        setTimeout(() => window.location.reload(), 500);
+      },
+      error: function(err) {
+        console.error(err);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        showError(msg || 'Something went wrong, try again later');
+      }
+    });
+  }
+
+  $('.view-credits-history').on('click', function (event) {
+    event.preventDefault();
+    const userId = $(this).attr('user-id');
+    const historyModal = $('#credits-history-modal');
+
+    historyModal.find('.dynamic-content tbody').html('');
+
+    $.ajax({
+      url: '/admin-credits-history/' + userId,
+      method: 'get',
+      success: function(response) {
+        const thead = $('#credits-history-modal .dynamic-content thead');
+
+        if (response.data && response.data.length) {
+          thead.show();
+          $.each(response.data, function(i, item) {
+            const formattedCreditAmount = item.creditAmount?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            const formattedSavingsBalance = item.savingsBalance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            const formattedCampaignBalance = item.campaignBalance?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+            const row = $('<tr>');
+            row.append(
+              $('<td>', { text: item.type }),
+              $('<td>', { text: item.updatedAt }),
+              $('<td>', { text: formattedCreditAmount }),
+              $('<td>', { text: item.comment }),
+              $('<td>', { text: formattedSavingsBalance }),
+              $('<td>', { text: formattedCampaignBalance }),
+              $('<td>', { text: item.campaignId }),
+            )
+            row.appendTo('#credits-history-modal .dynamic-content tbody');
+          });
+        } else {
+          const row = $('<tr>');
+          thead.hide();
+          row.append($('<td>', { colspan: 4, text: 'No history' }));
+          row.appendTo('#credits-history-modal .dynamic-content tbody');
+        }
+
+        historyModal.modal('show');
+      },
+      error: function(err) {
+        console.error(err);
+        showError('Something went wrong, try again later');
+      }
+    });
+  })
+</script>

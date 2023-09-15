@@ -1,0 +1,49 @@
+<section class="product_area">
+  <div class="container-fluid">
+    <div class="row products-row">
+      <% for (let i = 0; i < products.length; i++) { %>
+      <div class="col-md-3">
+        <div class="product_item">
+          <div class="product_img">
+            <img src="<%= products[i]['image_data']['sub'][0] %>" onerror="onProductImgError(this)" alt="img" />
+          </div>
+          <div class="product_info">
+            <div class="product_title">
+              <h4><%= products[i]["product_title"] %></h4>
+            </div>
+            <% if (products[i]["collection_title"]) { %>
+            <div class="product_price">
+              <h5><%= products[i]["collection_title"] %></h5>
+            </div>
+            <% } %>
+            <p>
+              <% if (products[i]['impact_icon']) { %>
+              <img src="<%= products[i]['impact_icon'] %>" class="shopping-label-img" onerror="onLabelImgError(this)" alt="img" />
+              <% } %>
+              <%= products[i]['impact_story_collection'] %>
+            </p>
+            <% if (isMarketing) { %>
+              <a href='/collection/product_detail/<%= products[i]['product_id'] %>'>
+                <button type="button" class="btn product_btn">
+                  VIEW
+                </button>
+              </a>
+            <% } else { %>
+              <button type="button" class="btn product_btn" prod-id="<%= products[i]["variant_id"] %>">	
+                ADD TO COLLECTION
+              </button>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="product_showmore" style="display: <%= count < 20 ? 'none' : '' %>">
+          <button type="button" class="btn dark_btn" id="product-show-more">SHOW MORE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

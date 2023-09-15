@@ -1,0 +1,58 @@
+@font-face {
+  font-family: "Lato";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/Lato/Lato-Regular.woff2") format('woff2'),
+    url("../fonts/Lato/Lato-Regular.woff") format('woff');
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/Lato/Lato-Semibold.woff2") format('woff2'),
+    url("../fonts/Lato/Lato-Semibold.woff") format('woff');
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/Lato/Lato-Bold.woff2") format('woff2'),
+    url("../fonts/Lato/Lato-Bold.woff") format('woff');
+}
+
+@font-face {
+  font-family: "Crimson Pro";
+  font-weight: 300;
+  font-display: swap;
+  src: url("../fonts/CrimsonPro/CrimsonPro-Light.woff2") format('woff2');
+}
+
+@font-face {
+  font-family: "Crimson Pro";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/CrimsonPro/CrimsonPro-Regular.woff2") format('woff2');
+}
+
+@font-face {
+  font-family: "Crimson Text";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/CrimsonText/CrimsonText-Regular.woff2") format('woff2');
+}
+
+@font-face {
+  font-family: "Crimson Text";
+  font-weight: 600;
+  font-display: swap;
+  src: url("../fonts/CrimsonText/CrimsonText-Semibold.woff2") format('woff2');
+}
+
+@font-face {
+  font-family: "Crimson Text";
+  font-weight: 700;
+  font-display: swap;
+  src: url("../fonts/CrimsonText/CrimsonText-Bold.woff2") format('woff2');
+}

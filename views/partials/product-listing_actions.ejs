@@ -1,0 +1,166 @@
+<script>
+  let offset = <%- JSON.stringify(offset) %>;
+  let count = <%- JSON.stringify(count) %>;
+  let collectionId = <%- JSON.stringify(cid) %>;
+  let collectionType = <%- JSON.stringify(ctype) %>;
+  let onlineProducts = <%- JSON.stringify(products) %>;
+  let isMarketing = <%- JSON.parse(isMarketing) %>;
+  
+  $("#product-show-more").on('click', function() {
+    $.ajax({
+      url: '/step/first/show-more',
+      method: 'post',
+      data: {
+        offset: offset,
+        count: count,
+        cid: collectionId,
+        ctype: collectionType
+      },
+      success: function(res) {
+        offset = Number(res.offset) || 0;
+        count = Number(res.count) || 20;
+        onlineProducts = onlineProducts.concat(res.products);
+        res.products.forEach(function(product) {
+          let productImage = product["image_data"]["sub"][0]
+          let html = '<div class="col-md-3">\n' +
+            '                <div class="product_item">\n' +
+            '                    <div class="product_img">\n' +
+            '                        <img src="' + productImage + '" alt="img"/>\n' +
+            '                    </div>\n' +
+            '                    <div class="product_info">\n' +
+            '                        <div class="product_title">\n' +
+            '                            <h4>' + product["product_title"] + '</h4>\n' +
+            '                        </div>\n';
+          if (product["collection_title"]) {
+            html += '<div class="product_price">\n' +
+              '                        <h5>' + product["collection_title"] + '</h5>\n' +
+              '                    </div>\n';
+          }
+          html += '<p>\n';
+          if (product["impact_icon"]) {
+            html += '<img src="' + product["impact_icon"] + '" alt="img"/>';
+          }
+          if (product['impact_story_collection']) {
+            html += product['impact_story_collection'] + '\n';
+          }
+          html += '</p>\n';
+          if (isMarketing) {
+            html += `<a href="/collection/product_detail/${product['product_id']}">
+                      <button type="button" class="btn product_btn" prod-id="${product['variant_id']}">
+                        VIEW</button>\n
+                    </a>`;
+          } else {
+            html += `<button type="button" class="btn product_btn" prod-id="${product['variant_id']}">
+                      ADD TO COLLECTION</button>\n`;
+          }
+          html += `</div>\n
+                </div>\n
+              </div>`;
+          $('.product_area .container-fluid .products-row').append(html);
+        });
+        if (Number(res.count) < 20) {
+          $("#product-show-more").hide();
+        }
+        if (!isMarketing) {
+          bindProductEvents();
+        }
+      },
+      error: function(err) {
+        console.log('err', err)
+      }
+    });
+  });
+
+  function onProductImgError(e) {
+    e.src = '/resources/images/products/default.png';
+  }
+
+  function onLabelImgError(e) {
+    console.log('onLabelImgError');
+    e.src = '/resources/images/icons/hart.png';
+  }
+
+  function bindProductEvents() {
+    $('.product_btn').off('click');
+    $('.gift_list_remove_cart').off('click');
+
+    // Event handler for "Add To Collection" button
+    $(".product_btn").on('click', function() {
+      const product_id = $(this).attr('prod-id');
+
+      // Read cached campaign data
+      let campaign_products = get_campaign_products();
+      // Not added before
+      if (!campaign_products.find(function(product) {
+          return product['variant_id'] === product_id
+        })) {
+        const cur_product = onlineProducts.find(function(product) {
+          return product['variant_id'] === product_id;
+        })
+
+        const product_image = cur_product['image_data']['sub'][
+          [0]
+        ];
+        const product_title = cur_product['product_title'];
+        const impact_story_collection = cur_product['impact_story_collection'];
+        const impact_icon = cur_product['impact_icon'];
+
+        campaign_products.push({
+          variant_id: product_id,
+          variant_image: product_image,
+          product_title: product_title,
+          impact_icon: impact_icon,
+          impact_story_collection: impact_story_collection
+        });
+
+        // Add to cart
+        const html = '<li>\n' +
+          '                       <div class="gift_list_img">\n' +
+          '                           <div class="gift_list_img_box">\n' +
+          '                               <img src="' + product_image + '" alt="img"/>\n' +
+          '                           </div>\n' +
+          '                       </div>\n' +
+          '                       <div class="gift_list_txt">\n' +
+          product_title +
+          '                       </div>\n' +
+          '<div class="gift_list_remove_cart" prod-id="' + product_id + '"><i class="fas fa-times-circle"></i></div>' +
+          '                   </li>';
+        $('.dropdown_gift_list > ul').append(html);
+
+        // Increase cart badge
+        $('#cart-badge').show();
+        $('#cart-badge').html(campaign_products.length);
+
+        // Update campaign data cache
+        setCampaignData('products', campaign_products);
+
+        // Add action listener
+        bindProductEvents();
+      }
+    });
+
+    // Event handler for remove cart button
+    $('.gift_list_remove_cart').on('click', function() {
+      const product_id = $(this).attr('prod-id');
+      let products = get_campaign_products();
+      for (let i = 0; i < products.length; i++) {
+        if (products[i]['variant_id'] === product_id) {
+          products.splice(i, 1);
+          // Remove element from cart
+          $(this).parent().remove();
+          // Decrease cart badge
+          $('#cart-badge').html(products.length);
+          if (products.length <= 0) {
+            $('#cart-badge').hide();
+          }
+          setCampaignData('products', products);
+          break;
+        }
+      }
+    });
+  }
+
+  if (!isMarketing) {
+    bindProductEvents();
+  }
+</script>

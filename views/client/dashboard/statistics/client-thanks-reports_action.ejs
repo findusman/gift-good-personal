@@ -1,0 +1,64 @@
+<script type="text/javascript">
+    const sort_order = <%- JSON.stringify(order) %>
+    const is_only_mine = <%- JSON.stringify(onlymine) %>
+    const filter = <%- JSON.stringify(filter) %>
+    const thanks_reports = <%- JSON.stringify(reports) %>
+    const activeCampaigns = <%- JSON.stringify(activeCampaigns) %>;
+    const activeCampaignIds = <%- JSON.stringify(activeCampaignIds) %>;
+    const userCompany = <%- session.user ? JSON.stringify(session.user.company) : '' %>;
+
+    if (is_only_mine == 'true') {
+        $('#only-mine-check').prop('checked', true);
+    }
+    $('#export_csv_btn').on('click', function () {
+        const baseFileName = `${userCompany} - Thank You Notes`;
+        let activeCampaignsInfo = '';
+        if (activeCampaigns.length) {
+            activeCampaignsInfo = activeCampaigns.length === 1 ? `${activeCampaigns[0].title} - ` : `${activeCampaigns.length} campaigns selected - `;
+        }
+        const fileName = `${activeCampaignsInfo}${baseFileName}.csv`;
+        let csvContent = "";
+        const header = ["No", "Sender Name", "Sender Company", "Date", "Recipient Name", "Recipient Email", "Thank you note"].join(",");
+        csvContent += header + "\r\n";
+
+        showLoader(true);
+        $.ajax({
+            url: '/full-thanks-reports',
+            method: 'GET',
+            data: {
+                campaign: activeCampaignIds,
+                fm: filter,
+                onlymine: is_only_mine,
+                order: sort_order
+            },
+            success: function (res) {
+                showLoader(false);
+
+              if (res) {
+                let csvContent = "data:text/csv;charset=utf-8," + res;
+                const encodedUri = encodeURI(csvContent).replaceAll("#", "%23");
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", fileName);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }
+            },
+            error: function (err) {
+                console.log(err);
+                showLoader(false);
+                const status = err.responseJSON.status;
+                const msg = err.responseJSON.msg;
+                if (status === 'failed') {
+                    showError(msg);
+                }
+            }
+        });
+    });
+
+    $('#only-mine-check').change(function () {
+        const params = new URLSearchParams({ fm: filter, order: sort_order, onlymine: this.checked, campaign: activeCampaignIds.join(',') || '' });
+        window.location.href = `/thanks-report?${params.toString()}`;
+    });
+</script>

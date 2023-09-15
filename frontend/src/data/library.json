@@ -1,0 +1,2927 @@
+{
+  "defaultOptions": [
+    {
+      "key": 1,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Thank You for Your Support",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": ", "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "We wanted to take a moment to share our gratitude for your continued support."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": "’s team is committed to innovation and creating positive impact through social change, and in doing so we would like to honor you with a gift that gives back. It's our way of sharing our gratitude and answering the global call to action to serve communities that need our help."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "We look forward to a bright future, and thank you for doing good."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Best wishes,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 2,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Company Thank You",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Hi "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": "",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ", "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Thank you so much for your support of "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ". As a token of our appreciation, we invite you to choose a gift to redeem by clicking the link below. Each gift supports a nonprofit or social enterprise and will be shipped directly to you. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We hope you will join us in supporting social, economic, and environmental causes across the USA and globe. Hope to see you soon."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Cheers, "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "The "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " Team"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 3,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Partner Holiday Wishes",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": "’s team is committed to innovation and creating positive impact through social change, and in doing so we would like to honor you with a gift that gives back. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We hope you enjoy this curated collection of gifts that help people and our planet. By choosing any of the gifts offered, you will help to support a nonprofit or small business in need around the world. It's our way of sharing our gratitude and answering the global call to action to serve communities that need our help."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Happy Holidays and Warm Wishes for the year ahead!"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "- "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 4,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Partner Happy Holidays",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Hi "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "This holiday season we'd like to thank you for being a great partner with a gift that gives back. It's our small way of answering the global call to action to serve communities that need our help. This year the choice is yours, but know that every gift makes a social impact. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Thanks again for your partnership!"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Wishing you and your loved ones a Happy Holiday season,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 5,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Client Happy Holidays",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": ",  "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "We wanted to take a moment to share our gratitude for your continued support and partnership this year. "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": " is committed to creating positive change in the world, and this holiday season we'd like to thank you with a gift that gives back. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "This year the choice of gift is yours, but know that every gift makes a social impact and answers the call to action to serve communities that need our help. We hope you enjoy this curated collection of gifts that help people and our planet."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "We look forward to an exciting year ahead and the opportunity to continue working together."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Wishing you and your loved ones a Happy Holiday season,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 6,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Partner Gratitude",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": ",  "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "We wanted to take a moment to share our gratitude for your continued support and partnership. Although we cannot celebrate together, we wanted to extend an invitation to join us at our table of gratitude —virtually. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "At "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": ", our team is committed to creating a positive impact through social change, and in doing so we would like to honor you with a gift that gives back. We hope you enjoy this curated collection of gifts that help people and our planet. By choosing any of the gifts offered, you will help to support a nonprofit or small business in need either here in the US, or around the world. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "You are always welcome at our table and in our family. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "- Your Friends at "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 7,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Generic Prospect",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Our team is committed to innovation and creating positive impact through social change, and in doing so we would like to honor you with a gift that gives back. It's our way of sharing our gratitude and answering the global call to action to serve communities that need our help."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We look forward to a bright future, and are excited about the opportunity to work together. Thank you for doing good."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Best wishes,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 8,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Prospect Holiday Message",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Hi "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": "",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": " "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " is committed to creating positive social change in the world. This holiday season we’d like to thank you for your time and consideration of "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " as a potential partner with a gift that gives back. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "It’s our small way of answering the global call to action to serve communities that need our help. This year the choice of gift is yours, but know that every gift makes a social impact."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Wishing you, your team, and your loved ones a happy holiday season and a healthy New Year, "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 9,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Employee Appreciation",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ", "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "As a small token of our appreciation, we are sending you a gift from a company called Gifts for Good. You can redeem items made by socially responsible nonprofits and social enterprises. If you choose not to redeem a physical gift, you can give the amount to a charity."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We are taking this action because it helps us demonstrate our commitment to caring—for you, and for our larger community— in a meaningful way. In turn, you have the flexibility to choose how you want to use your gift and what cause you would like to support. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Thank you for all that you do each and every day. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Warmly,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 10,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Employee Thank You",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ",  "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We wanted to take a moment to thank you for your continued contributions. Your hard work and efforts are appreciated.  "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "At "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ", our team is committed to creating a positive impact through social change, and in doing so we would like to honor you with a gift that gives back. We hope you enjoy this curated collection of gifts that help people and our planet. By choosing any of the gifts offered, you will help to support a nonprofit or small business in need either here in the US, or around the world. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We look forward to a bright future! Thank you for doing good."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "- "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 11,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Employee Holiday Appreciation",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We wanted to take a moment to share our gratitude for your continued hard work and dedication. "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " is committed to creating positive social change in the world, and this holiday season we’d like to thank you with a gift that gives back. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "This year the choice of gift is yours, but know that every gift makes a social impact and answers the call to action to serve communities that need our help. We hope you enjoy this curated collection of gifts that help people and our planet."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We look forward to an exciting year ahead and continuing to do great things together."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Wishing you and your loved ones a Happy Holiday season,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 12,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Employee Appreciation During Busy Season",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We hope you are doing well in navigating our busy season. We truly appreciate your efforts on behalf of "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " and our clients."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We have collaborated with Gifts for Good to remind you of our appreciation for your dedication and also to provide a means to help others. Please click on the link below, which will take you to a curated microsite where we encourage you to select a gift that best suits you. While there, be sure to click on the specific items to learn more about the organizations being supported through their production. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We hope you enjoy your selection."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "With much appreciation,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 13,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Employee Work Anniversary",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We hope you are doing well in navigating our busy season. We truly appreciate your efforts on behalf of "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " and our clients."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "As you know, at "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " we are committed to creating a positive impact and in doing so we would like to honor your dedication with a gift that gives back. We hope you enjoy this curated collection of gifts that help people and our planet. By choosing any of the gifts offered, you will help to support a nonprofit or small business in need either here in the US, or around the world."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We hope you enjoy your selection."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "With much appreciation,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 14,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Employee Award",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Congratulations on your award! We wanted to take a moment to share our collective gratitude for your dedication to "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ". Your outstanding effort and commitment to this organization is felt every day in the work we do to impact our communities. Thank you for allowing us to be a part of your journey."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "As you know, at "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " we are committed to creating a positive impact and in doing so we would like to honor your dedication with a gift that gives back. We hope you enjoy this curated collection of gifts that help people and our planet. By choosing any of the gifts offered, you will help to support a nonprofit or small business in need either here in the US, or around the world."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Thank you for being a part of our "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " family."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "– "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender First Name]",
+              "format": ":sender_first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " at "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 15,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Team Recognition",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Hi "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "We’re extremely proud of all our team members for their hard work these past few months. To all those who have taken care of our customers over the phone, online, or in-person – thank you! Your commitment to collaboration and caring helps us all to win as a team."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "On behalf of our customers and the entire "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " family, please accept this gift that gives back as a token of our appreciation. By choosing a gift, you will help to support a nonprofit or small business in need either here in the US, or around the world. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Thank you for all you do,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "The Team at "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 16,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["gifts", "international"],
+      "label": "Boss Employee Appreciation Work From Home",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Hi "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "I know we have all been working away and challenges may still remain as we work from home, but I wanted to let you know that your efforts haven't gone unnoticed. We have been asking a lot of you, and on behalf of "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient Company Name]",
+              "format": ":company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " and our stakeholders, I wanted to send a small token of appreciation.  "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "I have collaborated with Gifts for Good to remind you of our appreciation for your dedication and also to provide a means to help others. Please click on the link below, which will take you to a curated microsite where we encourage you to select a gift that best suits you. While there, be sure to click on the specific items to learn more about the organizations being supported through their production. Gifts for Good also allows you to make a charity impact  to one of the organizations listed if you rather do that, than to select a gift.  "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "With warm appreciation as always,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender First Name]",
+              "format": ":sender_first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " at "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 17,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["donation"],
+      "label": "Generic Appreciation",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Hi "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": ", "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "As "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "text": " considered our gift of appreciation, we wanted it to support those in need, as well as to say thank you. We were thrilled to discover Gifts for Good—a unique gifting company that supports communities in 50 states and 72 countries across the globe through gifts with a social impact."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "We are delighted to offer you a gift of your choice that supports a charity. We hope you will find something in the collection that will provide joy or special meaning."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Our team was powered by purpose this year, and we remain driven by that shared meaning."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": "Sending you all the best, "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "text": ""
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 18,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["donation"],
+      "label": "Client Appreciation",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Dear "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Thank you for the trust and support you place in "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ". As a token of our appreciation, "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " will make a gift in your name to charity to enrich the lives of those less fortunate or facing adversity. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Please take just a moment to view the gift options and take advantage of "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": "'s gift in your name. We look forward to doing more great work together."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Sincerely,"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "The "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " Team"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 19,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["donation"],
+      "label": "Employee Appreciation",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Dear "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "With all that is going on in the world, it feels important to say \"We appreciate you.\" We've grown and changed together during the pandemic, and we want to personally thank you for the energy, effort, and care that you share, helping to make "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " the success that it is."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "To acknowledge the challenges we, as a planet, are facing daily, this year we are especially excited to introduce a gift that gives back. Gifts for Good works with more than 60 nonprofits and social enterprises to make measurable improvements for people, animals, the climate, and more."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "You have the choice to select which cause resonates with you. "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " will then give to a charity in your name toward the cause you choose. Let's make a difference together."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "key": 20,
+      "type": "rich-text",
+      "supportedCollectionTypes": ["donation"],
+      "label": "Partner Holiday Appreciation",
+      "content": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Hi "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Recipient First Name]",
+              "format": ":first_name",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": ","
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "This holiday season we’d like to thank you for being a great partner with a gift that gives back. We hope that together, we can make a difference for those in need. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "With deep gratitude for our partnership, we hope you will join us in answering the global call to action to serve communities that need our help. On behalf of the entire "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " team, thank you for choosing to partner with us. "
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": ""
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "Wishing you and yours a happy and healthy holiday season!"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "span",
+              "text": "The Team at "
+            },
+            {
+              "type": "smart-tag",
+              "value": "[Sender Company]",
+              "format": ":sender_company",
+              "children": [
+                {
+                  "type": "span",
+                  "text": " ",
+                  "marks": []
+                }
+              ]
+            },
+            {
+              "type": "span",
+              "text": " "
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "emailMessage": {
+    "heading": "Messages Email Library",
+    "content": "Choose an email message template to send to your recipients."
+  },
+  "landingMessage": {
+    "heading": "Landing Page Message Template Library",
+    "content": "Choose a message template for your landing page."
+  },
+  "logo": {
+    "heading": "Logo Library",
+    "content": "Select a logo to display in your email and/or landing page.",
+    "options": [
+      {
+        "key": 1,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/logo.svg",
+        "alt": "Logo 1"
+      },
+      {
+        "key": 2,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/logo-2.png",
+        "alt": "Logo 2"
+      }
+    ]
+  },
+  "banner": {
+    "heading": "Images Library",
+    "content": "Select an image to use in your email and/or landing page.",
+    "options": [
+      {
+        "key": 1,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/1_Every_gift_gives_back.jpg",
+        "alt": "Every gift gives back"
+      },
+      {
+        "key": 2,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/2_Change.jpg",
+        "alt": "Change"
+      },
+      {
+        "key": 3,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/3_gratitude.jpg",
+        "alt": "Gratitude"
+      },
+      {
+        "key": 4,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/4_supports_women.jpg",
+        "alt": "Supports Women"
+      },
+      {
+        "key": 5,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/5_give_back_school.jpg",
+        "alt": "Give Back School"
+      },
+      {
+        "key": 6,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/6_give_back_waves.jpg",
+        "alt": "Give back waves"
+      },
+      {
+        "key": 7,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/7_give_back_bow.jpg",
+        "alt": "Give back bow"
+      },
+      {
+        "key": 8,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/8_happy_holidays.jpg",
+        "alt": "Happy holidays"
+      },
+      {
+        "key": 9,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/9_Work_anniversary.jpg",
+        "alt": "Work anniversary"
+      },
+      {
+        "key": 10,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/10_season_of_gratitude.jpg",
+        "alt": "Season of gratitude"
+      },
+      {
+        "key": 11,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/11_birthday.jpg",
+        "alt": "Birthday"
+      },
+      {
+        "key": 12,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/12_thank_you.jpg",
+        "alt": "Thank you"
+      },
+      {
+        "key": 13,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/13_Congrats.jpg",
+        "alt": "Congrats"
+      },
+      {
+        "key": 14,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/14_Welcome.jpg",
+        "alt": "Welcome"
+      },
+      {
+        "key": 15,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/15_Happy_New_Year.jpg",
+        "alt": "Happy New Year"
+      },
+      {
+        "key": 16,
+        "type": "image",
+        "label": "",
+        "src": "/resources/images/assets/banner/Gratitude_banner.png",
+        "alt": "Gratitude banner"
+      }
+    ]
+  },
+  "video": {
+    "heading": "Video Library",
+    "content": "Use our Gifts for Good impact video, or upload your own custom one. ",
+    "options": [
+      {
+        "key": 1,
+        "type": "video",
+        "label": "",
+        "src": "/resources/videos/default.mp4"
+      },
+      {
+        "key": 2,
+        "supportedCollectionTypes": ["donation"],
+        "type": "video",
+        "label": "",
+        "src": "/resources/videos/default.mp4"
+      }
+    ]
+  }
+}

@@ -1,0 +1,402 @@
+<script type="text/javascript">
+
+  $('#contact-search-form').on('submit', function(e) {
+    e.preventDefault();
+    const newSearch = $(this).find('input').val();
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set('search', newSearch);
+    window.location.search = `?${searchParams.toString()}`;
+  });
+
+  function resend(contactId) {
+    var r = confirm("Make sure to update the contact's email and save before resending invite.");
+    if (r == true) {
+      showLoader(true);
+      $.ajax({
+        url: `/send-individual-invite`,
+        method: 'POST',
+        data: {
+          cid: contactId
+        },
+        success: function(res) {
+          showInfo('Contact has been updated.');
+          showLoader(false);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+
+  }
+
+  function resetToActive(contactId, isShipped) {
+    const confirmText = isShipped 
+    ? 'Please note: this gift has already shipped. The client will not be charged for the reactivation of this contact. If the client should be charged, please add a new contact instead.' 
+    : 'Are you sure you want to reactivate this contact?';
+    const r = confirm(confirmText);
+    if (r == true) {
+      showLoader(true);
+      const contact = {
+        id: contactId,
+        failed_order: false,
+        step: 'reactivated',
+        order_id: null
+      }
+      $.ajax({
+        url: `/contacts/reactivate/${contactId}`,
+        method: 'PUT',
+        data: contact,
+        success: function(res) {
+          showInfo('Contact has been updated.');
+          showLoader(false);
+          $(`#reactivate-${contactId}`).remove();
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+
+  }
+
+  function updateContact(contactId) {
+    const contactField = $(`#${contactId}`);
+    const contact = {
+      id: contactId,
+      to_first_name: contactField.find('#first-name').val(),
+      to_last_name: contactField.find('#last-name').val(),
+      to_email: contactField.find('#email').val(),
+      to_company: contactField.find('#company').val(),
+      from_first_name: contactField.find('#from-first-name').val(),
+      from_last_name: contactField.find('#from-last-name').val(),
+      from_company_name: contactField.find('#from-company-name').val(),
+      delivery_date: contactField.find('#delivery-date').val(),
+    }
+    showLoader(true);
+    $.ajax({
+      url: `/contacts/${contactId}`,
+      method: 'PUT',
+      data: contact,
+      success: function(res) {
+        showInfo('Contact has been updated.');
+        showLoader(false);
+        setTimeout(function() {
+          window.location.reload();
+        }, 500);
+      },
+      error: function(err) {
+        console.log(err);
+        showLoader(false);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+
+  function forceExpire(contactId) {
+    const r = confirm("Are you sure you want to expire this contact?");
+    if (r == true) {
+      showLoader(true);
+      const contact = {
+        id: contactId,
+        step: 'expired'
+      }
+      $.ajax({
+        url: `/contacts/expire/${contactId}`,
+        method: 'PUT',
+        data: contact,
+        success: function(res) {
+          showInfo('Contact has been updated.');
+          showLoader(false);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+  }
+  function forceUnexpire(contactId) {
+    const r = confirm("Are you sure you want to unexpire this contact?");
+    if (r == true) {
+      showLoader(true);
+      const contact = {
+        id: contactId,
+      }
+      $.ajax({
+        url: `/contacts/unexpire/${contactId}`,
+        method: 'PUT',
+        data: contact,
+        success: function(res) {
+          showInfo('Contact has been updated.');
+          showLoader(false);
+          setTimeout(function() {
+            window.location.reload();
+          }, 500);
+        },
+        error: function(err) {
+          console.log(err);
+          showLoader(false);
+          const status = err.responseJSON.status;
+          const msg = err.responseJSON.msg;
+          if (status === 'failed') {
+            showError(msg);
+          }
+        }
+      });
+    }
+  }
+
+  const queryParams = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  });
+
+  const shouldLoadMore = $('#contact-list .contact-row').length >= 100;
+  let currentPage = 1;
+  let nextPage;
+  let loading = false;
+  let campaignId = queryParams.cid;
+  let search = queryParams.search;
+
+  const loadMoreElement = document.getElementById('load-more-contacts');
+  const loadMoreObserver = new IntersectionObserver(onLoadMoreContacts, { threshold: 0.9 });
+  loadMoreObserver.observe(loadMoreElement);
+
+  function getContacts(page) {
+    loading = true;
+    $.ajax({
+      url: '/collection/list-contacts',
+      method: 'POST',
+      data: {
+        cid: campaignId,
+        step: null,
+        page,
+      },
+      success: function(res) {
+        if (res.status === 'success') {
+          const { contacts, hasNextPage, activePage } = res.data;
+
+          if (contacts.length === 0 && step !== 'bounced' && step !== 'unredeemed') {
+          } else {
+            nextPage = hasNextPage;
+            currentPage = parseInt(activePage);
+            loading = false;
+          }
+
+          if (contacts.length) {
+            contacts.forEach((contact) => {
+              const html = `
+                <div class="row contact-row d-flex align-items-center" id="${contact['id']}">
+                  <div class="col-md-2">
+                    <div class="form-group mb-2 mt-2">
+                      <input type="text" value="${contact['first_name']}" class="form-control" id="first-name">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group mb-2 mt-2">
+                      <input type="text" value="${contact['last_name']}" class="form-control" id="last-name">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group mb-2 mt-2">
+                      <input type="text" value="${contact['company_name']}" class="form-control" id="company-name">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group mb-2 mt-2">
+                      <input type="text" value="${contact['from_first_name']}" class="form-control" id="from-first-name">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group mb-2 mt-2">
+                      <input type="text" value="${contact['from_last_name']}" class="form-control" id="from-last-name">
+                    </div>
+                  </div>
+                  <div class="col-md-2">
+                    <div class="form-group mb-2 mt-2">
+                      <input type="text" value="${contact['from_company_name']}" class="form-control" id="from-company-name">
+                    </div>
+                  </div>
+
+                  <div class="col-md-2">
+                    <div class="form-group mb-2 mt-2" style="display: flex;">
+                      <input type="text" value="${contact['email']}" class="form-control" id="email">
+                    </div>
+                  </div>
+                  ${displayDeliveryDate(contact)}
+                  <div class="col-md-1">
+                    <div class="form-group mb-2 mt-2" style="display: flex;">
+                      <i onclick=updateContact(${contact['id']}) id='contact-save' class="fas fa-check ml-2 mb-1" style="color: green"></i>
+                    </div>
+                  </div>
+
+                  <div class="col-md-1">
+                    <div class="campaign-more-action">
+                      <button type="button" class="btn dark_btn dropdown-toggle" data-toggle="dropdown" style="padding: 10px 15px;">
+                        <i class="fas fa-ellipsis-h"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-right">
+                        <li><span class="menu-title">More actions...</span></li>
+                        <li>
+                          <button type="button" onclick=resend(${contact['id']}) class="btn btn-plain text-dark text-left px-0 py-2">
+                            <i class="fas fa-envelope ml-2 mb-1"></i>
+                            Resend Invite
+                          </button>
+                        </li>
+                        ${displayResetToActiveOption(contact)}
+                        ${displayForceExpireOption(contact)}
+                        ${displayForceUnexpireOption(contact)}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              `;
+
+              $('#contact-list').append(html);
+            });
+          }
+        }
+      },
+      error: function(err) {
+        console.log(err);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        loading = false;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+
+  function onLoadMoreContacts([{ isIntersecting }]) {
+    if (isIntersecting && (nextPage || currentPage === 1) && !loading && shouldLoadMore) {
+      loading = true;
+      getContacts(currentPage + 1);
+    }
+  }
+
+  function displayDeliveryDate(contact) {
+  if (!campaign['no_email_invite']) {
+    const minData = new Date().toISOString().substring(0, 16);
+
+    return `
+    <div class="col-md-2">
+      <div class="form-group mb-2 mt-2" style="display: flex;">
+        <input
+          type="datetime-local"
+          class="form-control"
+          value="${contact.formatted_delivery_date}"
+          id="delivery-date"
+          min="${minData}"
+          ${contact.sent_at ? 'disabled' : ''}
+          />
+      </div>
+    </div>
+  `;
+  }
+
+  return '';
+}
+
+  function displayResetToActiveOption(contact) {
+  if (contact['canReactivate'] || contact['canReactivateShipped']) {
+    return `
+    <li>
+      <button type="button" onclick="resetToActive(${contact.id}, ${!contact.canReactivate})" class="btn btn-plain text-dark text-left px-0 py-2">
+        <i class="fas fa-check ml-2 mb-1"></i>
+        Reactivate
+      </button>
+    </li>
+  `;
+  }
+
+  return '';
+}
+
+  function displayForceExpireOption(contact) {
+  if (contact['canExpire']) {
+    return `
+    <li>
+      <button type="button" onclick=forceExpire(${contact['id']}) class="btn btn-plain text-dark text-left px-0 py-2">
+        <i class="fas fa-check ml-2 mb-1"></i>
+        Expire
+      </button>
+    </li>
+  `;
+  }
+
+  return '';
+}
+
+  function displayForceUnexpireOption(contact) {
+  if (contact['status'] === 'expired') {
+    return `
+    <li>
+      <button type="button" onclick=forceUnexpire(${contact['id']}) class="btn btn-plain text-dark text-left px-0 py-2">
+        <i class="fas fa-check ml-2 mb-1"></i>
+        Unexpire
+      </button>
+    </li>
+  `;
+  }
+
+  return '';
+}
+
+$('#reactivate-all').on('click', function() {
+  var r = confirm('Are you sure you want to reactivate all failed contacts?');
+    if (r == true) {
+    showLoader(true);
+    $.ajax({
+      url: `/contacts/reactivate-all`,
+      method: 'POST',
+      data: { campaignId },
+      success: function(res) {
+        showInfo('Contacts have been reactivated');
+        showLoader(false);
+        setTimeout(function() {
+          window.location.reload();
+        }, 500);
+      },
+      error: function(err) {
+        console.log(err);
+        showLoader(false);
+        const status = err.responseJSON.status;
+        const msg = err.responseJSON.msg;
+        if (status === 'failed') {
+          showError(msg);
+        }
+      }
+    });
+  }
+});
+
+</script>

@@ -1,0 +1,20 @@
+<% include ../partials/head.ejs %>
+<link rel="stylesheet" href="/resources/css/gift-confirmation.css">
+
+<body>
+  <div class="heading-container">
+    <img src="/resources/images/logo.svg" alt="Gifts For Good Logo" class="logo" />
+  </div>
+  <div class="post-confirmation thank-you-content active">
+    <h1 class="heading">Thank you for doing good!</h1>
+    <% if (!isDonation) { %>
+      <p class="sub-heading">
+        A confirmation email will be sent within 24 hours.
+      </p>
+    <% } %>
+    <a href="/customer/gift-note-thank?cid=<%= cid %>" class="btn dark_btn mt-5">
+      Send a thank you note
+    </a>
+  </div>
+  <% include ../partials/foot.ejs %>
+</body>

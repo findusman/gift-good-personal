@@ -1,0 +1,129 @@
+<script>
+    const submitButtons = $('#send-gift, .next-step-btn');
+
+    function switch_step(next_step) {
+        if (next_step === 'step1') {
+            window.location.href = '/step/first';
+        } else if (next_step === 'step2') {
+            window.location.href = '/step/second';
+        } else if (next_step === 'step3') {
+            window.location.href = '/step/third';
+        } else if (next_step === 'end') {
+            submitButtons.prop('disabled', true);
+            const campaign_data = get_campaign_data();
+            $.ajax({
+                url: '/step/fourth/save-campaign',
+                method: 'post',
+                data: {
+                    campaign_data: JSON.stringify(campaign_data),
+                },
+                success: function (res) {
+                    clean_campaign_data();
+                    showInfo(res['msg']);
+                    setTimeout(function () {
+                        window.location.href = '/step/confirmed';
+                    }, 1500);
+                },
+                error: function (err) {
+                    console.log(err);
+                    const status = err.responseJSON.status;
+                    const msg = err.responseJSON.msg;
+                    submitButtons.prop('disabled', false);
+                    if (status === 'failed') {
+                        showError(msg);
+                    } else if (status === 'insufficient-funds') {
+                        $('#custom-amount-edit').val('');
+                        $('.credit-box').each(function (item) {
+                            $(this).removeClass('active');
+                        });
+                        const default_component = $('.credit-box:first');
+                        default_component.addClass('active');
+                        $('#selected-credit').val(default_component.attr('credit'));
+                        $('#selected-price').val(default_component.attr('price'));
+                        $('#add-credit-modal').modal();
+                        $('.failure-message').show();
+                    } else {
+                        showError(err.responseText);
+                    }
+                }
+            });
+        }
+    }
+
+    $('#send-gift').on('click', function () {
+        switch_step('end');
+    })
+
+    function fill_with_cached_data() {
+        const campaign_brands = get_campaign_brands();
+        const campaign_contacts = get_campaign_contacts();
+        const campaign_products = get_campaign_products();
+
+        $('.gift_sent_info_txt #brand-message').text(campaign_brands['message']);
+
+        campaign_contacts.forEach(function (contact) {
+            let html = '<div class="gift_sent_info_txt">\n' +
+                '                            <h4>' + contact['to_first_name'] + ' ' + contact['to_last_name'] + '</h4>\n' +
+                '                            <h5>' + contact['to_email'] + '</h5>\n' +
+                '                        </div>';
+            $('.gift_sent_info_box#brands-contacts').append(html);
+        });
+
+        campaign_products.forEach(function (product) {
+            let html = '<div class="gift_options_item">\n' +
+                '                        <div class="gift_options_item_img_box">\n' +
+                '                            <div class="gift_options_item_img">\n' +
+                '                                <img src="' + product['variant_image'] + '" alt="icon"/>\n' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                        <div class="gift_options_item_txt">\n' +
+                '                            <h3>' + product['product_title'] + '</h3>\n';
+            if (product['impact_story_collection'] && product['impact_icon']) {
+                html += '                        <h5>You’re supporting:</h5>\n' +
+                    '                            <p>\n' +
+                    '                               <img src="' + product['impact_icon'] + '" alt="icon"/>\n'
+                    + product['impact_story_collection'] +
+                    '                            </p>\n';
+            }
+            html += '                        </div>\n' +
+                '                    </div>';
+
+            $('#campaign-products').append(html);
+        });
+
+        if (campaign_contacts.length) {
+            let preview_link = '/preview/landing-page?where=step&from_first_name=' + encodeURIComponent(campaign_contacts[0]['from_first_name']);
+            preview_link += '&from_company_name=' + encodeURIComponent(campaign_contacts[0]['from_company_name']);
+            preview_link += '&products=' + campaign_products.map(function (product) {
+                return product['variant_id']
+            }).join(',');
+
+            if (campaign_brands['message']) {
+                preview_link += '&message=' + encodeURIComponent(campaign_brands['message']
+                    .split(':first_name').join(campaign_contacts[0]['to_first_name'])
+                    .split(':last_name').join(campaign_contacts[0]['to_last_name'])
+                    .split(':email').join(campaign_contacts[0]['to_email'])
+                    .split(':company').join(campaign_contacts[0]['to_company_name'])
+                    .split(':name').join(campaign_contacts[0]['to_first_name'] + ' ' + campaign_contacts[0]['to_last_name'])
+                    .split(':sender_first_name').join(campaign_contacts[0]['from_first_name'])
+                    .split(':sender_last_name').join(campaign_contacts[0]['from_last_name'])
+                    .split(':sender_email').join(campaign_contacts[0]['from_email'])
+                    .split(':sender_company').join(campaign_contacts[0]['from_company_name'])
+                    .split(':sender_name').join(campaign_contacts[0]['from_first_name'] + ' ' + campaign_contacts[0]['from_last_name']));
+            }
+            if (campaign_brands['video']) {
+                preview_link += '&video_url=' + encodeURIComponent(campaign_brands['video']);
+            }
+            if (campaign_brands['logo']) {
+                preview_link += '&logo_url=' + encodeURIComponent(campaign_brands['logo']);
+            }
+            if (campaign_brands['banner']) {
+                preview_link += '&banner_url=' + encodeURIComponent(campaign_brands['banner']);
+            }
+
+            $('#preview-link').attr('href', preview_link);
+        }
+    }
+
+    fill_with_cached_data();
+</script>

@@ -1,0 +1,11 @@
+<script type="text/javascript">
+  const queryParams = new Proxy(new URLSearchParams(window.location.search), {
+    get: (searchParams, prop) => searchParams.get(prop),
+  });
+
+  const query =  queryParams.q || '';
+  const type = queryParams.type || '';
+
+  if (query) $('#query').val(query);
+  if (type) $('#type').val(type);
+</script>
