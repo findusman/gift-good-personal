@@ -38,7 +38,7 @@ module.exports = function(server, sequelize) {
     let myStore = new SequelizeStore({ db: sequelize });
     server.use(session({
         secret: "1234567890",
-        cookie: { maxAge: 25200000 },
+        cookie: { maxAge: 1 * 60 * 1000 },
         resave: true,
         saveUninitialized: false,
         store: myStore

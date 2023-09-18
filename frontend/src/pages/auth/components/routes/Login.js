@@ -1,6 +1,5 @@
 import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import Layout from 'pages/auth/components/Layout';
 import Input from 'pages/auth/components/form/Input';
 import useLogin from 'pages/auth/hooks/useLogin';
@@ -9,6 +8,10 @@ import ConfirmationDialog from 'components/common/ConfirmationDialog';
 import content from 'data/content-auth.json';
 
 const Login = () => {
+  const { sesionOut } = useParams();
+
+  // const sesionOut  = 'Session Out'
+
   const navigate = useNavigate();
   const { register, handleSubmit, errors, onSubmit, getValues } = useLogin();
   const { handleResendInvitation, isDialogVisible, setIsDialogVisible } = useResendInvitation(getValues);
@@ -23,6 +26,7 @@ const Login = () => {
           <h2 className="text-[30px] leading-[34px] 2xl:text-2.5xl hidden md:block">{content.signIn.heading}</h2>
           <p className="mt-3 md:hidden">{content.signIn.subheadingMobile}</p>
           <p className="mt-3 hidden md:block">{content.signIn.subHeading}</p>
+          <h1>{sesionOut}</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
             <Input
               name="email"

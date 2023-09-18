@@ -13,7 +13,7 @@
     "heroku-prebuild": "cd ./frontend && npm run prod && cd ../",
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "predev": "cd ./frontend && npm run prod && cd ../",
-    "dev": "NODE_ENV=development LIVE_RELOLAD=1 node server.js"
+    "dev": "node server.js"
   },
   "keywords": [
     "Gifts",
@@ -54,6 +54,7 @@
     "livereload": "^0.9.3",
     "method-override": "^3.0.0",
     "moment": "^2.24.0",
+    "moment-timezone": "^0.5.43",
     "mongodb-backup": "^1.6.9",
     "mongoose": "^5.6.4",
     "multer": "^1.4.2",

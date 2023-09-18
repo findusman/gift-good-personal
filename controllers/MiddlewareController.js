@@ -14,7 +14,7 @@ module.exports = {
                 req.session.user = null;
             }
             // res.redirect('/login?redirect=' + req.originalUrl);
-            res.redirect('/register');
+            res.redirect('/login');
         }
     },
     doCheckAdmin: function (req, res, next) {
