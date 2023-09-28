@@ -14,7 +14,7 @@ module.exports = {
                 req.session.user = null;
             }
             // res.redirect('/login?redirect=' + req.originalUrl);
-            res.redirect('/login');
+            res.redirect('/login/:seesionOut?');
         }
     },
     doCheckAdmin: function (req, res, next) {
@@ -32,7 +32,7 @@ module.exports = {
                 req.session.user = null;
             }
             res.status(400);
-            res.send({status: 'failed', message: res.cookie().__('You are not logged in')});
+            res.send({ status: 'failed', message: res.cookie().__('You are not logged in') });
         }
     },
     doCheckAdminPost: function (req, res, next) {
@@ -40,10 +40,10 @@ module.exports = {
             next();
         } else {
             res.status(400);
-            res.send({status: 'failed', message: res.cookie().__('You do not have permission')});
+            res.send({ status: 'failed', message: res.cookie().__('You do not have permission') });
         }
     },
-    doCheckSendGiftFlow: async function(req, res, next) {
+    doCheckSendGiftFlow: async function (req, res, next) {
         try {
             const settings = await DBBridge.Setting.getSettings();
             const isNewFlowEnabled = process.env.PLATFORM_VERSION >= ConstData.VERSION_ALPHA && settings.enable_new_send_gift;
@@ -53,12 +53,12 @@ module.exports = {
             } else {
                 next();
             }
-        } catch(e) {
+        } catch (e) {
             res.status(500);
-            res.send({status: 'failed', message: 'An error ocurred'});
+            res.send({ status: 'failed', message: 'An error ocurred' });
         }
     },
-    provideAbility: async function(req, res, next) {
+    provideAbility: async function (req, res, next) {
         let rules = req.session.abilityRules;
 
         const setRules = () => {

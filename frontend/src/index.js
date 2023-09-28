@@ -11,6 +11,7 @@ const pageMap = {
 };
 
 const page = window.__PAGE;
+
 if (page && pageMap[page]) {
   const PageComponent = pageMap[page];
   root.render(<PageComponent />);

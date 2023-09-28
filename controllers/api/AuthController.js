@@ -1,19 +1,19 @@
-const BaseController = require('./../BaseController');
-const DBBridge = require('../../models/bridge');
-const jwt = require('jsonwebtoken');
-const Helper = require('../../util/helper');
-const { sendMail, sendNotificationMail } = require('../../api/mail');
+const BaseController = require("./../BaseController");
+const DBBridge = require("../../models/bridge");
+const jwt = require("jsonwebtoken");
+const Helper = require("../../util/helper");
+const { sendMail, sendNotificationMail } = require("../../api/mail");
 
 module.exports = BaseController.extend({
-  name: 'AuthController',
+  name: "AuthController",
 
   postLogin: async function (req, res, next) {
     try {
       if (req.session && req.session.login === 1 && req.session.user) {
         res.status(400);
         res.send({
-          status: 'failed',
-          message: res.cookie().__('You are not logged in')
+          status: "failed",
+          message: res.cookie().__("You are not logged in"),
         });
       }
 
@@ -24,35 +24,35 @@ module.exports = BaseController.extend({
       if (!user) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: res.cookie().__('User email/name is incorrect.'),
+          status: "failed",
+          msg: res.cookie().__("User email/name is incorrect."),
         });
       }
 
       if (!user.verified) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: res.cookie().__('Please verify your email'),
+          status: "failed",
+          msg: res.cookie().__("Please verify your email"),
         });
       }
 
-      const isUserLocked = !DBBridge.User.checkLockStatus(user)
+      const isUserLocked = !DBBridge.User.checkLockStatus(user);
       if (isUserLocked) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: res.cookie().__('Your account has been locked. Please wait.'),
+          status: "failed",
+          msg: res.cookie().__("Your account has been locked. Please wait."),
         });
       }
 
-      const isPasswordValid = DBBridge.User.checkPassword(user, password)
+      const isPasswordValid = DBBridge.User.checkPassword(user, password);
       if (!isPasswordValid) {
         await DBBridge.User.loginFailed(user);
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: res.cookie().__('User password is incorrect.'),
+          status: "failed",
+          msg: res.cookie().__("User password is incorrect."),
         });
       }
 
@@ -63,21 +63,21 @@ module.exports = BaseController.extend({
       req.session.companyUsers = companyUsers;
       req.session.login = 1;
       let token = jwt.sign({ login_email: email }, process.env.JWT_SECRET, {
-        expiresIn: '240h',
+        expiresIn: "240h",
       });
 
       res.status(200);
       return res.send({
-        status: 'success',
-        msg: res.cookie().__('Login success'),
+        status: "success",
+        msg: res.cookie().__("Login success"),
         token: token,
       });
     } catch (err) {
       console.log(err);
       res.status(400);
       return res.send({
-        status: 'failed',
-        msg: res.cookie().__('Invalid operation.'),
+        status: "failed",
+        msg: res.cookie().__("Invalid operation."),
       });
     }
   },
@@ -87,8 +87,8 @@ module.exports = BaseController.extend({
       if (req.session && req.session.login === 1 && req.session.user) {
         res.status(400);
         res.send({
-          status: 'failed',
-          message: res.cookie().__('You are not logged in')
+          status: "failed",
+          message: res.cookie().__("You are not logged in"),
         });
       }
 
@@ -104,17 +104,17 @@ module.exports = BaseController.extend({
       ) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: res.cookie().__('Register fields are invalid.'),
+          status: "failed",
+          msg: res.cookie().__("Register fields are invalid."),
         });
       }
 
-      const userExist = await DBBridge.User.findByName(email)
+      const userExist = await DBBridge.User.findByName(email);
       if (userExist) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: 'Your email is being used by another user.',
+          status: "failed",
+          msg: "Your email is being used by another user.",
         });
       }
 
@@ -125,16 +125,16 @@ module.exports = BaseController.extend({
       );
 
       const emailSent = await sendMail({
-        type: 'user-activate',
+        type: "user-activate",
         email: email,
         token: verify_token,
-      })
+      });
 
       if (!emailSent) {
         res.status(400);
         res.send({
-          status: 'failed',
-          msg: 'Register failed. Verify email can not be sent to your email.',
+          status: "failed",
+          msg: "Register failed. Verify email can not be sent to your email.",
         });
       }
 
@@ -156,20 +156,22 @@ module.exports = BaseController.extend({
 
       if (!supportNotificationMailSent) {
         // TODO: logger different than console.log
-        console.log('Notification failed. Notification email can not be sent to support team.')
+        console.log(
+          "Notification failed. Notification email can not be sent to support team."
+        );
       }
 
       res.status(201);
       res.send({
-        status: 'success',
-        msg: 'Registered successfully. Verify email sent to your email.',
+        status: "success",
+        msg: "Registered successfully. Verify email sent to your email.",
       });
     } catch (err) {
       console.log(err);
       res.status(400);
       return res.send({
-        status: 'failed',
-        msg: 'Invalid operation.',
+        status: "failed",
+        msg: "Invalid operation.",
       });
     }
   },
@@ -182,8 +184,8 @@ module.exports = BaseController.extend({
       if (!user) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: res.cookie().__('Unknown user'),
+          status: "failed",
+          msg: res.cookie().__("Unknown user"),
         });
       }
 
@@ -194,7 +196,7 @@ module.exports = BaseController.extend({
 
       const reset_link = `${process.env.BASE_URL}/reset-password?token=${forgot_token}`;
       const param = {
-        type: 'forgot-password',
+        type: "forgot-password",
         email: email,
         reset_link: reset_link,
       };
@@ -203,19 +205,19 @@ module.exports = BaseController.extend({
       if (!isEmailSent) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: 'Failed sending message to your email',
+          status: "failed",
+          msg: "Failed sending message to your email",
         });
       }
 
-      await DBBridge.User.setResetToken(user['id'], forgot_token);
-      return res.send({ status: 'success' });
+      await DBBridge.User.setResetToken(user["id"], forgot_token);
+      return res.send({ status: "success" });
     } catch (err) {
       console.log(err);
       res.status(400);
       return res.send({
-        status: 'failed',
-        msg: 'Invalid operation.',
+        status: "failed",
+        msg: "Invalid operation.",
       });
     }
   },
@@ -225,16 +227,16 @@ module.exports = BaseController.extend({
     if (!user) {
       res.status(400);
       return res.send({
-        status: 'failed',
-        msg: res.cookie().__('Cannot find user with given email'),
+        status: "failed",
+        msg: res.cookie().__("Cannot find user with given email"),
       });
     }
 
-    await DBBridge.User.updatePassword(user['id'], req.body.password);
+    await DBBridge.User.updatePassword(user["id"], req.body.password);
     res.status(200);
     return res.send({
-      status: 'success',
-      msg: res.cookie().__('Reset password successfully'),
+      status: "success",
+      msg: res.cookie().__("Reset password successfully"),
     });
   },
 
@@ -245,16 +247,16 @@ module.exports = BaseController.extend({
       if (!user) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: 'User with given email doesn\'t exist',
+          status: "failed",
+          msg: "User with given email doesn't exist",
         });
       }
 
       if (user.verified) {
         res.status(400);
         return res.send({
-          status: 'failed',
-          msg: 'User is already verified.',
+          status: "failed",
+          msg: "User is already verified.",
         });
       }
 
@@ -265,30 +267,30 @@ module.exports = BaseController.extend({
       );
 
       const isEmailSent = await sendMail({
-        type: 'user-activate',
+        type: "user-activate",
         email: email,
         token: verify_token,
-      })
+      });
       if (!isEmailSent) {
         res.status(400);
         res.send({
-          status: 'failed',
-          msg: 'Reset email not sent. An error occured.',
+          status: "failed",
+          msg: "Reset email not sent. An error occured.",
         });
       }
 
       // After send mail successfully, create new user
       await DBBridge.User.setVerifiedToken(user.id, verify_token);
       res.send({
-        status: 'success',
-        msg: 'Reset email sent.',
+        status: "success",
+        msg: "Reset email sent.",
       });
     } catch (err) {
       console.log(err);
       res.status(400);
       return res.send({
-        status: 'failed',
-        msg: 'Invalid operation.',
+        status: "failed",
+        msg: "Invalid operation.",
       });
     }
   },

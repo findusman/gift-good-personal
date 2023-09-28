@@ -9,7 +9,7 @@ const path = require('path');
 const redis = require('redis');
 const session = require('express-session');
 
-module.exports = function(server, sequelize) {
+module.exports = function (server, sequelize) {
 
     let i18n = require('i18n');
     i18n.configure({
@@ -28,6 +28,7 @@ module.exports = function(server, sequelize) {
 
     server.set('views', path.join(appRoot, 'views'));
     server.set('view engine', 'ejs');
+
     server.use(express.static(path.join(appRoot, 'public')));
 
     server.use(cookieParser());
@@ -38,7 +39,7 @@ module.exports = function(server, sequelize) {
     let myStore = new SequelizeStore({ db: sequelize });
     server.use(session({
         secret: "1234567890",
-        cookie: { maxAge: 1 * 60 * 1000 },
+        cookie: { maxAge: 1 * 30 * 1000 },
         resave: true,
         saveUninitialized: false,
         store: myStore
@@ -46,9 +47,9 @@ module.exports = function(server, sequelize) {
     myStore.sync();
 
     server.use(i18n.init);
-    server.use(bodyParser.urlencoded({limit: '500mb', extended: true}));
-    server.use(bodyParser.json({limit: '500mb', extended: true}));
-    server.use(bodyParser.json({type: 'application/vnd.api+json'}));
+    server.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));
+    server.use(bodyParser.json({ limit: '500mb', extended: true }));
+    server.use(bodyParser.json({ type: 'application/vnd.api+json' }));
     server.use(methodOverride('X-HTTP-Method-Override'));
     server.use(flash());
     server.use(function (req, res, next) {

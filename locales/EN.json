@@ -452,5 +452,6 @@
 	"User password is incorrect.": "User password is incorrect.",
 	"Your account has been locked. Please wait.": "Your account has been locked. Please wait.",
 	"User email/name is incorrect.": "User email/name is incorrect.",
-	"You do not have permission": "You do not have permission"
+	"You do not have permission": "You do not have permission",
+	"Register fields are invalid.": "Register fields are invalid."
 }

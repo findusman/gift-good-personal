@@ -20,15 +20,12 @@ const EditRecipients = () => {
   useEffect(() => {
     dispatch(setDistributionMethod(campaignData.noEmailInvite ? 'self' : 'gfg'));
   }, [campaignData]);
-
   const handleSave = () => {
     setIsConfirmationVisible(true);
   };
-
   if (campaignData.allowMultipleRedemptions) {
     return null;
   }
-
   return (
     <div>
       <h3 className="mt-10 mb-5 pb-2 border-b border-beige-dark text-1.5xl md:text-2.6xl">Add New Contacts</h3>
